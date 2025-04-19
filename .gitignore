@@ -1,0 +1,18 @@
+# Node modules
+node_modules/
+
+# Entorno
+.env
+
+# Archivos temporales
+*.log
+*.tmp
+*.swp
+
+# IDEs
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
