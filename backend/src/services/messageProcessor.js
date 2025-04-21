@@ -1,4 +1,5 @@
 import Message from "../models/Message.js";
+import { createOrUpdateConversation } from "./conversationProcessor.js";
 
 export const saveIncomingMessage = async (body) => {
   const entry = body?.entry?.[0];
@@ -6,19 +7,21 @@ export const saveIncomingMessage = async (body) => {
   const message = change?.value?.messages?.[0];
   const contact = change?.value?.contacts?.[0];
 
-  if (!message) return;
+  // Filtrar mensajes vacíos o no tipo "text"
+  if (!message || !message.text?.body || message.type !== "text") return;
 
-  // 1. Filtrar mensajes vacíos
-  if (!message.text?.body) return;
-
-  // 2. Filtrar todo lo que no sea tipo "text"
-  if (message.type !== "text") return;
-
-  // 3. Determinar dirección del mensaje
+  // Determinar dirección del mensaje
   const isUser = message.from === contact?.wa_id;
   const direction = isUser ? "user" : "agent";
 
-  // 4. Armar documento
+  const conversationId = entry.id;
+  const from = message.from;
+  const userName = contact?.profile?.name || "Desconocido";
+
+  // Crear o actualizar la conversación
+  await createOrUpdateConversation(conversationId, from, userName);
+
+  // Armar documento
   const messageData = {
     messageId: message.id,
     conversationId: entry.id,
