@@ -1,6 +1,6 @@
-import Message from "../models/Message.js";
-import { createOrUpdateConversation } from "./conversationProcessor.js";
-import { parseIncomingMessage } from "../utils/messageParser.js";
+import Message from "../../models/Message.js";
+import { createOrUpdateConversation } from "../processors/conversationProcessor.js";
+import { parseIncomingMessage } from "../parseIncomingMessage.js";
 
 export const saveIncomingMessage = async (body) => {
   const parsedMessage = parseIncomingMessage(body);

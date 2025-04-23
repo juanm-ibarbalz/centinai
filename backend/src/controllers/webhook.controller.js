@@ -1,5 +1,5 @@
-import { saveIncomingMessage } from "../services/messageProcessor.js";
-import { updateConversationStatus } from "../services/conversationProcessor.js";
+import { saveIncomingMessage } from "../services/processors/messageProcessor.js";
+import { updateConversationStatus } from "../services/processors/conversationProcessor.js";
 
 export const verifyWebhook = (req, res) => {
   const VERIFY_TOKEN = process.env.META_VERIFY_TOKEN;
@@ -19,6 +19,8 @@ export const verifyWebhook = (req, res) => {
 
 export const handleIncomingMessage = async (req, res) => {
   try {
+    console.log("Analizando mensaje...");
+    //console.log(req.body);
     await saveIncomingMessage(req.body);
     res.sendStatus(200);
   } catch (err) {

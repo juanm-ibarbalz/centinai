@@ -1,4 +1,4 @@
-import Conversation from "../models/Conversation.js";
+import Conversation from "../../models/Conversation.js";
 
 /**
  * Actualiza el estado de una conversación
