@@ -7,6 +7,8 @@ export const verifyWebhook = (req, res) => {
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
+  console.log("Verifying webhook:", req.query);
+
   if (mode && token && mode === "subscribe" && token === VERIFY_TOKEN) {
     console.log("Webhook verified");
     res.status(200).send(challenge);
