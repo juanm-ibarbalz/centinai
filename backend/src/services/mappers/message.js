@@ -5,7 +5,6 @@ export const parseMessage = (entry, value) => {
   if (!msg || msg.type !== "text" || !msg.text?.body) return null;
 
   return {
-    conversationId: entry.id,
     from: msg.from,
     userName: contact?.profile?.name || "Desconocido",
     messageId: msg.id,
@@ -13,5 +12,6 @@ export const parseMessage = (entry, value) => {
     text: msg.text.body,
     direction: "user",
     status: "active",
+    agentId: value?.metadata?.phone_number_id,
   };
 };

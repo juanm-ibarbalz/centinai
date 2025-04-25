@@ -1,5 +1,4 @@
 import { saveIncomingMessage } from "../services/processors/messageProcessor.js";
-import { updateConversationStatus } from "../services/processors/conversationProcessor.js";
 
 export const verifyWebhook = (req, res) => {
   const VERIFY_TOKEN = process.env.META_VERIFY_TOKEN;
@@ -26,17 +25,5 @@ export const handleIncomingMessage = async (req, res) => {
   } catch (err) {
     console.error("Error handling message:", err);
     res.sendStatus(500);
-  }
-};
-
-export const finalizeConversation = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    await updateConversationStatus(id, "resolved");
-    res.status(200).json({ message: "Conversación finalizada" });
-  } catch (err) {
-    console.error("Error al finalizar conversación:", err);
-    res.status(500).json({ error: "No se pudo finalizar la conversación" });
   }
 };

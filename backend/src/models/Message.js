@@ -4,7 +4,7 @@ const messageSchema = new mongoose.Schema(
   {
     messageId: String, // ID del mensaje
     conversationId: String, // ID de la conversación
-    timestamp: String, // Fecha y hora de la creación
+    timestamp: Date, // Fecha y hora de la creación
     from: String, // ID de quien envió el mensaje
     userName: String, // Nombre del usuario
     text: String, // Contenido del mensaje

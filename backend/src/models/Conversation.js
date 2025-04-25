@@ -9,6 +9,7 @@ const conversationSchema = new mongoose.Schema(
     },
     from: String, // Número del usuario que inició la conversación
     userName: String, // Nombre del usuario
+    agentId: String, // ID del agente que inició la conversación
     status: {
       type: String,
       default: "active",
@@ -30,5 +31,6 @@ const conversationSchema = new mongoose.Schema(
 
 conversationSchema.index({ conversationId: 1 });
 conversationSchema.index({ status: 1 });
+conversationSchema.index({ from: 1, agentId: 1, status: 1 });
 
 export default mongoose.model("Conversation", conversationSchema);
