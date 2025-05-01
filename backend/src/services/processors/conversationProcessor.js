@@ -2,7 +2,7 @@ import Conversation from "../../models/Conversation.js";
 import { v4 as uuidv4 } from "uuid";
 import { conversationConfig } from "../../config/config.js";
 
-const TIMEOUT = conversationConfig.conversationTimeoutMs;
+const TIMEOUT = conversationConfig.timeoutMs;
 
 // Función principal que coordina todo
 export const createOrUpdateConversation = async (userId, agentId, message) => {

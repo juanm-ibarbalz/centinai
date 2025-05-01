@@ -19,7 +19,6 @@ export const verifyWebhook = (req, res) => {
 export const handleIncomingMessage = async (req, res) => {
   try {
     console.log("Analizando mensaje...");
-    //console.log(req.body);
     await saveIncomingMessage(req.body);
     res.sendStatus(200);
   } catch (err) {
