@@ -7,7 +7,7 @@ from datetime import datetime
 # Cargar URI de Mongo desde .env
 load_dotenv()
 client = MongoClient(os.getenv("MONGO_URI"))
-db = client["centinai"]
+db = client["test"]
 messages_col = db["messages"]
 conversations_col = db["conversations"]
 
@@ -42,7 +42,7 @@ def analyze_conversation(convo_doc):
     }
 
 def main():
-    resolved_convos = list(conversations_col.find({ "status": "resolved" }))
+    resolved_convos = list(conversations_col.find())
     results = []
 
     for convo in resolved_convos:
@@ -53,8 +53,11 @@ def main():
     df_results = pd.DataFrame(results)
     print(df_results)
 
-    df_results.to_csv("conversation_summaries.csv", index=False)
-    print("✅ Análisis completo. Archivo CSV generado: conversation_summaries.csv")
+    # ✅ Guardar CSV en la misma carpeta del archivo .py
+    csv_path = os.path.join(os.path.dirname(__file__), "conversation_summaries.csv")
+    df_results.to_csv(csv_path, index=False)
+    print(f"✅ Análisis completo. Archivo CSV generado en: {csv_path}")
+
 
 if __name__ == "__main__":
     main()
