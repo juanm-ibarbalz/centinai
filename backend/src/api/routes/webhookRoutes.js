@@ -2,7 +2,7 @@ import express from "express";
 import {
   verifyWebhook,
   handleIncomingMessage,
-} from "../controllers/webhook.controller.js";
+} from "../controllers/webhookController.js";
 
 const router = express.Router();
 

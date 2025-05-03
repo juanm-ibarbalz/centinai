@@ -1,4 +1,4 @@
-import { saveIncomingMessage } from "../services/processors/messageProcessor.js";
+import { saveIncomingMessage } from "../../services/processors/message.service.js";
 
 export const verifyWebhook = (req, res) => {
   const VERIFY_TOKEN = process.env.META_VERIFY_TOKEN;

@@ -1,7 +1,7 @@
 import Message from "../../models/Message.js";
 import Agent from "../../models/Agent.js";
-import { createOrUpdateConversation } from "./conversationProcessor.js";
-import { parseIncomingMessage } from "../parseIncomingMessage.js";
+import { createOrUpdateConversation } from "./conversation.service.js";
+import { parseIncomingMessage } from "../mappers/message.mapper.js";
 
 export const saveIncomingMessage = async (body) => {
   const parsedMessage = parseIncomingMessage(body);

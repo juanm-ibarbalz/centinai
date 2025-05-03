@@ -1,6 +1,6 @@
 import express from "express";
-import Agent from "../models/Agent.js";
-import { authenticate } from "../middlewares/authMiddleware.js";
+import Agent from "../../models/Agent.js";
+import { authenticate } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
