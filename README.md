@@ -1,0 +1,3 @@
+CentinAI es una plataforma que permite registrar, analizar y visualizar conversaciones entre agentes de WhatsApp Business y clientes, vinculando cada mensaje a un usuario registrado en el sistema. Su objetivo principal es ofrecer métricas y trazabilidad sobre el desempeño de agentes de atención automatizada o humana.
+
+Proximamente...
