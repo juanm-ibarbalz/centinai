@@ -1,11 +1,15 @@
 import './App.css';
 import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Auth from './pages/Auth';
 
-function App() {
+function Dashboard() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/conversations") // Ajustá esta URL si tu backend está en otro puerto
+    fetch("http://localhost:3001/api/conversations")
       .then(res => res.json())
       .then(json => setData(json))
       .catch(err => console.error("Error al obtener datos:", err));
@@ -41,6 +45,30 @@ function App() {
         </table>
       </div>
     </div>
+  );
+}
+
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" replace />;
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/login" element={<Auth />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
 
