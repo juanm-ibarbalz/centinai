@@ -6,7 +6,6 @@ const buildBaseMessage = (
   { msg, direction, userName, recipient_id },
   agentId,
 ) => ({
-  messageId: msg.id,
   from: msg.from,
   recipient_id, // undefined si es un user
   userName,

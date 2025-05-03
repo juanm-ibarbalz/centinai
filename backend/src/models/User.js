@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true }, // guardá el hash
   created_at: { type: Date, default: Date.now },
   last_login_at: { type: Date },
+  name: { type: String },
 });
 
 export default mongoose.model("User", userSchema);

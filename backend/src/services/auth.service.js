@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { generateUserId } from "../utils/idGenerator.js";
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -10,12 +11,14 @@ const generateToken = (user) => {
   );
 };
 
-export const registerUser = async ({ email, password }) => {
+export const registerUser = async ({ email, password, name }) => {
   const existing = await User.findOne({ email });
   if (existing) throw new Error("Email ya registrado");
 
   const hashed = await bcrypt.hash(password, 10);
-  const user = new User({ email, password: hashed });
+  const userId = generateUserId();
+
+  const user = new User({ _id: userId, email, password: hashed, name });
   await user.save();
   return user;
 };

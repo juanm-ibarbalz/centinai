@@ -1,6 +1,6 @@
 import Conversation from "../../models/Conversation.js";
-import { v4 as uuidv4 } from "uuid";
 import { conversationConfig } from "../../config/config.js";
+import { generateConversationId } from "../../utils/idGenerator.js";
 
 const TIMEOUT = conversationConfig.timeoutMs;
 
@@ -43,7 +43,7 @@ const closeConversation = async (conversation) => {
 
 // Crea una nueva conversación
 const createNewConversation = async (userId, agentId, userName, message) => {
-  const conversationId = `${userId}-${agentId}-${uuidv4()}`;
+  const conversationId = generateConversationId(userId, agentId);
 
   const newConversation = new Conversation({
     conversationId,

@@ -1,30 +1,30 @@
 import express from "express";
-import Agent from "../../models/Agent.js";
 import { authenticate } from "../../middlewares/authMiddleware.js";
+import { createAgent } from "../../services/agent.service.js";
 
 const router = express.Router();
 
-// POST /agents - Registrar un agente (requiere autenticación)
 router.post("/", authenticate, async (req, res) => {
-  const { phoneNumberId } = req.body;
-  const userId = req.user.id; // viene del token JWT
+  const { phoneNumberId, name, description } = req.body;
+  const userId = req.user.id;
 
-  if (!phoneNumberId) {
-    return res.status(400).json({ error: "Falta el phoneNumberId" });
+  if (!phoneNumberId || !name) {
+    return res.status(400).json({ error: "Faltan campos obligatorios" });
   }
 
   try {
-    // Verificamos si ya existe
-    const existing = await Agent.findOne({ phoneNumberId });
-    if (existing) {
-      return res.status(409).json({ error: "Este agente ya está registrado" });
-    }
-
-    const agent = await Agent.create({ phoneNumberId, userId });
+    const agent = await createAgent({
+      userId,
+      phoneNumberId,
+      name,
+      description,
+    });
     res.status(201).json(agent);
   } catch (error) {
     console.error("Error al registrar agente:", error);
-    res.status(500).json({ error: "Error al registrar agente" });
+    res
+      .status(500)
+      .json({ error: error.message || "Error al registrar agente" });
   }
 });
 

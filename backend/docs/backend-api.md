@@ -16,6 +16,62 @@ Authorization: Bearer <your-token>
 
 ## Available Endpoints
 
+### POST /auth/register
+
+Registers a new user account.
+
+- **Auth:** none
+- **Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123",
+  "name": "John Doe"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "message": "Usuario creado",
+  "user": "user@example.com"
+}
+```
+
+---
+
+### POST /auth/login
+
+Logs in an existing user.
+
+- **Auth:** none
+- **Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "message": "Login exitoso",
+  "token": "JWT_TOKEN",
+  "user": {
+    "id": "usr-abc123",
+    "email": "user@example.com",
+    "last_login_at": "2025-05-03T15:00:00Z"
+  }
+}
+```
+
+---
+
 ### POST /agents
 
 Registers an agent (authenticated user associates a phone_number_id to their account)
@@ -25,7 +81,9 @@ Registers an agent (authenticated user associates a phone_number_id to their acc
 
 ```json
 {
-  "phoneNumberId": "105929188465876"
+  "phoneNumberId": "105929188465876",
+  "name": "Support Bot",
+  "description": "Handles support inquiries"
 }
 ```
 
@@ -33,11 +91,12 @@ Registers an agent (authenticated user associates a phone_number_id to their acc
 
 ```json
 {
-  "_id": "...",
+  "_id": "agt-userId-uuid",
   "phoneNumberId": "105929188465876",
   "userId": "usr_abc123",
-  "createdAt": "...",
-  "updatedAt": "..."
+  "name": "Support Bot",
+  "description": "Handles support inquiries",
+  "createdAt": "2025-05-03T20:30:00Z"
 }
 ```
 
@@ -79,22 +138,34 @@ Returns all conversations linked to the authenticated user.
 
 ---
 
----
-
 ## Postman Testing
 
-### 1. Register an agent
+### 1. Register a user
+
+```http
+POST /auth/register
+Body:
+{
+  "email": "user@example.com",
+  "password": "123456",
+  "name": "John Tester"
+}
+```
+
+### 2. Register an agent
 
 ```http
 POST /agents
 Authorization: Bearer <token>
 Body:
 {
-  "phoneNumberId": "105929188465876"
+  "phoneNumberId": "105929188465876",
+  "name": "Support Bot",
+  "description": "Handles support inquiries"
 }
 ```
 
-### 2. Simulate incoming message (POST /webhook)
+### 3. Simulate incoming message (POST /webhook)
 
 ```json
 {
@@ -136,7 +207,7 @@ Body:
 }
 ```
 
-### 3. Get conversations
+### 4. Get conversations
 
 ```http
 GET /conversations
@@ -151,6 +222,8 @@ Authorization: Bearer <token>
 - All messages and conversations are linked to a valid `userId`
 - Conversations auto-close after a configurable timeout
 - Each user can only access their own data
+- Each user can create up to 3 agents (limit enforced)
+- All custom IDs follow a format: `usr-...`, `agt-...`, `conv-...`, `msg-...`
 
 ---
 
