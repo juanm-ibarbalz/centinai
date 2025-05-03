@@ -1,4 +1,5 @@
 import Message from "../../models/Message.js";
+import Agent from "../../models/Agent.js";
 import { createOrUpdateConversation } from "./conversationProcessor.js";
 import { parseIncomingMessage } from "../parseIncomingMessage.js";
 
@@ -17,8 +18,18 @@ export const saveIncomingMessage = async (body) => {
     agentId,
   } = parsedMessage;
 
-  const userId = direction === "user" ? from : recipient_id;
   const realAgentId = direction === "user" ? agentId : from;
+
+  const agent = await Agent.findOne({ phoneNumberId: realAgentId });
+  if (!agent) {
+    console.warn("Agente no encontrado para phoneNumberId:", realAgentId);
+    console.warn(
+      `Mensaje ignorado: phoneNumberId sin agente asignado → ${realAgentId}`,
+    );
+    return;
+  }
+
+  const userId = agent.userId;
   const messageTimestamp = new Date(Number(timestamp) * 1000);
 
   // Guardar mensaje individual
@@ -31,6 +42,7 @@ export const saveIncomingMessage = async (body) => {
     type: type,
     text: text,
     status: "active",
+    userId,
   });
 
   // Gestionar conversación

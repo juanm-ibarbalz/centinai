@@ -47,7 +47,8 @@ const createNewConversation = async (userId, agentId, userName, message) => {
 
   const newConversation = new Conversation({
     conversationId,
-    from: userId,
+    from: message.from,
+    userId,
     userName,
     agentId,
     status: "open",

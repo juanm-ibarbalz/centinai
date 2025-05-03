@@ -17,6 +17,10 @@ const messageSchema = new mongoose.Schema(
       type: String,
       default: "active",
     }, // Estado del mensaje/conversación
+    userId: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true, // esto agrega createdAt y updatedAt automáticamente
@@ -30,5 +34,6 @@ messageSchema.index({ from: 1 });
 messageSchema.index({ timestamp: 1 });
 messageSchema.index({ type: 1 });
 messageSchema.index({ status: 1 });
+messageSchema.index({ userId: 1 });
 
 export default mongoose.model("Message", messageSchema);
