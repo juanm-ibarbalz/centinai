@@ -1,0 +1,170 @@
+# Backend API Reference - CentinAI
+
+This document describes how to interact with the CentinAI backend endpoints. It is intended for frontend developers and testers consuming the API.
+
+---
+
+## Authentication
+
+All protected endpoints require a JWT token in the header:
+
+```http
+Authorization: Bearer <your-token>
+```
+
+---
+
+## Available Endpoints
+
+### POST /agents
+
+Registers an agent (authenticated user associates a phone_number_id to their account)
+
+- **Auth:** required
+- **Body:**
+
+```json
+{
+  "phoneNumberId": "105929188465876"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "_id": "...",
+  "phoneNumberId": "105929188465876",
+  "userId": "usr_abc123",
+  "createdAt": "...",
+  "updatedAt": "..."
+}
+```
+
+---
+
+### POST /webhook
+
+Receives incoming messages from the WhatsApp API. Does not require authentication.
+
+- **Auth:** none (public endpoint used by Meta)
+- **Body:** payload as sent by WhatsApp
+- **Logic:**
+  - If `phone_number_id` is registered → saves message and updates/creates conversation
+  - If not registered → discards the message
+
+---
+
+### GET /conversations
+
+Returns all conversations linked to the authenticated user.
+
+- **Auth:** required
+- **Query params:** none
+- **Response:**
+
+```json
+[
+  {
+    "conversationId": "usr123-105929188465876-uuid",
+    "from": "5491111999999",
+    "userName": "Sofía Test",
+    "agentId": "105929188465876",
+    "startTime": "2024-05-01T20:00:00Z",
+    "lastUpdated": "2024-05-01T20:03:00Z",
+    "status": "open"
+  }
+]
+```
+
+---
+
+---
+
+## Postman Testing
+
+### 1. Register an agent
+
+```http
+POST /agents
+Authorization: Bearer <token>
+Body:
+{
+  "phoneNumberId": "105929188465876"
+}
+```
+
+### 2. Simulate incoming message (POST /webhook)
+
+```json
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "105929188465876",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "6666666666",
+              "phone_number_id": "105929188465876"
+            },
+            "contacts": [
+              {
+                "profile": { "name": "Sofía Test" },
+                "wa_id": "5491111999999"
+              }
+            ],
+            "messages": [
+              {
+                "from": "5491111999999",
+                "id": "wamid.9999",
+                "timestamp": "1714694500",
+                "text": {
+                  "body": "Hola, ¿puedo hacer una consulta sobre el envío?"
+                },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### 3. Get conversations
+
+```http
+GET /conversations
+Authorization: Bearer <token>
+```
+
+---
+
+## Business Rules
+
+- Only messages from registered agents (`phone_number_id`) are stored
+- All messages and conversations are linked to a valid `userId`
+- Conversations auto-close after a configurable timeout
+- Each user can only access their own data
+
+---
+
+## System Status
+
+- [x] Agent registration
+- [x] Message and conversation saving
+- [x] Filtering of invalid/unregistered input
+- [x] Viewing conversations by user
+- [ ] Viewing messages by conversation
+- [ ] Agent performance metrics
+
+---
+
+## Author
+
+Juan Martín Ibarbalz
