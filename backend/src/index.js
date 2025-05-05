@@ -5,7 +5,7 @@ import webhookRoutes from "./api/routes/webhookRoutes.js";
 import { startConversationCleanupJob } from "./utils/conversationCleaner.js";
 import authRoutes from "./api/routes/authRoutes.js";
 import conversationsRoutes from "./api/routes/conversationsRoutes.js";
-import agentsRoutes from "./api/routes/agentsRoutes.js";
+import agentsRoutes from "./api/routes/agentRoutes.js";
 
 startConversationCleanupJob();
 dotenv.config();

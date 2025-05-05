@@ -1,13 +1,17 @@
 import { registerUser, loginUser } from "../../services/auth.service.js";
+import {
+  loginSchema,
+  registerSchema,
+} from "../../validators/auth.validator.js";
 
 export const register = async (req, res) => {
-  const { email, password, name } = req.body;
-  if (!email || !password || !name) {
-    return res.status(400).json({ error: "Faltan campos requeridos" });
+  const result = registerSchema.safeParse(req.body);
+  if (!result.success) {
+    return res.status(400).json({ error: result.error.flatten() });
   }
 
   try {
-    const user = await registerUser({ email, password, name });
+    const user = await registerUser(result.data);
     res.status(201).json({ message: "Usuario creado", user: user.email });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -15,8 +19,13 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+  const result = loginSchema.safeParse(req.body);
+  if (!result.success) {
+    return res.status(400).json({ error: result.error.flatten() });
+  }
+
   try {
-    const { user, token } = await loginUser(req.body);
+    const { user, token } = await loginUser(result.data);
     res.status(200).json({
       message: "Login exitoso",
       token,
