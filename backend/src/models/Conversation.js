@@ -5,11 +5,11 @@ const conversationSchema = new mongoose.Schema(
     conversationId: {
       type: String,
       required: true,
-      unique: true,
+      unique: true, // Esto ya crea un índice único automáticamente
     },
-    from: String, // Número del usuario que inició la conversación
-    userName: String, // Nombre del usuario
-    agentId: String, // ID del agente que inició la conversación
+    from: String,
+    userName: String,
+    agentId: String,
     userId: {
       type: String,
       required: true,
@@ -29,11 +29,13 @@ const conversationSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Agrega createdAt y updatedAt
+    timestamps: true,
   },
 );
 
-conversationSchema.index({ conversationId: 1 });
+// ❌ Eliminamos este índice duplicado
+// conversationSchema.index({ conversationId: 1 });
+
 conversationSchema.index({ status: 1 });
 conversationSchema.index({ from: 1, agentId: 1, status: 1 });
 conversationSchema.index({ userId: 1 });

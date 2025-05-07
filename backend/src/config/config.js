@@ -1,4 +1,7 @@
 // Centralized configuration for CentinAI backend
+import dotenv from "dotenv";
+dotenv.config(); 
+
 
 export const appConfig = {
   isDev: process.env.NODE_ENV !== "production",
@@ -7,7 +10,7 @@ export const appConfig = {
 
 export const authConfig = {
   jwtSecret: process.env.JWT_SECRET,
-  jwtExpiresIn: "1d", // default expiration
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "1d",
 };
 
 export const idConfig = {
@@ -18,7 +21,7 @@ export const idConfig = {
 };
 
 export const conversationConfig = {
-  timeoutMs: 120 * 60 * 1000, // 120 minutes
+  timeoutMs: 120 * 60 * 1000,
   cleanupIntervalMinutes: 5,
   defaultConversationStatus: "open",
 };

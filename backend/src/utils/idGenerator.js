@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { idConfig } from "../config.js";
+import { idConfig } from '../config/config.js';
+
+
 
 export const generateConversationId = (userId, agentId) => {
   return `${idConfig.conversationPrefix}-${userId}-${agentId}-${uuidv4()}`;
