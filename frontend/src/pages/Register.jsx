@@ -4,11 +4,12 @@ import "../App.css";
 import { API_URL } from "../config";
 
 function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // ✅ estaba faltando
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -20,17 +21,17 @@ function Register() {
 
     try {
       const res = await fetch(`${API_URL}/auth/register`, {
-
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, email, password })
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Error al registrar');
 
-      setMessage('✅ Registro exitoso. Redirigiendo al login...');
-      setTimeout(() => navigate('/login'), 1500);
+      localStorage.setItem("token", data.token); // ✅ guarda el token
+      setMessage('✅ Registro exitoso. Iniciando aplicación...');
+      setTimeout(() => navigate("/"), 1500); // ✅ redirige al dashboard
     } catch (err) {
       setMessage(`❌ ${err.message}`);
     }
@@ -40,27 +41,10 @@ function Register() {
     <div className="auth-form">
       <h2>Registro CentinAI</h2>
       <form onSubmit={handleRegister}>
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Repetir contraseña"
-          value={repeatPassword}
-          onChange={(e) => setRepeatPassword(e.target.value)}
-          required
-        />
+        <input type="text" placeholder="Nombre completo" value={name} onChange={(e) => setName(e.target.value)} required />
+        <input type="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input type="password" placeholder="Repetir contraseña" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} required />
         <button type="submit">Registrarse</button>
       </form>
       {message && <p className="msg">{message}</p>}

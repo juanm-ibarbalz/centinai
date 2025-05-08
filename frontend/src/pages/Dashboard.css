@@ -1,0 +1,47 @@
+.dashboard-container {
+  padding: 2rem;
+  position: relative;
+}
+
+/* CENTRADO título y botón flotante a la derecha */
+.dashboard-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  color: #29FFD8;
+  font-family: 'Exo 2', sans-serif;
+  margin: 0;
+}
+
+/* Botón ubicado en el extremo superior derecho */
+.logout-button {
+  position: fixed;
+  top: 1.5rem;
+  right: 2.5rem;
+  padding: 6px 14px;
+  font-size: 1rem;
+  background-color: #A67CFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #29FFD8;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+  max-width: 10rem;
+  min-height: 3rem;
+}
+
+.logout-button:hover {
+  background-color: #5B91FF;
+}
+
+.dashboard-content h2 {
+  font-family: 'Exo 2', sans-serif;
+  color: #E0F7FA;
+  margin-bottom: 1rem;
+}
