@@ -1,7 +1,6 @@
 // Centralized configuration for CentinAI backend
 import dotenv from "dotenv";
-dotenv.config(); 
-
+dotenv.config();
 
 export const appConfig = {
   isDev: process.env.NODE_ENV !== "production",

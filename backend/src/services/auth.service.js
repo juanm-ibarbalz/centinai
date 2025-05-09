@@ -6,7 +6,7 @@ import { authConfig } from "../config/config.js";
 
 const generateToken = (user) => {
   return jwt.sign(
-    { userId: user.userId, email: user.email }, // usamos user.userId personalizado
+    { userId: user._id, email: user.email },
     authConfig.jwtSecret,
     { expiresIn: authConfig.jwtExpiresIn },
   );
@@ -19,7 +19,7 @@ export const registerUser = async ({ email, password, name }) => {
   const hashed = await bcrypt.hash(password, 10);
   const userId = generateUserId(); // genera usr-uuid
 
-  const user = new User({ userId, email, password: hashed, name }); // 👈 usamos userId como campo extra
+  const user = new User({ _id: userId, email, password: hashed, name });
   await user.save();
   return user;
 };

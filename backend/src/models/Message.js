@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    messageId: String, // ID del mensaje
-    conversationId: String, // ID de la conversación
+    _id: { type: String }, // ID del mensaje
+    conversationId: { type: String }, // ID de la conversación
     timestamp: Date, // Fecha y hora de la creación
     from: String, // ID de quien envió el mensaje
     userName: String, // Nombre del usuario
@@ -28,7 +28,6 @@ const messageSchema = new mongoose.Schema(
 );
 
 // Índices
-messageSchema.index({ messageId: 1 });
 messageSchema.index({ conversationId: 1 });
 messageSchema.index({ from: 1 });
 messageSchema.index({ timestamp: 1 });

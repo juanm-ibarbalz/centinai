@@ -3,6 +3,7 @@ import Agent from "../../models/Agent.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
 import { parseIncomingMessage } from "../mappers/message.mapper.js";
 import { generateMessageId } from "../../utils/idGenerator.js";
+import Conversation from "../../models/Conversation.js"; // necesario solo para echo
 
 export const saveIncomingMessage = async (body) => {
   const parsed = parseIncomingMessage(body);
@@ -11,15 +12,40 @@ export const saveIncomingMessage = async (body) => {
   const agent = await findAgentByPhoneNumber(parsed);
   if (!agent) return;
 
-  const messageDoc = buildMessage(parsed, agent.userId);
+  const agentId = getPhoneNumberId(parsed);
+  const from = parsed.from;
 
-  await createOrUpdateConversation(
+  if (parsed.direction === "agent") {
+    // Buscamos una conversación abierta ya existente
+    const existingConversation = await Conversation.findOne({
+      agentId,
+      from: parsed.recipient_id,
+      status: "open",
+    });
+
+    if (!existingConversation) {
+      console.warn("Mensaje del agente sin conversación activa. Ignorado.");
+      return;
+    }
+
+    const messageDoc = buildMessage(
+      parsed,
+      agent.userId,
+      existingConversation._id,
+    );
+    await messageDoc.save();
+    return;
+  }
+
+  // Usuario externo: crear o actualizar conversación
+  const conversationId = await createOrUpdateConversation(
     agent.userId,
-    getPhoneNumberId(parsed),
-    messageDoc,
+    agentId,
+    parsed.userName,
+    from,
   );
 
-  messageDoc.messageId = generateMessageId(messageDoc.conversationId);
+  const messageDoc = buildMessage(parsed, agent.userId, conversationId);
   await messageDoc.save();
 };
 
@@ -37,11 +63,12 @@ const findAgentByPhoneNumber = async (parsed) => {
   return agent;
 };
 
-const buildMessage = (parsed, userId) => {
+const buildMessage = (parsed, userId, conversationId) => {
   const { from, recipient_id, timestamp, userName, direction, type, text } =
     parsed;
 
   return new Message({
+    _id: generateMessageId(conversationId),
     from,
     recipient_id,
     timestamp: new Date(Number(timestamp) * 1000),
@@ -51,5 +78,6 @@ const buildMessage = (parsed, userId) => {
     text,
     status: "active",
     userId,
+    conversationId,
   });
 };

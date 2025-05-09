@@ -4,50 +4,54 @@ import { generateConversationId } from "../../utils/idGenerator.js";
 
 const TIMEOUT = conversationConfig.timeoutMs;
 
-// Función principal que coordina todo
-export const createOrUpdateConversation = async (userId, agentId, message) => {
+export const createOrUpdateConversation = async (
+  userId,
+  agentId,
+  userName,
+  from,
+) => {
   const now = new Date();
-  const conversation = await findOpenConversation(userId, agentId);
+  const conversation = await findOpenConversation(from, agentId);
 
   if (shouldCloseConversation(conversation, now)) {
-    if (conversation) {
-      await closeConversation(conversation);
-    }
-    await createNewConversation(userId, agentId, message.userName, message);
-  } else {
-    await appendToExistingConversation(conversation, message);
+    if (conversation) await closeConversation(conversation);
+    return await createNewConversation(userId, agentId, userName, from);
   }
+
+  await updateTimestamp(conversation);
+  return conversation._id;
 };
 
-// Encuentra conversación abierta para usuario y agente
-const findOpenConversation = async (userId, agentId) => {
+const findOpenConversation = async (from, agentId) => {
   return Conversation.findOne({
-    from: userId,
-    agentId: agentId,
+    from,
+    agentId,
     status: "open",
   }).sort({ updatedAt: -1 });
 };
 
-// Decide si debe cerrarse la conversación por timeout
 const shouldCloseConversation = (conversation, now) => {
   if (!conversation) return true;
   return now - conversation.updatedAt > TIMEOUT;
 };
 
-// Cierra una conversación existente
 const closeConversation = async (conversation) => {
   conversation.status = "closed";
   conversation.endTime = new Date();
   await conversation.save();
 };
 
-// Crea una nueva conversación
-const createNewConversation = async (userId, agentId, userName, message) => {
-  const conversationId = generateConversationId(userId, agentId);
+const updateTimestamp = async (conversation) => {
+  conversation.lastUpdated = new Date();
+  await conversation.save();
+};
+
+const createNewConversation = async (userId, agentId, userName, from) => {
+  const conversationId = generateConversationId(from, agentId);
 
   const newConversation = new Conversation({
-    conversationId,
-    from: message.from,
+    _id: conversationId,
+    from,
     userId,
     userName,
     agentId,
@@ -57,18 +61,5 @@ const createNewConversation = async (userId, agentId, userName, message) => {
   });
 
   await newConversation.save();
-
-  // Actualizar conversationId en el mensaje
-  message.conversationId = conversationId;
-  await message.save();
-};
-
-// Agrega un mensaje a una conversación existente
-const appendToExistingConversation = async (conversation, message) => {
-  conversation.lastUpdated = new Date();
-  await conversation.save();
-
-  // Actualizar conversationId en el mensaje
-  message.conversationId = conversation.conversationId;
-  await message.save();
+  return newConversation._id;
 };

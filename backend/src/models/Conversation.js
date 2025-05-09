@@ -2,11 +2,7 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema(
   {
-    conversationId: {
-      type: String,
-      required: true,
-      unique: true, // Esto ya crea un índice único automáticamente
-    },
+    _id: { type: String },
     from: String,
     userName: String,
     agentId: String,
@@ -32,9 +28,6 @@ const conversationSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
-// ❌ Eliminamos este índice duplicado
-// conversationSchema.index({ conversationId: 1 });
 
 conversationSchema.index({ status: 1 });
 conversationSchema.index({ from: 1, agentId: 1, status: 1 });

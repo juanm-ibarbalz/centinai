@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 
-dotenv.config(); // ⬅️ cargar variables antes de usar config
+dotenv.config();
 
 import connectDB from "./db/connect.js";
 import webhookRoutes from "./api/routes/webhookRoutes.js";
@@ -16,7 +16,7 @@ startConversationCleanupJob();
 
 const app = express();
 
-app.use(cors()); // ✅ ahora sí: después de definir app
+app.use(cors());
 app.use(express.json());
 app.use("/users", userRoutes);
 
