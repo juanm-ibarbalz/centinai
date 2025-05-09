@@ -3,7 +3,7 @@ import Agent from "../../models/Agent.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
 import { parseIncomingMessage } from "../mappers/message.mapper.js";
 import { generateMessageId } from "../../utils/idGenerator.js";
-import Conversation from "../../models/Conversation.js"; // necesario solo para echo
+import Conversation from "../../models/Conversation.js";
 
 export const saveIncomingMessage = async (body) => {
   const parsed = parseIncomingMessage(body);
@@ -12,13 +12,13 @@ export const saveIncomingMessage = async (body) => {
   const agent = await findAgentByPhoneNumber(parsed);
   if (!agent) return;
 
-  const agentId = getPhoneNumberId(parsed);
+  const agentPhoneNumberId = getAgentPhoneNumberId(parsed);
   const from = parsed.from;
 
   if (parsed.direction === "agent") {
     // Buscamos una conversación abierta ya existente
     const existingConversation = await Conversation.findOne({
-      agentId,
+      agentPhoneNumberId,
       from: parsed.recipient_id,
       status: "open",
     });
@@ -40,7 +40,7 @@ export const saveIncomingMessage = async (body) => {
   // Usuario externo: crear o actualizar conversación
   const conversationId = await createOrUpdateConversation(
     agent.userId,
-    agentId,
+    agentPhoneNumberId,
     parsed.userName,
     from,
   );
@@ -49,11 +49,11 @@ export const saveIncomingMessage = async (body) => {
   await messageDoc.save();
 };
 
-const getPhoneNumberId = ({ direction, agentId, from }) =>
-  direction === "user" ? agentId : from;
+const getAgentPhoneNumberId = ({ direction, agentPhoneNumberId, from }) =>
+  direction === "user" ? agentPhoneNumberId : from;
 
 const findAgentByPhoneNumber = async (parsed) => {
-  const phoneNumberId = getPhoneNumberId(parsed);
+  const phoneNumberId = getAgentPhoneNumberId(parsed);
   const agent = await Agent.findOne({ phoneNumberId });
 
   if (!agent) {

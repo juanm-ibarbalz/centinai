@@ -5,7 +5,7 @@ const conversationSchema = new mongoose.Schema(
     _id: { type: String },
     from: String,
     userName: String,
-    agentId: String,
+    agentPhoneNumberId: String,
     userId: {
       type: String,
       required: true,
@@ -30,7 +30,7 @@ const conversationSchema = new mongoose.Schema(
 );
 
 conversationSchema.index({ status: 1 });
-conversationSchema.index({ from: 1, agentId: 1, status: 1 });
+conversationSchema.index({ from: 1, agentPhoneNumberId: 1, status: 1 });
 conversationSchema.index({ userId: 1 });
 
 export default mongoose.model("Conversation", conversationSchema);

@@ -6,26 +6,31 @@ const TIMEOUT = conversationConfig.timeoutMs;
 
 export const createOrUpdateConversation = async (
   userId,
-  agentId,
+  agentPhoneNumberId,
   userName,
   from,
 ) => {
   const now = new Date();
-  const conversation = await findOpenConversation(from, agentId);
+  const conversation = await findOpenConversation(from, agentPhoneNumberId);
 
   if (shouldCloseConversation(conversation, now)) {
     if (conversation) await closeConversation(conversation);
-    return await createNewConversation(userId, agentId, userName, from);
+    return await createNewConversation(
+      userId,
+      agentPhoneNumberId,
+      userName,
+      from,
+    );
   }
 
   await updateTimestamp(conversation);
   return conversation._id;
 };
 
-const findOpenConversation = async (from, agentId) => {
+const findOpenConversation = async (from, agentPhoneNumberId) => {
   return Conversation.findOne({
     from,
-    agentId,
+    agentPhoneNumberId,
     status: "open",
   }).sort({ updatedAt: -1 });
 };
@@ -46,15 +51,20 @@ const updateTimestamp = async (conversation) => {
   await conversation.save();
 };
 
-const createNewConversation = async (userId, agentId, userName, from) => {
-  const conversationId = generateConversationId(from, agentId);
+const createNewConversation = async (
+  userId,
+  agentPhoneNumberId,
+  userName,
+  from,
+) => {
+  const conversationId = generateConversationId(from, agentPhoneNumberId);
 
   const newConversation = new Conversation({
     _id: conversationId,
     from,
     userId,
     userName,
-    agentId,
+    agentPhoneNumberId,
     status: "open",
     startTime: new Date(),
     lastUpdated: new Date(),

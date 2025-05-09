@@ -4,7 +4,7 @@ const isValidTextMessage = (msg) => msg?.type === "text" && !!msg.text?.body;
 // Construye la estructura base del mensaje procesado
 const buildBaseMessage = (
   { msg, direction, userName, recipient_id },
-  agentId,
+  agentPhoneNumberId,
 ) => ({
   from: msg.from,
   recipient_id, // undefined si es un user
@@ -13,7 +13,7 @@ const buildBaseMessage = (
   text: msg.text.body,
   direction,
   status: "active",
-  agentId,
+  agentPhoneNumberId,
 });
 
 // Parser de mensajes del usuario (messages)
