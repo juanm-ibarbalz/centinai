@@ -4,6 +4,13 @@ import {
   registerSchema,
 } from "../../validators/auth.validator.js";
 
+/**
+ * Controlador para registrar un nuevo usuario.
+ * Valida el cuerpo de la solicitud y crea el usuario en la base de datos.
+ * @route POST /auth/register
+ * @param {Request} req
+ * @param {Response} res
+ */
 export const register = async (req, res) => {
   const result = registerSchema.safeParse(req.body);
   if (!result.success) {
@@ -18,6 +25,13 @@ export const register = async (req, res) => {
   }
 };
 
+/**
+ * Controlador para iniciar sesión de un usuario.
+ * Valida las credenciales y devuelve un token JWT.
+ * @route POST /auth/login
+ * @param {Request} req
+ * @param {Response} res
+ */
 export const login = async (req, res) => {
   const result = loginSchema.safeParse(req.body);
   if (!result.success) {

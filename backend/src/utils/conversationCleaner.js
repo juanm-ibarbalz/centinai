@@ -2,6 +2,10 @@ import cron from "node-cron";
 import Conversation from "../models/Conversation.js";
 import { conversationConfig } from "../config/config.js";
 
+/**
+ * Inicia un job periódico que cierra conversaciones inactivas según el timeout definido.
+ * Usa node-cron para ejecutarse cada N minutos.
+ */
 export const startConversationCleanupJob = () => {
   const intervalMinutes = conversationConfig.cleanupIntervalMinutes;
 

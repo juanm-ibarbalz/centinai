@@ -125,10 +125,10 @@ Returns all conversations linked to the authenticated user.
 ```json
 [
   {
-    "conversationId": "usr123-105929188465876-uuid",
+    "_id": "usr123-105929188465876-uuid",
     "from": "5491111999999",
     "userName": "Sofía Test",
-    "agentId": "105929188465876",
+    "agentPhoneNumberId": "105929188465876",
     "startTime": "2024-05-01T20:00:00Z",
     "lastUpdated": "2024-05-01T20:03:00Z",
     "status": "open"

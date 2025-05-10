@@ -1,6 +1,14 @@
 import jwt from "jsonwebtoken";
 import { authConfig } from "../config/config.js";
 
+/**
+ * Middleware que autentica al usuario usando JWT.
+ * Si el token es válido, agrega los datos decodificados en `req.user`.
+ * Si no, responde con 401 o 403 según el caso.
+ * @param {Request} req - Objeto de solicitud HTTP
+ * @param {Response} res - Objeto de respuesta HTTP
+ * @param {Function} next - Función para continuar con el siguiente middleware
+ */
 export const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
 

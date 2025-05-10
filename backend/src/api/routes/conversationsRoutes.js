@@ -4,6 +4,8 @@ import { authenticate } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
+// Rutas de conversaciones
+// GET /conversations → Lista todas las conversaciones del usuario autenticado
 router.get("/", authenticate, async (req, res) => {
   try {
     const userId = req.user.id;

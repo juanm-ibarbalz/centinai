@@ -10,7 +10,6 @@ import { startConversationCleanupJob } from "./utils/conversationCleaner.js";
 import authRoutes from "./api/routes/authRoutes.js";
 import conversationsRoutes from "./api/routes/conversationsRoutes.js";
 import agentsRoutes from "./api/routes/agentRoutes.js";
-import userRoutes from "./api/routes/userRoutes.js";
 
 startConversationCleanupJob();
 
@@ -18,7 +17,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/users", userRoutes);
 
 app.use("/webhook", webhookRoutes);
 app.use("/auth", authRoutes);

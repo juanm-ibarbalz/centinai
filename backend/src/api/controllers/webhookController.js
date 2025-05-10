@@ -1,5 +1,12 @@
 import { saveIncomingMessage } from "../../services/processors/message.service.js";
 
+/**
+ * Verifica el webhook de WhatsApp para la suscripción inicial.
+ * Valida el token y devuelve el challenge proporcionado por Meta.
+ * @route GET /webhook
+ * @param {Request} req
+ * @param {Response} res
+ */
 export const verifyWebhook = (req, res) => {
   const VERIFY_TOKEN = process.env.META_VERIFY_TOKEN;
   const mode = req.query["hub.mode"];
@@ -16,6 +23,13 @@ export const verifyWebhook = (req, res) => {
   }
 };
 
+/**
+ * Procesa los mensajes entrantes desde el webhook de WhatsApp.
+ * Llama al servicio de mensajes y responde con 200 si se procesa correctamente.
+ * @route POST /webhook
+ * @param {Request} req
+ * @param {Response} res
+ */
 export const handleIncomingMessage = async (req, res) => {
   try {
     console.log("Analizando mensaje...");

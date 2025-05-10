@@ -1,22 +1,46 @@
-import Message from "../../models/Message.js";
-import Agent from "../../models/Agent.js";
+import Conversation from "../../models/Conversation.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
 import { parseIncomingMessage } from "../mappers/message.mapper.js";
-import { generateMessageId } from "../../utils/idGenerator.js";
-import Conversation from "../../models/Conversation.js";
+import {
+  getAgentPhoneNumberId,
+  findAgentByPhoneNumber,
+  buildMessage,
+} from "./message.helpers.js";
 
+/**
+ * Procesa y guarda un mensaje entrante desde WhatsApp (usuario o agente).
+ * @param {Object} body - Payload completo del webhook
+ * @returns {Promise<void>}
+ */
 export const saveIncomingMessage = async (body) => {
-  const parsed = parseIncomingMessage(body);
-  if (!parsed) return;
+  try {
+    const parsed = parseIncomingMessage(body);
+    if (!parsed) return;
 
-  const agent = await findAgentByPhoneNumber(parsed);
-  if (!agent) return;
+    const agent = await findAgentByPhoneNumber(parsed);
+    if (!agent) return;
 
-  const agentPhoneNumberId = getAgentPhoneNumberId(parsed);
-  const from = parsed.from;
+    if (parsed.direction === "agent") {
+      return await processAgentMessage(parsed, agent);
+    }
 
-  if (parsed.direction === "agent") {
-    // Buscamos una conversación abierta ya existente
+    return await processUserMessage(parsed, agent);
+  } catch (err) {
+    console.error("Error procesando mensaje entrante:", err);
+  }
+};
+
+/**
+ * Procesa un mensaje enviado por un agente (message_echo).
+ * Lo guarda solo si hay una conversación abierta.
+ * @param {Object} parsed - Mensaje mapeado
+ * @param {Object} agent - Documento Agent
+ * @returns {Promise<void>}
+ */
+const processAgentMessage = async (parsed, agent) => {
+  try {
+    const agentPhoneNumberId = getAgentPhoneNumberId(parsed);
+
     const existingConversation = await Conversation.findOne({
       agentPhoneNumberId,
       from: parsed.recipient_id,
@@ -34,50 +58,33 @@ export const saveIncomingMessage = async (body) => {
       existingConversation._id,
     );
     await messageDoc.save();
-    return;
+  } catch (err) {
+    console.error("Error procesando mensaje del agente:", err);
   }
-
-  // Usuario externo: crear o actualizar conversación
-  const conversationId = await createOrUpdateConversation(
-    agent.userId,
-    agentPhoneNumberId,
-    parsed.userName,
-    from,
-  );
-
-  const messageDoc = buildMessage(parsed, agent.userId, conversationId);
-  await messageDoc.save();
 };
 
-const getAgentPhoneNumberId = ({ direction, agentPhoneNumberId, from }) =>
-  direction === "user" ? agentPhoneNumberId : from;
+/**
+ * Procesa un mensaje entrante desde un usuario externo.
+ * Crea o actualiza una conversación y guarda el mensaje.
+ * @param {Object} parsed - Mensaje mapeado
+ * @param {Object} agent - Documento Agent
+ * @returns {Promise<void>}
+ */
+const processUserMessage = async (parsed, agent) => {
+  try {
+    const agentPhoneNumberId = getAgentPhoneNumberId(parsed);
+    const from = parsed.from;
 
-const findAgentByPhoneNumber = async (parsed) => {
-  const phoneNumberId = getAgentPhoneNumberId(parsed);
-  const agent = await Agent.findOne({ phoneNumberId });
+    const conversationId = await createOrUpdateConversation(
+      agent.userId,
+      agentPhoneNumberId,
+      parsed.userName,
+      from,
+    );
 
-  if (!agent) {
-    console.warn(`Agente no encontrado para phoneNumberId: ${phoneNumberId}`);
+    const messageDoc = buildMessage(parsed, agent.userId, conversationId);
+    await messageDoc.save();
+  } catch (err) {
+    console.error("Error procesando mensaje del usuario:", err);
   }
-
-  return agent;
-};
-
-const buildMessage = (parsed, userId, conversationId) => {
-  const { from, recipient_id, timestamp, userName, direction, type, text } =
-    parsed;
-
-  return new Message({
-    _id: generateMessageId(conversationId),
-    from,
-    recipient_id,
-    timestamp: new Date(Number(timestamp) * 1000),
-    userName: userName || null,
-    direction,
-    type,
-    text,
-    status: "active",
-    userId,
-    conversationId,
-  });
 };

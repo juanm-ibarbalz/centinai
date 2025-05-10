@@ -1,6 +1,14 @@
 import { createAgent } from "../../services/agent.service.js";
 import { createAgentSchema } from "../../validators/agent.validator.js";
 
+/**
+ * Controlador para registrar un nuevo agente.
+ * Valida el cuerpo de la solicitud y asocia el agente al usuario autenticado.
+ * @route POST /agents
+ * @param {Request} req - Objeto de solicitud HTTP
+ * @param {Response} res - Objeto de respuesta HTTP
+ * @returns {void}
+ */
 export const createAgentController = async (req, res) => {
   const result = createAgentSchema.safeParse(req.body);
   if (!result.success) {
