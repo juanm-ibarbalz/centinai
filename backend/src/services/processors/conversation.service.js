@@ -4,7 +4,8 @@ import {
   closeConversation,
   updateTimestamp,
   createNewConversation,
-} from "./conversation.helpers.js";
+} from "./helpers/conversation.helpers.js";
+import Conversation from "../../models/Conversation.js";
 
 /**
  * Crea una nueva conversación o actualiza una existente,
@@ -36,4 +37,16 @@ export const createOrUpdateConversation = async (
 
   await updateTimestamp(conversation);
   return conversation._id;
+};
+
+/**
+ * Busca las conversaciones de un agente específico, filtradas por usuario.
+ * @param {string} userId - ID del usuario autenticado
+ * @param {string} agentPhoneNumberId - ID del número del agente
+ * @returns {Promise<Conversation[]>}
+ */
+export const findConversationsByAgent = async (userId, agentPhoneNumberId) => {
+  return Conversation.find({ userId, agentPhoneNumberId })
+    .sort({ lastUpdated: -1 })
+    .select("-__v");
 };

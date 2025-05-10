@@ -1,23 +1,11 @@
 import express from "express";
-import Conversation from "../../models/Conversation.js";
 import { authenticate } from "../../middlewares/authMiddleware.js";
+import { getConversationsByAgent } from "../controllers/conversationsController.js";
 
 const router = express.Router();
 
 // Rutas de conversaciones
-// GET /conversations → Lista todas las conversaciones del usuario autenticado
-router.get("/", authenticate, async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const conversations = await Conversation.find({ userId })
-      .sort({ lastUpdated: -1 })
-      .select("-__v");
-
-    res.json(conversations);
-  } catch (error) {
-    console.error("Error al obtener conversaciones:", error);
-    res.status(500).json({ error: "Error al obtener las conversaciones" });
-  }
-});
+// GET /conversations?agentPhoneNumberId=xxx → Lista conversaciones de un agente
+router.get("/", authenticate, getConversationsByAgent);
 
 export default router;

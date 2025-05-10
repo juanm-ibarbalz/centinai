@@ -1,6 +1,6 @@
-import Agent from "../../models/Agent.js";
-import Message from "../../models/Message.js";
-import { generateMessageId } from "../../utils/idGenerator.js";
+import Agent from "../../../models/Agent.js";
+import Message from "../../../models/Message.js";
+import { generateMessageId } from "../../../utils/idGenerator.js";
 
 /**
  * Determina el phoneNumberId del agente según el sentido del mensaje.

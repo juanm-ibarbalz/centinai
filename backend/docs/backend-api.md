@@ -114,27 +114,84 @@ Receives incoming messages from the WhatsApp API. Does not require authenticatio
 
 ---
 
-### GET /conversations
+### GET /conversations?agentPhoneNumberId=xxxx
 
-Returns all conversations linked to the authenticated user.
+---
+
+Returns all conversations linked to a specific agent belonging to the authenticated user.
 
 - **Auth:** required
-- **Query params:** none
+- **Query params:** agentPhoneNumberId
 - **Response:**
 
 ```json
 [
   {
-    "_id": "usr123-105929188465876-uuid",
+    "_id": "conv-5491111999999-105929188465876-uuid",
     "from": "5491111999999",
     "userName": "Sofía Test",
     "agentPhoneNumberId": "105929188465876",
+    "userId": "usr-abc123",
+    "status": "open",
     "startTime": "2024-05-01T20:00:00Z",
-    "lastUpdated": "2024-05-01T20:03:00Z",
-    "status": "open"
+    "lastUpdated": "2024-05-01T20:03:00Z"
   }
 ]
 ```
+
+- **Errors:**
+  - 400 – agentPhoneNumberId is required
+  - 401 – Unauthorized
+  - 500 – Server error
+
+---
+
+### GET /agents
+
+Returns all agents associated with the authenticated user.
+
+- **Auth:** required
+- **Response:**
+
+```json
+[
+  {
+    "_id": "agt-userId-uuid",
+    "phoneNumberId": "105929188465876",
+    "userId": "usr_abc123",
+    "name": "Support Bot",
+    "description": "Handles support inquiries",
+    "createdAt": "2025-05-03T20:30:00Z"
+  }
+]
+```
+
+- **Errors:**
+  - 401 – Unauthorized
+  - 500 – Server error
+
+---
+
+### DELETE /agents/:id
+
+Deletes an agent and all associated conversations and messages.
+Only allowed for the authenticated user who owns the agent.
+
+- **Auth:** required
+- **Params:**
+
+  - `:id` → ID of the agent to delete
+
+- **Response:**
+
+```http
+204 No Content
+```
+
+- **Errors:**
+  - 404 – Agent not found or does not belong to user
+  - 401 – Unauthorized
+  - 500 – Server error
 
 ---
 

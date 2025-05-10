@@ -1,4 +1,5 @@
 import { saveIncomingMessage } from "../../services/processors/message.service.js";
+import { sendError } from "../../utils/responseUtils.js";
 
 /**
  * Verifica el webhook de WhatsApp para la suscripción inicial.
@@ -19,7 +20,7 @@ export const verifyWebhook = (req, res) => {
     console.log("Webhook verified");
     res.status(200).send(challenge);
   } else {
-    res.sendStatus(403);
+    return sendError(res, 403, "unauthorized_access");
   }
 };
 
@@ -37,6 +38,6 @@ export const handleIncomingMessage = async (req, res) => {
     res.sendStatus(200);
   } catch (err) {
     console.error("Error handling message:", err);
-    res.sendStatus(500);
+    return sendError(res, 500, "generic_error");
   }
 };

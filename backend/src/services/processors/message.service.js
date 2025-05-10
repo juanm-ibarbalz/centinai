@@ -5,7 +5,7 @@ import {
   getAgentPhoneNumberId,
   findAgentByPhoneNumber,
   buildMessage,
-} from "./message.helpers.js";
+} from "./helpers/message.helpers.js";
 
 /**
  * Procesa y guarda un mensaje entrante desde WhatsApp (usuario o agente).

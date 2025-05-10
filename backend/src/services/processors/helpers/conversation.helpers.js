@@ -1,6 +1,6 @@
-import Conversation from "../../models/Conversation.js";
-import { conversationConfig } from "../../config/config.js";
-import { generateConversationId } from "../../utils/idGenerator.js";
+import Conversation from "../../../models/Conversation.js";
+import { conversationConfig } from "../../../config/config.js";
+import { generateConversationId } from "../../../utils/idGenerator.js";
 
 const TIMEOUT = conversationConfig.timeoutMs;
 

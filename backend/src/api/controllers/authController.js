@@ -3,6 +3,7 @@ import {
   loginSchema,
   registerSchema,
 } from "../../validators/auth.validator.js";
+import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 
 /**
  * Controlador para registrar un nuevo usuario.
@@ -14,14 +15,17 @@ import {
 export const register = async (req, res) => {
   const result = registerSchema.safeParse(req.body);
   if (!result.success) {
-    return res.status(400).json({ error: result.error.flatten() });
+    return sendError(res, 400, "invalid_payload");
   }
 
   try {
     const user = await registerUser(result.data);
-    res.status(201).json({ message: "Usuario creado", user: user.email });
+    return sendSuccess(res, 201, {
+      message: "Usuario creado",
+      user: user.email,
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return sendError(res, 400, err.message || "generic_error");
   }
 };
 
@@ -35,12 +39,12 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const result = loginSchema.safeParse(req.body);
   if (!result.success) {
-    return res.status(400).json({ error: result.error.flatten() });
+    return sendError(res, 400, "invalid_payload");
   }
 
   try {
     const { user, token } = await loginUser(result.data);
-    res.status(200).json({
+    return sendSuccess(res, 200, {
       message: "Login exitoso",
       token,
       user: {
@@ -50,6 +54,6 @@ export const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(401).json({ error: err.message });
+    return sendError(res, 401, err.message || "generic_error");
   }
 };

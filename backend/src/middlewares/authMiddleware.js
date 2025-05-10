@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { authConfig } from "../config/config.js";
+import { sendError } from "../utils/responseUtils.js";
 
 /**
  * Middleware que autentica al usuario usando JWT.
@@ -13,7 +14,7 @@ export const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Token no proporcionado" });
+    return sendError(res, 401, "missing_token");
   }
 
   const token = authHeader.split(" ")[1];
@@ -26,6 +27,6 @@ export const authenticate = (req, res, next) => {
     };
     next();
   } catch (err) {
-    res.status(403).json({ error: "Token inválido o expirado" });
+    return sendError(res, 403, "invalid_token");
   }
 };
