@@ -1,4 +1,5 @@
 import Conversation from "../../models/Conversation.js";
+import Message from "../../models/Message.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
 import { parseIncomingMessage } from "../mappers/message.mapper.js";
 import {
@@ -87,4 +88,28 @@ const processUserMessage = async (parsed, agent) => {
   } catch (err) {
     console.error("Error procesando mensaje del usuario:", err);
   }
+};
+
+/**
+ * Obtiene mensajes de una conversación perteneciente al usuario, con paginación.
+ * Lanza error si la conversación no existe o no pertenece al usuario autenticado.
+ * @param {string} conversationId
+ * @param {string} userId
+ * @param {number} limit
+ * @param {number} offset
+ * @returns {Promise<Array>}
+ */
+export const getMessagesByConversationId = async (
+  conversationId,
+  userId,
+  limit,
+  offset,
+) => {
+  const convo = await Conversation.findOne({ _id: conversationId, userId });
+  if (!convo) throw new Error("Unauthorized or conversation not found");
+
+  return await Message.find({ conversationId })
+    .sort({ timestamp: 1 })
+    .skip(offset)
+    .limit(limit);
 };

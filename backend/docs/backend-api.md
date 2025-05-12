@@ -114,14 +114,17 @@ Receives incoming messages from the WhatsApp API. Does not require authenticatio
 
 ---
 
-### GET /conversations?agentPhoneNumberId=xxxx
+### GET /conversations
 
----
-
-Returns all conversations linked to a specific agent belonging to the authenticated user.
+Returns all conversations linked to a specific agent belonging to the authenticated user, with pagination support.
 
 - **Auth:** required
-- **Query params:** agentPhoneNumberId
+- **Query params:**
+
+  - `agentPhoneNumberId` (required) – The phone number ID of the agent
+  - `limit` (optional) – Max number of conversations to return (default: 20)
+  - `offset` (optional) – Number of conversations to skip (default: 0)
+
 - **Response:**
 
 ```json
@@ -167,6 +170,47 @@ Returns all agents associated with the authenticated user.
 ```
 
 - **Errors:**
+  - 401 – Unauthorized
+  - 500 – Server error
+
+---
+
+### GET /messages
+
+Returns paginated messages for a specific conversation, belonging to the authenticated user.
+
+- **Auth:** required
+- **Query params:**
+
+  - `conversationId` (required) – Conversation identifier
+  - `limit` (optional) – Max number of messages to return (default: 20)
+  - `offset` (optional) – Number of messages to skip (default: 0)
+
+- **Response:**
+
+```json
+[
+  {
+    "_id": "msg-convId-uuid",
+    "conversationId": "conv-5491111999999-105929188465876-uuid",
+    "text": "Hola, ¿puedo hacer una consulta?",
+    "timestamp": "2025-05-10T20:04:00.000Z",
+    "direction": "user",
+    "status": "active"
+  },
+  {
+    "_id": "msg-convId-uuid2",
+    "conversationId": "conv-5491111999999-105929188465876-uuid",
+    "text": "Claro, ¿en qué puedo ayudarte?",
+    "timestamp": "2025-05-10T20:04:03.000Z",
+    "direction": "agent",
+    "status": "active"
+  }
+]
+```
+
+- **Errors:**
+  - 400 – conversationId is required
   - 401 – Unauthorized
   - 500 – Server error
 
@@ -267,7 +311,14 @@ Body:
 ### 4. Get conversations
 
 ```http
-GET /conversations
+GET /conversations?agentPhoneNumberId=105929188465876&limit=5&offset=0
+Authorization: Bearer <token>
+```
+
+### 5. Get messages of a conversation
+
+```http
+GET /messages?conversationId=conv-5491111999999-105929188465876-uuid&limit=10&offset=0
 Authorization: Bearer <token>
 ```
 
@@ -290,8 +341,7 @@ Authorization: Bearer <token>
 - [x] Message and conversation saving
 - [x] Filtering of invalid/unregistered input
 - [x] Viewing conversations by user
-- [ ] Viewing messages by conversation
-- [ ] Agent performance metrics
+- [x] Viewing messages by conversation
 
 ---
 

@@ -10,6 +10,7 @@ import { startConversationCleanupJob } from "./utils/conversationCleaner.js";
 import authRoutes from "./api/routes/authRoutes.js";
 import conversationsRoutes from "./api/routes/conversationsRoutes.js";
 import agentsRoutes from "./api/routes/agentRoutes.js";
+import messageRoutes from "./api/routes/messageRoutes.js";
 
 startConversationCleanupJob();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use("/webhook", webhookRoutes);
 app.use("/auth", authRoutes);
 app.use("/conversations", conversationsRoutes);
+app.use("/messages", messageRoutes);
 app.use("/agents", agentsRoutes);
 app.get("/", (_, res) => res.send("CentinAI Backend API OK"));
 

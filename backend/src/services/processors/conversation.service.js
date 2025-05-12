@@ -40,13 +40,21 @@ export const createOrUpdateConversation = async (
 };
 
 /**
- * Busca las conversaciones de un agente específico, filtradas por usuario.
+ * Busca las conversaciones del usuario para un agente específico, con paginación.
  * @param {string} userId - ID del usuario autenticado
- * @param {string} agentPhoneNumberId - ID del número del agente
- * @returns {Promise<Conversation[]>}
+ * @param {string} agentPhoneNumberId - ID del agente (phone_number_id)
+ * @param {number} limit - Cantidad máxima de resultados a devolver
+ * @param {number} offset - Cantidad de resultados a saltear
+ * @returns {Promise<Array>} - Lista de conversaciones
  */
-export const findConversationsByAgent = async (userId, agentPhoneNumberId) => {
-  return Conversation.find({ userId, agentPhoneNumberId })
+export const findConversationsByAgent = async (
+  userId,
+  agentPhoneNumberId,
+  limit,
+  offset,
+) => {
+  return await Conversation.find({ userId, agentPhoneNumberId })
     .sort({ lastUpdated: -1 })
-    .select("-__v");
+    .skip(offset)
+    .limit(limit);
 };
