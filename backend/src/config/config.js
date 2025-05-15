@@ -47,3 +47,10 @@ export const securityConfig = {
     errorMessage: "Demasiados intentos. Intente nuevamente en un minuto.",
   },
 };
+
+/**
+ * Configuración de límites del sistema.
+ */
+export const limitsConfig = {
+  maxAgentsPerUser: 3,
+};

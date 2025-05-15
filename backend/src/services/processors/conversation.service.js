@@ -4,7 +4,7 @@ import {
   closeConversation,
   updateTimestamp,
   createNewConversation,
-} from "./helpers/conversation.helpers.js";
+} from "../helpers/conversation.helpers.js";
 import Conversation from "../../models/Conversation.js";
 
 /**

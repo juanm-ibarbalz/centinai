@@ -1,24 +1,21 @@
 import Conversation from "../../models/Conversation.js";
 import Message from "../../models/Message.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
-import { parseIncomingMessage } from "../mappers/message.mapper.js";
 import {
   getAgentPhoneNumberId,
   findAgentByPhoneNumber,
   buildMessage,
-} from "./helpers/message.helpers.js";
+} from "../helpers/message.helpers.js";
 
 /**
- * Procesa y guarda un mensaje entrante desde WhatsApp (usuario o agente).
- * @param {Object} body - Payload completo del webhook
+ * Procesa y guarda un mensaje entrante desde el webhook.
+ * @param {Object} parsed - Objeto de mensaje adaptado desde webhook
+ * @param {Object} agent - Documento del agente asociado
  * @returns {Promise<void>}
  */
-export const saveIncomingMessage = async (body) => {
+export const saveIncomingMessage = async (parsed, agent) => {
   try {
-    const parsed = parseIncomingMessage(body);
     if (!parsed) return;
-
-    const agent = await findAgentByPhoneNumber(parsed);
     if (!agent) return;
 
     if (parsed.direction === "agent") {

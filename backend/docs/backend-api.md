@@ -1,53 +1,50 @@
-# Backend API Reference - CentinAI
+# CentinAI API Reference
 
-This document describes how to interact with the CentinAI backend endpoints. It is intended for frontend developers and testers consuming the API.
+Internal API documentation for the CentinAI backend.  
+Defines all available REST endpoints, validation rules, and expected responses.
 
 ---
 
 ## Authentication
 
-All protected endpoints require a JWT token in the header:
+All protected endpoints require a JWT token.
 
-```http
-Authorization: Bearer <your-token>
+**Header required:**
+
+```
+Authorization: Bearer <token>
 ```
 
 ---
 
-## Available Endpoints
+## Auth Endpoints
 
 ### POST /auth/register
 
-Registers a new user account.
+Registers a new user.
 
-- **Auth:** none
-- **Body:**
+**Request body:**
 
 ```json
 {
   "email": "user@example.com",
   "password": "securePassword123",
-  "name": "John Doe"
+  "name": "Juan Martín"
 }
 ```
 
-- **Response:**
+**Responses:**
 
-```json
-{
-  "message": "Usuario creado",
-  "user": "user@example.com"
-}
-```
+- 201 Created – User successfully registered.
+- 400 Bad Request – Invalid input.
 
 ---
 
 ### POST /auth/login
 
-Logs in an existing user.
+Authenticates a user and returns a JWT.
 
-- **Auth:** none
-- **Body:**
+**Request body:**
 
 ```json
 {
@@ -56,295 +53,164 @@ Logs in an existing user.
 }
 ```
 
-- **Response:**
+**Responses:**
 
-```json
-{
-  "message": "Login exitoso",
-  "token": "JWT_TOKEN",
-  "user": {
-    "id": "usr-abc123",
-    "email": "user@example.com",
-    "last_login_at": "2025-05-03T15:00:00Z"
-  }
-}
-```
+- 200 OK – Returns a JWT token.
+- 401 Unauthorized – Invalid credentials.
 
 ---
+
+## Agent Endpoints
 
 ### POST /agents
 
-Registers an agent (authenticated user associates a phone_number_id to their account)
+Creates a new agent.
 
-- **Auth:** required
-- **Body:**
-
-```json
-{
-  "phoneNumberId": "105929188465876",
-  "name": "Support Bot",
-  "description": "Handles support inquiries"
-}
-```
-
-- **Response:**
+**Request body:**
 
 ```json
 {
-  "_id": "agt-userId-uuid",
-  "phoneNumberId": "105929188465876",
-  "userId": "usr_abc123",
-  "name": "Support Bot",
-  "description": "Handles support inquiries",
-  "createdAt": "2025-05-03T20:30:00Z"
-}
-```
-
----
-
-### POST /webhook
-
-Receives incoming messages from the WhatsApp API. Does not require authentication.
-
-- **Auth:** none (public endpoint used by Meta)
-- **Body:** payload as sent by WhatsApp
-- **Logic:**
-  - If `phone_number_id` is registered → saves message and updates/creates conversation
-  - If not registered → discards the message
-
----
-
-### GET /conversations
-
-Returns all conversations linked to a specific agent belonging to the authenticated user, with pagination support.
-
-- **Auth:** required
-- **Query params:**
-
-  - `agentPhoneNumberId` (required) – The phone number ID of the agent
-  - `limit` (optional) – Max number of conversations to return (default: 20)
-  - `offset` (optional) – Number of conversations to skip (default: 0)
-
-- **Response:**
-
-```json
-[
-  {
-    "_id": "conv-5491111999999-105929188465876-uuid",
-    "from": "5491111999999",
-    "userName": "Sofía Test",
-    "agentPhoneNumberId": "105929188465876",
-    "userId": "usr-abc123",
-    "status": "open",
-    "startTime": "2024-05-01T20:00:00Z",
-    "lastUpdated": "2024-05-01T20:03:00Z"
+  "phoneNumberId": "123456",
+  "name": "Agent 1",
+  "integrationMode": "structured",
+  "description": "optional",
+  "fieldMapping": {
+    "text": "body.text",
+    "from": "body.from",
+    "timestamp": "body.timestamp"
   }
-]
+}
 ```
 
-- **Errors:**
-  - 400 – agentPhoneNumberId is required
-  - 401 – Unauthorized
-  - 500 – Server error
+**Validation rules:**
+
+- If `integrationMode` is `"structured"`, `fieldMapping` must be empty or undefined.
+- If `"custom-mapped"`, the `fieldMapping` must include `"text"`, `"from"`, and `"timestamp"`.
+
+**Responses:**
+
+- 201 Created – Agent successfully created.
+- 400 Bad Request – Invalid data or agent limit reached.
 
 ---
 
 ### GET /agents
 
-Returns all agents associated with the authenticated user.
+Returns all agents for the authenticated user.
 
-- **Auth:** required
-- **Response:**
+**Response:**
 
 ```json
 [
   {
-    "_id": "agt-userId-uuid",
-    "phoneNumberId": "105929188465876",
-    "userId": "usr_abc123",
-    "name": "Support Bot",
-    "description": "Handles support inquiries",
-    "createdAt": "2025-05-03T20:30:00Z"
+    "id": "agt_123",
+    "name": "Agent 1",
+    "phoneNumberId": "123456",
+    "integrationMode": "structured",
+    "secretToken": "abcd-1234"
   }
 ]
 ```
-
-- **Errors:**
-  - 401 – Unauthorized
-  - 500 – Server error
 
 ---
 
-### GET /messages
+### PATCH /agents/:id/mapping
 
-Returns paginated messages for a specific conversation, belonging to the authenticated user.
+Updates an agent's `fieldMapping`.
 
-- **Auth:** required
-- **Query params:**
-
-  - `conversationId` (required) – Conversation identifier
-  - `limit` (optional) – Max number of messages to return (default: 20)
-  - `offset` (optional) – Number of messages to skip (default: 0)
-
-- **Response:**
+**Request body:**
 
 ```json
-[
-  {
-    "_id": "msg-convId-uuid",
-    "conversationId": "conv-5491111999999-105929188465876-uuid",
-    "text": "Hola, ¿puedo hacer una consulta?",
-    "timestamp": "2025-05-10T20:04:00.000Z",
-    "direction": "user",
-    "status": "active"
-  },
-  {
-    "_id": "msg-convId-uuid2",
-    "conversationId": "conv-5491111999999-105929188465876-uuid",
-    "text": "Claro, ¿en qué puedo ayudarte?",
-    "timestamp": "2025-05-10T20:04:03.000Z",
-    "direction": "agent",
-    "status": "active"
+{
+  "fieldMapping": {
+    "text": "msg.text",
+    "from": "msg.user",
+    "timestamp": "msg.time"
   }
-]
+}
 ```
 
-- **Errors:**
-  - 400 – conversationId is required
-  - 401 – Unauthorized
-  - 500 – Server error
+**Restrictions:**
+
+- Only allowed for agents with `integrationMode: "custom-mapped"`.
+
+**Responses:**
+
+- 200 OK – Mapping successfully updated.
+- 400 Bad Request – Invalid or disallowed mapping.
+- 404 Not Found – Agent not found.
 
 ---
 
 ### DELETE /agents/:id
 
-Deletes an agent and all associated conversations and messages.
-Only allowed for the authenticated user who owns the agent.
+Deletes an agent and all associated data.
 
-- **Auth:** required
-- **Params:**
+**Responses:**
 
-  - `:id` → ID of the agent to delete
-
-- **Response:**
-
-```http
-204 No Content
-```
-
-- **Errors:**
-  - 404 – Agent not found or does not belong to user
-  - 401 – Unauthorized
-  - 500 – Server error
+- 204 No Content – Agent deleted.
+- 404 Not Found – Agent not found or not owned by user.
 
 ---
 
-## Postman Testing
+### POST /agents/:id/rotate-secret
 
-### 1. Register a user
+Regenerates an agent's `secretToken`.
 
-```http
-POST /auth/register
-Body:
-{
-  "email": "user@example.com",
-  "password": "123456",
-  "name": "John Tester"
-}
-```
-
-### 2. Register an agent
-
-```http
-POST /agents
-Authorization: Bearer <token>
-Body:
-{
-  "phoneNumberId": "105929188465876",
-  "name": "Support Bot",
-  "description": "Handles support inquiries"
-}
-```
-
-### 3. Simulate incoming message (POST /webhook)
+**Response:**
 
 ```json
 {
-  "object": "whatsapp_business_account",
-  "entry": [
-    {
-      "id": "105929188465876",
-      "changes": [
-        {
-          "value": {
-            "messaging_product": "whatsapp",
-            "metadata": {
-              "display_phone_number": "6666666666",
-              "phone_number_id": "105929188465876"
-            },
-            "contacts": [
-              {
-                "profile": { "name": "Sofía Test" },
-                "wa_id": "5491111999999"
-              }
-            ],
-            "messages": [
-              {
-                "from": "5491111999999",
-                "id": "wamid.9999",
-                "timestamp": "1714694500",
-                "text": {
-                  "body": "Hola, ¿puedo hacer una consulta sobre el envío?"
-                },
-                "type": "text"
-              }
-            ]
-          },
-          "field": "messages"
-        }
-      ]
-    }
-  ]
+  "message": "Secret token regenerated successfully",
+  "secretToken": "new-token-generated"
 }
 ```
 
-### 4. Get conversations
+---
 
-```http
-GET /conversations?agentPhoneNumberId=105929188465876&limit=5&offset=0
-Authorization: Bearer <token>
-```
+## Webhook
 
-### 5. Get messages of a conversation
+### POST /webhook
 
-```http
-GET /messages?conversationId=conv-5491111999999-105929188465876-uuid&limit=10&offset=0
-Authorization: Bearer <token>
-```
+Receives incoming messages from platforms like WhatsApp.
+
+**Agent identification:**
+
+Can be done via `secretToken` in:
+
+- Query string: `?secret=...`
+- Header: `x-agent-secret: ...`
+- Body: `{ "agentSecret": "..." }`
+
+**Mapping behavior:**
+
+- `structured`: Uses default message mapping.
+- `custom-mapped`: Uses user-defined `fieldMapping`.
+- `query-only`: Only agent identification is required.
+
+**Expected mapped fields:**
+
+- `text`
+- `from`
+- `timestamp`
+
+**Responses:**
+
+- 200 OK – Message processed.
+- 400 Bad Request – Invalid message structure or mapping.
 
 ---
 
-## Business Rules
+## Common Errors
 
-- Only messages from registered agents (`phone_number_id`) are stored
-- All messages and conversations are linked to a valid `userId`
-- Conversations auto-close after a configurable timeout
-- Each user can only access their own data
-- Each user can create up to 3 agents (limit enforced)
-- All custom IDs follow a format: `usr-...`, `agt-...`, `conv-...`, `msg-...`
-
----
-
-## System Status
-
-- [x] Agent registration
-- [x] Message and conversation saving
-- [x] Filtering of invalid/unregistered input
-- [x] Viewing conversations by user
-- [x] Viewing messages by conversation
+| Code                                       | Description                                  |
+| ------------------------------------------ | -------------------------------------------- |
+| `invalid_payload`                          | Request body does not match expected format. |
+| `agent_not_found`                          | Agent could not be identified.               |
+| `max_agents_reached`                       | User reached the 3-agent limit.              |
+| `mapping_not_allowed_with_structured_mode` | Mapping used with `structured` mode.         |
+| `invalid_mapping_payload`                  | Custom mapping missing required fields.      |
 
 ---
 
-## Author
-
-Juan Martín Ibarbalz
+_Last updated: May 2025_
