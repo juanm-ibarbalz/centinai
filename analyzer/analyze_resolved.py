@@ -18,7 +18,7 @@ def get_messages(conversation_id):
     ))
 
 def analyze_conversation(convo_doc):
-    convo_id = convo_doc["conversationId"]
+    convo_id = convo_doc["_id"]
     messages = get_messages(convo_id)
 
     if len(messages) < 2:
@@ -33,7 +33,7 @@ def analyze_conversation(convo_doc):
     duration = (df["timestamp"].max() - df["timestamp"].min()).total_seconds() / 60
 
     return {
-        "conversationId": convo_id,
+        "_id": convo_id,
         "userName": convo_doc.get("userName"),
         "totalMessages": total_messages,
         "userMessages": user_messages,
