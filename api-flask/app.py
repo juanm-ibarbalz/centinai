@@ -8,7 +8,7 @@ CORS(app)
 
 CSV_PATH = os.path.join(os.path.dirname(__file__), '../analyzer/conversation_summaries.csv')
 
-@app.route('/api/conversations')
+@app.route('/conversations')
 def get_conversations():
     try:
         df = pd.read_csv(CSV_PATH)

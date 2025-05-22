@@ -31,7 +31,7 @@ function Register() {
 
       localStorage.setItem("token", data.token); // ✅ guarda el token
       setMessage('✅ Registro exitoso. Iniciando aplicación...');
-      setTimeout(() => navigate("/"), 1500); // ✅ redirige al dashboard
+      setTimeout(() => navigate("/home"), 1500); // ✅ redirige al dashboard
     } catch (err) {
       setMessage(`❌ ${err.message}`);
     }

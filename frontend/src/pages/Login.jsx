@@ -24,7 +24,7 @@ export default function Login({ onSuccess }) {
         setMessage("✅ Sesión iniciada. Redirigiendo..."); // ✅ mismo comportamiento que register
         setTimeout(() => {
           if (onSuccess) onSuccess(); // redirige desde Auth
-          else navigate("/");
+          else navigate("/home");
         }, 1500);
       } else {
         setMessage(`❌ ${data.message || "Error al iniciar sesión"}`);

@@ -85,7 +85,7 @@ export const deleteAgentWithCascade = async (userId, agentId) => {
  */
 export const getAgentsByUser = async (userId) => {
   return Agent.find({ userId })
-    .select("name phoneNumberId integrationMode secretToken")
+    .select("name phoneNumberId integrationMode secretToken description ")
     .sort({ createdAt: -1 });
 };
 
