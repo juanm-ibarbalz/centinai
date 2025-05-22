@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  verifyWebhook,
+  /*verifyWebhook,*/
   handleIncomingMessage,
 } from "../controllers/webhookController.js";
 
