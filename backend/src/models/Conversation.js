@@ -26,6 +26,7 @@ const conversationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

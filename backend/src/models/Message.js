@@ -24,6 +24,7 @@ const messageSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // esto agrega createdAt y updatedAt automáticamente
+    versionKey: false, // esto elimina la propiedad __v de los documentos
   },
 );
 
