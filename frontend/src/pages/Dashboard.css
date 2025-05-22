@@ -45,3 +45,25 @@
   color: #E0F7FA;
   margin-bottom: 1rem;
 }
+
+.go-back-button {
+  position: fixed;
+  top: 1.5rem;
+  left: 2.5rem;
+  padding: 6px 14px;
+  font-size: 1rem;
+  background-color: #A67CFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #29FFD8;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+  max-width: 10rem;
+  min-height: 3rem;
+}
+
+.go-back-button:hover {
+  background-color: #5B91FF;
+}

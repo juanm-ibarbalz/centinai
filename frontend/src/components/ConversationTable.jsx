@@ -3,39 +3,41 @@ import { useEffect, useState } from "react";
 const ConversationTable = ({ phoneNumberId }) => {
   const [data, setData] = useState([]);
 
-useEffect(() => {
-  if (!phoneNumberId) {
-    console.warn("⛔ phoneNumberId no está definido");
-    return;
-  }
+  useEffect(() => {
+    if (!phoneNumberId) {
+      console.warn("⛔ phoneNumberId no está definido");
+      return;
+    }
 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.warn("⛔ Token no encontrado en localStorage");
-    return;
-  }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.warn("⛔ Token no encontrado en localStorage");
+      return;
+    }
 
-  console.log("🔄 Fetching conversations for:", phoneNumberId);
+    const API_URL = import.meta.env.VITE_API_URL;
 
-  fetch(`http://localhost:5000/conversations?agentPhoneNumberId=${phoneNumberId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => {
-      if (!res.ok) {
-        console.error("❌ Respuesta no OK:", res.status);
-      }
-      return res.json();
+    console.log("🔄 Fetching conversations for:", phoneNumberId);
+
+    fetch(`${API_URL}/conversations?agentPhoneNumberId=${phoneNumberId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
-    .then((json) => {
-      console.log("✅ Conversaciones recibidas:", json);
-      setData(json);
-    })
-    .catch((err) => {
-      console.error("❌ Error al obtener datos:", err);
-    });
-}, [phoneNumberId]);
+      .then((res) => {
+        if (!res.ok) {
+          console.error("❌ Respuesta no OK:", res.status);
+        }
+        return res.json();
+      })
+      .then((json) => {
+        console.log("✅ Conversaciones recibidas:", json);
+        setData(json);
+      })
+      .catch((err) => {
+        console.error("❌ Error al obtener datos:", err);
+      });
+  }, [phoneNumberId]);
 
   return (
     <div style={{ padding: "2rem" }}>

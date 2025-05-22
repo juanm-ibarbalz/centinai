@@ -12,19 +12,27 @@ const { phoneNumberId } = useParams();
     navigate("/login");
   };
 
-  return (
-    <div className="dashboard-container">
-      <button onClick={handleLogout} className="logout-button">Cerrar sesión</button>
+return (
+  <div className="dashboard-container">
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "1rem" }}>
+      <button onClick={() => navigate("/home")} className="go-back-button">
+        Volver al Home
+      </button>
 
-      <div className="dashboard-header">
-        <h1>
-          <span role="img" aria-label="dashboard">📊</span> CentinAI - Dashboard del bot {phoneNumberId}
-        </h1>
-      </div>
-
-      <div className="dashboard-content">
-        <ConversationTable phoneNumberId={phoneNumberId} />
-      </div>
+      <button onClick={handleLogout} className="logout-button">
+        Cerrar sesión
+      </button>
     </div>
-  );
+
+    <div className="dashboard-header">
+      <h1>
+        <span role="img" aria-label="dashboard">📊</span> CentinAI - Dashboard del bot {phoneNumberId}
+      </h1>
+    </div>
+
+    <div className="dashboard-content">
+      <ConversationTable phoneNumberId={phoneNumberId} />
+    </div>
+  </div>
+);
 }
