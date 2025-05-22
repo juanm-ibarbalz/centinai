@@ -68,7 +68,7 @@ const Home = () => {
                 <td>
                   <button
                     className="view-button"
-                    onClick={() => navigate(`/dashboard/${agent.phoneNumberId}`)}
+                    onClick={() => navigate(`/conversationsDash/${agent.phoneNumberId}`)}
                   >
                     Ver
                   </button>

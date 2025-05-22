@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import ConversationTable from "../components/ConversationTable";
 import "../App.css";
-import "./Dashboard.css";
+import "./conversationsDash.css";
 
 export default function Dashboard() {
 const { phoneNumberId } = useParams();
@@ -15,9 +15,6 @@ const { phoneNumberId } = useParams();
 return (
   <div className="dashboard-container">
     <div style={{ display: "flex", justifyContent: "space-between", padding: "1rem" }}>
-      <button onClick={() => navigate("/home")} className="go-back-button">
-        Volver al Home
-      </button>
 
       <button onClick={handleLogout} className="logout-button">
         Cerrar sesión
