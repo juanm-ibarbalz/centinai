@@ -19,8 +19,10 @@ export const processIncomingRequest = async (req) => {
   const parsed = applyMapping(
     req.body,
     agent.fieldMapping || {},
-    agent.integrationMode,
+    agent.payloadFormat,
+    agent.phoneNumberId,
   );
+
   if (!parsed) {
     const error = new Error("invalid_mapping_or_payload");
     error.status = 400;

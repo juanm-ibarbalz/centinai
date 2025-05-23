@@ -39,7 +39,8 @@ export const createAgentController = async (req, res) => {
       id: agent._id,
       name: agent.name,
       phoneNumberId: agent.phoneNumberId,
-      integrationMode: agent.integrationMode,
+      payloadFormat: agent.payloadFormat,
+      authMode: agent.authMode,
       secretToken: agent.secretToken,
     });
   } catch (err) {

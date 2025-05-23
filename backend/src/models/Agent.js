@@ -6,7 +6,6 @@ const agentSchema = new mongoose.Schema(
     _id: { type: String },
     phoneNumberId: { type: String, required: true, unique: true },
     userId: { type: String, ref: "User", required: true },
-    fieldMapping: { type: Object, default: {} },
     name: { type: String, required: true },
     description: { type: String },
     createdAt: { type: Date, default: Date.now },
@@ -16,10 +15,19 @@ const agentSchema = new mongoose.Schema(
       default: () => crypto.randomUUID(),
       unique: true,
     },
-    integrationMode: {
+    payloadFormat: {
       type: String,
-      enum: ["structured", "custom-mapped", "query-only"],
+      enum: ["structured", "custom"],
       required: true,
+    },
+    authMode: {
+      type: String,
+      enum: ["query", "header", "body"],
+      required: true,
+    },
+    fieldMapping: {
+      type: Object,
+      default: {},
     },
   },
   {
@@ -27,4 +35,5 @@ const agentSchema = new mongoose.Schema(
   },
 );
 
+agentSchema.index({ secretToken: 1, authMode: 1 });
 export default mongoose.model("Agent", agentSchema);

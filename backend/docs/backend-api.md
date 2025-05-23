@@ -72,7 +72,8 @@ Creates a new agent.
 {
   "phoneNumberId": "123456",
   "name": "Agent 1",
-  "integrationMode": "structured",
+  "payloadFormat": "structured",
+  "authMode": "header",
   "description": "optional",
   "fieldMapping": {
     "text": "body.text",
@@ -84,8 +85,8 @@ Creates a new agent.
 
 **Validation rules:**
 
-- If `integrationMode` is `"structured"`, `fieldMapping` must be empty or undefined.
-- If `"custom-mapped"`, the `fieldMapping` must include `"text"`, `"from"`, and `"timestamp"`.
+- If payloadFormat is "structured", fieldMapping must be empty or undefined.
+- If "custom", the fieldMapping must include "text", "from", and "timestamp".
 
 **Responses:**
 
@@ -106,7 +107,8 @@ Returns all agents for the authenticated user.
     "id": "agt_123",
     "name": "Agent 1",
     "phoneNumberId": "123456",
-    "integrationMode": "structured",
+    "payloadFormat": "structured",
+    "authMode": "header",
     "secretToken": "abcd-1234"
   }
 ]
@@ -132,7 +134,7 @@ Updates an agent's `fieldMapping`.
 
 **Restrictions:**
 
-- Only allowed for agents with `integrationMode: "custom-mapped"`.
+- Only allowed for agents with payloadFormat: "custom".
 
 **Responses:**
 
@@ -184,9 +186,8 @@ Can be done via `secretToken` in:
 
 **Mapping behavior:**
 
-- `structured`: Uses default message mapping.
-- `custom-mapped`: Uses user-defined `fieldMapping`.
-- `query-only`: Only agent identification is required.
+- structured: Uses default message mapping.
+- custom: Uses user-defined fieldMapping.
 
 **Expected mapped fields:**
 

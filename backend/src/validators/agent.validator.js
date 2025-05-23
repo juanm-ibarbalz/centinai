@@ -3,39 +3,43 @@ import Agent from "../models/Agent.js";
 
 /**
  * Esquema base de validación para agentes.
- * Solo valida la estructura (campos esperados y tipos), sin reglas lógicas.
  */
 export const agentValidationSchema = z.object({
   phoneNumberId: z.string().min(1, "El phoneNumberId es obligatorio"),
   name: z.string().min(1, "El nombre del agente es obligatorio"),
   description: z.string().optional(),
-  integrationMode: z.enum(["structured", "custom-mapped", "query-only"], {
-    required_error: "El modo de integración es obligatorio",
+
+  payloadFormat: z.enum(["structured", "custom"], {
+    required_error: "El formato del payload es obligatorio",
   }),
+
+  authMode: z.enum(["query", "header", "body"], {
+    required_error: "El modo de autenticación es obligatorio",
+  }),
+
   fieldMapping: z.record(z.string(), z.string()).optional(),
 });
 
 /**
  * Valida reglas de negocio adicionales para un agente.
- * Separa lógica como restricciones de uso de fieldMapping por modo de integración.
+ * - structured → no debe tener fieldMapping
+ * - custom → debe tener text, from y timestamp en el mapping
  *
  * @param {Object} data - Objeto ya parseado con los datos del agente
  * @returns {string|null} - Mensaje de error si hay problema, o null si es válido
  */
 export const validateAgentLogic = (data) => {
-  if (
-    data.integrationMode === "structured" &&
-    data.fieldMapping &&
-    Object.keys(data.fieldMapping).length > 0
-  ) {
-    return "No se permite definir fieldMapping con integración tipo 'structured'";
+  const mapping = data.fieldMapping || {};
+
+  if (data.payloadFormat === "structured" && Object.keys(mapping).length > 0) {
+    return "No se permite definir fieldMapping con formato 'structured'";
   }
 
   if (
-    data.integrationMode === "custom-mapped" &&
-    (!data.fieldMapping ||
+    data.payloadFormat === "custom" &&
+    (!mapping ||
       !["text", "from", "timestamp"].every((key) =>
-        Object.keys(data.fieldMapping).includes(key),
+        Object.keys(mapping).includes(key),
       ))
   ) {
     return "El fieldMapping debe incluir como mínimo: text, from y timestamp";
@@ -48,7 +52,7 @@ export const validateAgentLogic = (data) => {
  * Valida el PATCH de mapping: estructura, existencia del agente y lógica cruzada.
  *
  * @param {Object} req - Request de Express
- * @returns {Promise<{ fieldMapping: Object, agent: Object }>}
+ * @returns {Promise<{ fieldMapping: Object, agent: Object }> }
  * @throws {Object} - Error con status y message
  */
 export const validateUpdateMappingRequest = async (req) => {
@@ -72,8 +76,15 @@ export const validateUpdateMappingRequest = async (req) => {
     throw { status: 404, message: "agent_not_found" };
   }
 
+  if (agent.payloadFormat === "structured") {
+    throw {
+      status: 400,
+      message: "field_mapping_not_allowed_with_structured_format",
+    };
+  }
+
   const logicError = validateAgentLogic({
-    integrationMode: agent.integrationMode,
+    payloadFormat: agent.payloadFormat,
     fieldMapping,
   });
 

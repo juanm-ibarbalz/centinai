@@ -11,20 +11,23 @@ import { generateAgentId } from "../utils/idGenerator.js";
  *
  * @param {Object} data - Datos necesarios para crear el agente
  * @param {string} data.userId - ID del usuario dueño del agente
- * @param {string} data.phoneNumberId - ID del número de teléfono
+ * @param {string} data.phoneNumberId - ID del número de teléfono asociado
  * @param {string} data.name - Nombre del agente
- * @param {string} [data.description] - Descripción opcional del agente
- * @param {string} data.integrationMode - Modo de integración ("structured", "custom-mapped", "query-only")
- * @param {Object} [data.fieldMapping] - Mapeo personalizado de campos (si aplica)
+ * @param {string} [data.description] - Descripción opcional
+ * @param {string} data.payloadFormat - Formato del payload ("structured" | "custom")
+ * @param {string} data.authMode - Método de autenticación ("query" | "header" | "body")
+ * @param {Object} [data.fieldMapping] - Mapping requerido si `payloadFormat` es "custom"
  * @returns {Promise<Agent>} - Agente recién creado
- * @throws {Error} - Si ya existe un agente con el mismo número o se supera el límite
+ * @throws {Error} - Si ya existe un agente o se supera el límite
  */
+
 export const createAgentService = async ({
   userId,
   phoneNumberId,
   name,
   description,
-  integrationMode,
+  payloadFormat,
+  authMode,
   fieldMapping,
 }) => {
   const existing = await Agent.findOne({ phoneNumberId });
@@ -42,7 +45,8 @@ export const createAgentService = async ({
     phoneNumberId,
     name,
     description,
-    integrationMode,
+    payloadFormat,
+    authMode,
     fieldMapping: fieldMapping || {},
     createdAt: new Date(),
   });
@@ -85,19 +89,20 @@ export const deleteAgentWithCascade = async (userId, agentId) => {
  */
 export const getAgentsByUser = async (userId) => {
   return Agent.find({ userId })
-    .select("name phoneNumberId integrationMode secretToken description ")
+    .select("name phoneNumberId payloadFormat authMode secretToken description")
     .sort({ createdAt: -1 });
 };
 
 /**
- * Actualiza el fieldMapping de un agente si el modo lo permite.
+ * Actualiza el fieldMapping de un agente si su formato lo permite.
  *
  * @param {string} userId - ID del usuario autenticado
  * @param {string} agentId - ID del agente a modificar
  * @param {Object} newMapping - Nuevo objeto de mapeo
  * @returns {Promise<Agent>} - Agente actualizado
- * @throws {Error} - Si el agente no existe o tiene modo structured
+ * @throws {Error} - Si el agente no existe o su formato es "structured"
  */
+
 export const updateAgentMapping = async (userId, agentId, newMapping) => {
   const agent = await Agent.findOne({ _id: agentId, userId });
   if (!agent) {
@@ -106,8 +111,8 @@ export const updateAgentMapping = async (userId, agentId, newMapping) => {
     throw err;
   }
 
-  if (agent.integrationMode === "structured") {
-    const err = new Error("mapping_not_allowed_with_structured_mode");
+  if (agent.payloadFormat === "structured") {
+    const err = new Error("field_mapping_not_allowed_with_structured_format");
     err.status = 400;
     throw err;
   }
