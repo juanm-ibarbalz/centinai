@@ -229,6 +229,51 @@ Can be done via `secretToken` in:
 
 ---
 
+## User Endpoints
+
+### PATCH /users/me
+
+Updates the authenticated user's profile information.
+
+**Request body:**
+
+```json
+{
+  "name": "New Name",
+  "email": "new@email.com"
+}
+```
+
+**Responses:**
+
+- 200 OK – User updated.
+- 400 Bad Request – Invalid data or email already in use.
+- 404 Not Found – User not found.
+
+---
+
+### PATCH /users/me/password
+
+Changes the authenticated user's password.
+
+**Request body:**
+
+```json
+{
+  "currentPassword": "oldPass123",
+  "newPassword": "newSecurePass456"
+}
+```
+
+**Responses:**
+
+- 200 OK – Password successfully changed.
+- 400 Bad Request – Validation error.
+- 401 Unauthorized – Current password incorrect.
+- 404 Not Found – User not found.
+
+---
+
 ## Common Errors
 
 | Code                                       | Description                                  |

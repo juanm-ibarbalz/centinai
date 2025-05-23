@@ -14,6 +14,6 @@ export const handleIncomingMessage = async (req, res) => {
     res.sendStatus(200);
   } catch (err) {
     console.error("[WEBHOOK ERROR]", err);
-    sendError(res, err.status || 500, err.message || "generic_error");
+    sendError(res, err.status || 500, err.message || "server_error");
   }
 };

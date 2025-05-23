@@ -8,4 +8,5 @@ export const errorMessages = {
   missing_agent_id: "El parámetro agentPhoneNumberId es obligatorio",
   invalid_payload: "Datos enviados inválidos",
   generic_error: "Ocurrió un error inesperado",
+  server_error: "Ocurrió un error de servidor",
 };

@@ -59,7 +59,7 @@ export const deleteAgentController = async (req, res) => {
     res.sendStatus(204);
   } catch (err) {
     console.error("Error eliminando agente:", err);
-    return sendError(res, err.status || 500, err.message || "generic_error");
+    return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
@@ -75,7 +75,7 @@ export const getAgentsController = async (req, res) => {
     return sendSuccess(res, 200, agents);
   } catch (err) {
     console.error("Error obteniendo agentes:", err);
-    return sendError(res, 500, "generic_error");
+    return sendError(res, 500, "server_error");
   }
 };
 

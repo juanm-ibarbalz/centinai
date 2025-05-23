@@ -25,7 +25,7 @@ export const register = async (req, res) => {
       user: user.email,
     });
   } catch (err) {
-    return sendError(res, err.status || 500, err.message || "generic_error");
+    return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
@@ -54,6 +54,6 @@ export const login = async (req, res) => {
       },
     });
   } catch (err) {
-    return sendError(res, err.status || 500, err.message || "generic_error");
+    return sendError(res, err.status || 500, err.message || "server_error");
   }
 };

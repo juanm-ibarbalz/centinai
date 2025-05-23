@@ -26,6 +26,6 @@ export const listMessages = async (req, res) => {
     res.json(messages);
   } catch (error) {
     console.error("Error fetching messages:", error);
-    return sendError(res, err.status || 500, err.message || "generic_error");
+    return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
