@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import ConversationTable from "../components/ConversationTable";
 import "../App.css";
-import "./conversationsDash.css";
+import "./ConversationsDash.css";
 
 export default function Dashboard() {
 const { phoneNumberId } = useParams();
