@@ -6,6 +6,7 @@ import {
   getAgentsController,
   updateAgentMappingController,
   rotateSecretTokenController,
+  updateAgentController,
 } from "../controllers/agentController.js";
 
 const router = express.Router();
@@ -26,5 +27,8 @@ router.patch("/:id/mapping", authenticate, updateAgentMappingController);
 
 // POST /agents/:id/rotate-secret → Regenera el secretToken del agente
 router.post("/:id/rotate-secret", authenticate, rotateSecretTokenController);
+
+// PATCH /agents/:id → Actualiza los datos generales del agente
+router.patch("/:id", authenticate, updateAgentController);
 
 export default router;

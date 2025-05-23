@@ -30,7 +30,11 @@ const generateToken = (user) => {
  */
 export const registerUser = async ({ email, password, name }) => {
   const existing = await User.findOne({ email });
-  if (existing) throw new Error("Email ya registrado");
+  if (existing) {
+    const error = new Error("Email ya registrado");
+    error.status = 400;
+    throw error;
+  }
 
   const hashed = await bcrypt.hash(password, 10);
   const userId = generateUserId(); // genera usr-uuid
@@ -50,10 +54,18 @@ export const registerUser = async ({ email, password, name }) => {
  */
 export const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ email });
-  if (!user) throw new Error("Credenciales inválidas");
+  if (!user) {
+    const error = new Error("Credenciales inválidas");
+    error.status = 401;
+    throw error;
+  }
 
   const valid = await bcrypt.compare(password, user.password);
-  if (!valid) throw new Error("Credenciales inválidas");
+  if (!valid) {
+    const error = new Error("Credenciales inválidas");
+    error.status = 401;
+    throw error;
+  }
 
   user.last_login_at = new Date();
   await user.save();

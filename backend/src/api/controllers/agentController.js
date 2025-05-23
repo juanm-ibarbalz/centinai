@@ -4,14 +4,15 @@ import {
   getAgentsByUser,
   updateAgentMapping,
   rotateSecretToken,
+  updateAgentService,
 } from "../../services/agent.service.js";
 import {
   agentValidationSchema,
   validateAgentLogic,
   validateUpdateMappingRequest,
+  updateAgentSchema,
 } from "../../validators/agent.validator.js";
 import { sendError, sendSuccess } from "../../utils/responseUtils.js";
-import Agent from "../../models/Agent.js";
 
 /**
  * Controlador para registrar un nuevo agente.
@@ -23,11 +24,6 @@ export const createAgentController = async (req, res) => {
   const result = agentValidationSchema.safeParse(req.body);
   if (!result.success) {
     return sendError(res, 400, "invalid_payload");
-  }
-
-  const logicError = validateAgentLogic(result.data);
-  if (logicError) {
-    return sendError(res, 400, logicError);
   }
 
   const userId = req.user.id;
@@ -124,6 +120,42 @@ export const rotateSecretTokenController = async (req, res) => {
     });
   } catch (err) {
     console.error("Error al regenerar token:", err);
+    return sendError(res, err.status || 500, err.message || "server_error");
+  }
+};
+
+/**
+ * Actualiza los datos de un agente.
+ * Valida el cuerpo de la solicitud y delega la lógica al servicio.
+ * @route PATCH /agents/:id
+ */
+export const updateAgentController = async (req, res) => {
+  const result = updateAgentSchema.safeParse(req.body);
+  if (!result.success) {
+    return sendError(res, 400, "invalid_payload");
+  }
+
+  try {
+    const updatedAgent = await updateAgentService(
+      req.user.id,
+      req.params.id,
+      result.data,
+    );
+
+    return sendSuccess(res, 200, {
+      message: "Agente actualizado correctamente",
+      agent: {
+        id: updatedAgent._id,
+        name: updatedAgent.name,
+        phoneNumberId: updatedAgent.phoneNumberId,
+        payloadFormat: updatedAgent.payloadFormat,
+        authMode: updatedAgent.authMode,
+        description: updatedAgent.description,
+        fieldMapping: updatedAgent.fieldMapping,
+      },
+    });
+  } catch (err) {
+    console.error("Error actualizando agente:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };

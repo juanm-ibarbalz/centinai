@@ -94,3 +94,14 @@ export const validateUpdateMappingRequest = async (req) => {
 
   return { fieldMapping, agent };
 };
+
+/**
+ * Esquema de validación para actualización parcial de agentes.
+ */
+export const updateAgentSchema = z.object({
+  name: z.string().min(1).optional(),
+  description: z.string().optional(),
+  payloadFormat: z.enum(["structured", "custom"]).optional(),
+  authMode: z.enum(["query", "header", "body"]).optional(),
+  fieldMapping: z.record(z.string(), z.string()).optional(),
+});

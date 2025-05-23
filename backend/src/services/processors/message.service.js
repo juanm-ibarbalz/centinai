@@ -103,7 +103,11 @@ export const getMessagesByConversationId = async (
   offset,
 ) => {
   const convo = await Conversation.findOne({ _id: conversationId, userId });
-  if (!convo) throw new Error("Unauthorized or conversation not found");
+  if (!convo) {
+    const error = new Error("Unauthorized or conversation not found");
+    error.status = 404;
+    throw error;
+  }
 
   return await Message.find({ conversationId })
     .sort({ timestamp: 1 })

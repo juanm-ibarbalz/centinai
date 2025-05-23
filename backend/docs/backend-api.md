@@ -144,6 +144,33 @@ Updates an agent's `fieldMapping`.
 
 ---
 
+### PATCH /agents/:id
+
+Updates general agent information.
+
+**Request body (example):**
+
+```json
+{
+  "name": "Updated Name",
+  "description": "New description",
+  "payloadFormat": "custom",
+  "fieldMapping": {
+    "text": "payload.text",
+    "from": "payload.sender",
+    "timestamp": "payload.date"
+  }
+}
+```
+
+**Responses:**
+
+- 200 OK – Agent updated.
+- 400 Bad Request – Invalid update or logical conflict.
+- 404 Not Found – Agent not found or not owned by user.
+
+---
+
 ### DELETE /agents/:id
 
 Deletes an agent and all associated data.
