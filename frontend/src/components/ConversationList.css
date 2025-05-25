@@ -1,0 +1,24 @@
+.mobile-conv-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .conv-card {
+    background-color: #11142a;
+    border: 1px solid #29FFD8;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 0 15px rgba(41, 255, 216, 0.2);
+    color: #E0F7FA;
+    word-wrap: break-word;
+  }
+  
+  .conv-card p {
+    margin: 0.4rem 0;
+    font-size: 0.95rem;
+  }
+  

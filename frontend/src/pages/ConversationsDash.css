@@ -3,11 +3,11 @@
   position: relative;
 }
 
-/* CENTRADO título y botón flotante a la derecha */
 .dashboard-header {
   position: relative;
   text-align: center;
   margin-bottom: 2rem;
+  padding-left: 1rem;
 }
 
 .dashboard-header h1 {
