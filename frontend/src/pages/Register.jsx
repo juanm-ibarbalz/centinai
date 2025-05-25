@@ -39,7 +39,7 @@ function Register() {
 
   return (
     <div className="auth-form">
-      <h2>Registro CentinAI</h2>
+      <h2>Crear cuenta</h2>
       <form onSubmit={handleRegister}>
         <input type="text" placeholder="Nombre completo" value={name} onChange={(e) => setName(e.target.value)} required />
         <input type="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} required />

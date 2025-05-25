@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 import { API_URL } from "../config";
+import AgentList from "../components/AgentList";
+import LogoutButton from "../components/LogoutButton";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -37,12 +39,9 @@ const Home = () => {
   }, []);
 
   return (
+    <>
+    <LogoutButton onClick={handleLogout} />
     <div className="dashboard-container">
-      {/* Botón de logout */}
-      <button onClick={handleLogout} className="logout-button">
-        Cerrar sesión
-      </button>
-
       <h1>¡Hola desde la Home pública! 👋</h1>
 
       {loading ? (
@@ -50,35 +49,15 @@ const Home = () => {
       ) : agents.length === 0 ? (
         <p>No tenés agentes registrados todavía.</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre del Bot</th>
-              <th>Teléfono</th>
-              <th>Descripción</th>
-              <th>Conversaciones</th> {/* nueva columna */}
-            </tr>
-          </thead>
-          <tbody>
-            {agents.map((agent) => (
-              <tr key={agent._id}>
-                <td>{agent.name}</td>
-                <td>{agent.phoneNumberId}</td>
-                <td>{agent.description}</td>
-                <td>
-                  <button
-                    className="view-button"
-                    onClick={() => navigate(`/conversationsDash/${agent.phoneNumberId}`)}
-                  >
-                    Ver
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <AgentList
+          agents={agents}
+          onViewConversations={(phoneNumberId) =>
+            navigate(`/conversationsDash/${phoneNumberId}`)
+          }
+        />
       )}
     </div>
+    </> 
   );
 };
 

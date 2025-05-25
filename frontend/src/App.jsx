@@ -14,16 +14,18 @@ import Auth from "./pages/Auth";
 import Home from "./pages/Home";
 import HamburgerMenu from "./components/MenuHamburguesa";
 import Dashboards from "./pages/Dashboards";
+import useIsMobile from "./hooks/useIsMobile";
+import MobileAuth from "./pages/MobileAuth";
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" replace />;
 }
 
-// 👇 Envolvemos App en un componente que puede usar hooks
 function AppWrapper() {
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const hiddenRoutes = ["/login", "/register"];
   const showMenu = !hiddenRoutes.includes(location.pathname);
@@ -33,8 +35,8 @@ function AppWrapper() {
       {showMenu && <HamburgerMenu onNavigate={navigate} />}{" "}
       {/* 👈 Menú persistente */}
       <Routes>
-        <Route path="/login" element={<Auth />} />
-        <Route path="/register" element={<Auth />} />
+        <Route path="/login" element={isMobile ? <MobileAuth /> : <Auth />} />
+        <Route path="/register" element={isMobile ? <MobileAuth /> : <Register />} />
 
         <Route
           path="/home"
