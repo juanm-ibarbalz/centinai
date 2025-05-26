@@ -9,16 +9,17 @@ const { phoneNumberId } = useParams();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    if (window.Android?.logoutToken) {
+      window.Android.logoutToken();
+    }
     navigate("/login");
-  };
+  };  
 
 return (
   <div className="dashboard-container">
     <div style={{ display: "flex", justifyContent: "space-between", padding: "1rem" }}>
 
-      <button onClick={handleLogout} className="logout-button">
-        Cerrar sesión
-      </button>
+    <LogoutButton onClick={handleLogout} />
     </div>
 
     <div className="dashboard-header">

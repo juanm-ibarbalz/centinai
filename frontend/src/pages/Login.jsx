@@ -21,6 +21,9 @@ export default function Login({ onSuccess }) {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem("token", data.token);
+        if (window.Android?.saveToken) {
+          window.Android.saveToken(data.token);
+        }
         setMessage("✅ Sesión iniciada. Redirigiendo..."); // ✅ mismo comportamiento que register
         setTimeout(() => {
           if (onSuccess) onSuccess(); // redirige desde Auth

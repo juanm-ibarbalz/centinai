@@ -12,8 +12,11 @@ const Home = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    if (window.Android?.logoutToken) {
+      window.Android.logoutToken();
+    }
     navigate("/login");
-  };
+  };  
 
   useEffect(() => {
     const fetchAgents = async () => {
