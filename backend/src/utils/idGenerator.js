@@ -36,3 +36,19 @@ export const generateUserId = () => {
 export const generateMessageId = (conversationId) => {
   return `${idConfig.messagePrefix}-${conversationId}-${uuidv4()}`;
 };
+
+/**
+ * Genera un ID único de sesión
+ * @returns {string} - ID de sesión
+ */
+export const generateSessionId = () => {
+  return `${idConfig.sessionPrefix}-${uuidv4()}`;
+};
+
+/**
+ * Genera un ID único de batch
+ * @returns {string} - ID de batch
+ */
+export const generateBatchId = () => {
+  return `${idConfig.batchPrefix}-${uuidv4()}`;
+};

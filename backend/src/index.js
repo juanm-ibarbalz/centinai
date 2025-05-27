@@ -11,6 +11,7 @@ import authRoutes from "./api/routes/authRoutes.js";
 import conversationsRoutes from "./api/routes/conversationsRoutes.js";
 import agentsRoutes from "./api/routes/agentRoutes.js";
 import messageRoutes from "./api/routes/messageRoutes.js";
+import metricsRoutes from "./routes/metricsRoutes.js";
 
 startConversationCleanupJob();
 
@@ -24,6 +25,7 @@ app.use("/auth", authRoutes);
 app.use("/conversations", conversationsRoutes);
 app.use("/messages", messageRoutes);
 app.use("/agents", agentsRoutes);
+app.use("/metrics", metricsRoutes);
 app.get("/", (_, res) => res.send("CentinAI Backend API OK"));
 
 const PORT = process.env.PORT || 3000;

@@ -26,6 +26,8 @@ export const idConfig = {
   agentPrefix: "agt",
   conversationPrefix: "conv",
   messagePrefix: "msg",
+  sessionPrefix: "sess",
+  batchPrefix: "batch",
 };
 
 /**
@@ -53,4 +55,11 @@ export const securityConfig = {
  */
 export const limitsConfig = {
   maxAgentsPerUser: 3,
+};
+
+/**
+ * Configuración relacionada al sistema de análisis.
+ */
+export const analyzerConfig = {
+  exportDir: "tmp/analyzer_jobs", // relativo a la raíz del backend
 };

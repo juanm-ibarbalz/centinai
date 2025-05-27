@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ConversationTable from "../components/ConversationTable";
 import "../App.css";
 import "./ConversationsDash.css";
+import LogoutButton from "../components/LogoutButton";
 
 export default function Dashboard() {
 const { phoneNumberId } = useParams();

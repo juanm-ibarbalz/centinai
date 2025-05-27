@@ -29,11 +29,8 @@ const messageSchema = new mongoose.Schema(
 );
 
 // Índices
-messageSchema.index({ conversationId: 1 });
-messageSchema.index({ from: 1 });
-messageSchema.index({ timestamp: 1 });
-messageSchema.index({ type: 1 });
 messageSchema.index({ status: 1 });
 messageSchema.index({ userId: 1 });
+messageSchema.index({ conversationId: 1, timestamp: 1 });
 
 export default mongoose.model("Message", messageSchema);

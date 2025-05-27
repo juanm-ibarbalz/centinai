@@ -274,6 +274,96 @@ Changes the authenticated user's password.
 
 ---
 
+### GET /metrics
+
+Returns all metrics for conversations associated with a specific agent belonging to the authenticated user. Supports pagination.
+
+**Query parameters:**
+
+- `agentPhoneNumberId` (required): the identifier of the agent.
+- `limit` (optional): number of results to return. Default: 20.
+- `offset` (optional): number of results to skip. Default: 0.
+
+**Header required:**
+
+```
+Authorization: Bearer <token>
+```
+
+**Responses:**
+
+- 200 OK – Metrics successfully returned.
+- 400 Bad Request – Missing or invalid parameters.
+- 401 Unauthorized – Invalid or missing token.
+
+**Response example:**
+
+```json
+[
+  {
+    "_id": "sess-xxxx",
+    "conversationId": "conv-...",
+    "userId": "usr-...",
+    "agentData": {
+      "agentId": "105111000111001",
+      "modelLLM": "gpt-4",
+      "agentName": "Asistente IA"
+    },
+    "tokenUsage": { "totalTokens": 550, "cost": 0.015 },
+    "messageCount": { "user": 3, "agent": 5, "total": 8 },
+    "successful": true
+  }
+]
+```
+
+---
+
+### GET /metrics/:conversationId
+
+Returns the metrics for a specific conversation if it belongs to the authenticated user.
+
+**Path parameters:**
+
+- `conversationId`: the ID of the conversation.
+
+**Header required:**
+
+```
+Authorization: Bearer <token>
+```
+
+**Responses:**
+
+- 200 OK – Metrics successfully returned.
+- 404 Not Found – Metrics not found or conversation does not belong to user.
+- 401 Unauthorized – Invalid or missing token.
+
+**Response example:**
+
+```json
+{
+  "_id": "sess-xxxx",
+  "conversationId": "conv-...",
+  "userId": "usr-...",
+  "agentData": {
+    "agentId": "105111000111001",
+    "modelLLM": "gpt-4",
+    "agentName": "Asistente IA"
+  },
+  "tokenUsage": { "totalTokens": 550, "cost": 0.015 },
+  "messageCount": { "user": 3, "agent": 5, "total": 8 },
+  "successful": true,
+  "tags": ["consulta", "facturacion"],
+  "metadata": {
+    "language": "es",
+    "channel": "webchat",
+    "sentimentTrend": "positive"
+  }
+}
+```
+
+---
+
 ## Common Errors
 
 | Code                                       | Description                                  |

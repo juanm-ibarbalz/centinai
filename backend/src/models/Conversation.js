@@ -30,8 +30,9 @@ const conversationSchema = new mongoose.Schema(
   },
 );
 
-conversationSchema.index({ status: 1 });
 conversationSchema.index({ from: 1, agentPhoneNumberId: 1, status: 1 });
-conversationSchema.index({ userId: 1 });
+conversationSchema.index({ status: 1, updatedAt: 1 });
+conversationSchema.index({ userId: 1, agentPhoneNumberId: 1 });
+conversationSchema.index({ _id: 1, userId: 1 });
 
 export default mongoose.model("Conversation", conversationSchema);
