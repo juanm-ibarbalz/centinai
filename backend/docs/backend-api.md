@@ -366,13 +366,14 @@ Authorization: Bearer <token>
 
 ## Common Errors
 
-| Code                                       | Description                                  |
-| ------------------------------------------ | -------------------------------------------- |
-| `invalid_payload`                          | Request body does not match expected format. |
-| `agent_not_found`                          | Agent could not be identified.               |
-| `max_agents_reached`                       | User reached the 3-agent limit.              |
-| `mapping_not_allowed_with_structured_mode` | Mapping used with `structured` mode.         |
-| `invalid_mapping_payload`                  | Custom mapping missing required fields.      |
+| Code                                       | Description                                               |
+| ------------------------------------------ | --------------------------------------------------------- |
+| `invalid_payload`                          | Request body does not match expected format.              |
+| `agent_not_found`                          | Agent could not be identified.                            |
+| `metric_not_found_or_forbidden`            | Metric not found or conversation does not belong to user. |
+| `max_agents_reached`                       | User reached the 3-agent limit.                           |
+| `mapping_not_allowed_with_structured_mode` | Mapping used with `structured` mode.                      |
+| `invalid_mapping_payload`                  | Custom mapping missing required fields.                   |
 
 ---
 

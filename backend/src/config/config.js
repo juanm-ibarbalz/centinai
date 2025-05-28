@@ -62,4 +62,5 @@ export const limitsConfig = {
  */
 export const analyzerConfig = {
   exportDir: "tmp/analyzer_jobs", // relativo a la raíz del backend
+  command: 'python3 analyzer.py --batchFile="{file}"',
 };

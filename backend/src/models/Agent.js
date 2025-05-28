@@ -36,7 +36,6 @@ const agentSchema = new mongoose.Schema(
 );
 
 agentSchema.index({ secretToken: 1, authMode: 1 });
-agentSchema.index({ phoneNumberId: 1 });
 agentSchema.index({ userId: 1 });
 agentSchema.index({ _id: 1, userId: 1 }); // opcional
 

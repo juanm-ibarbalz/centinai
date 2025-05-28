@@ -1,4 +1,4 @@
-import { findConversationsByAgent } from "../../services/processors/conversation.service.js";
+import { findConversationsByAgent } from "../../services/conversation.service.js";
 import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 
 /**

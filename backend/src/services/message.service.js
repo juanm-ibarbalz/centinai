@@ -1,11 +1,11 @@
-import Conversation from "../../models/Conversation.js";
-import Message from "../../models/Message.js";
+import Conversation from "../models/Conversation.js";
+import Message from "../models/Message.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
 import {
   getAgentPhoneNumberId,
   findAgentByPhoneNumber,
   buildMessage,
-} from "../helpers/message.helpers.js";
+} from "./helpers/message.helpers.js";
 
 /**
  * Procesa y guarda un mensaje entrante desde el webhook.

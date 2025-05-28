@@ -1,4 +1,4 @@
-import { getMessagesByConversationId } from "../../services/processors/message.service.js";
+import { getMessagesByConversationId } from "../../services/message.service.js";
 import { sendError } from "../../utils/responseUtils.js";
 
 /**

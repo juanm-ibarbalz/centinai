@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { generateBatchId } from "./idGenerator";
+import { generateBatchId } from "./idGenerator.js";
+import { analyzerConfig } from "./../config/config.js";
 
 const TMP_DIR = path.join(process.cwd(), analyzerConfig.exportDir);
 

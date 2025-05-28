@@ -1,4 +1,4 @@
-import Metric from "models/Metric";
+import Metric from "./../models/Metric.js";
 
 /**
  * Devuelve todas las métricas de un agente (sólo del usuario autenticado).

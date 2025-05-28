@@ -2,7 +2,7 @@ import {
   identifyAgent,
   applyMapping,
 } from "../services/helpers/webhook.helpers.js";
-import { saveIncomingMessage } from "./processors/message.service.js";
+import { saveIncomingMessage } from "./message.service.js";
 
 /**
  * Procesa una solicitud entrante desde el webhook y delega el procesamiento del mensaje

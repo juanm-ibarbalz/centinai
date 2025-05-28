@@ -1,7 +1,8 @@
 import cron from "node-cron";
 import Conversation from "../models/Conversation.js";
 import { conversationConfig } from "../config/config.js";
-import { exportConversationsToJson } from "./exportConversationsToJson.js";
+import { exportConversationsToJson } from "./exportConversations.js";
+import { dispatchToAnalyzer } from "../services/analyzerDispatcher.js";
 
 /**
  * Cierra las conversaciones vencidas por timeout.
@@ -30,7 +31,7 @@ export const closeExpiredConversations = async () => {
 
   if (conversationsToClose.length > 0) {
     const jsonPath = exportConversationsToJson(conversationsToClose);
-    //exec(`python3 analyzer.py --batchFile="${jsonPath}"`); llamaría al archivo del analyzer
+    dispatchToAnalyzer(jsonPath);
   }
 
   console.log(`🧹 ${convIds.length} conversaciones cerradas por timeout.`);

@@ -4,8 +4,8 @@ import {
   closeConversation,
   updateTimestamp,
   createNewConversation,
-} from "../helpers/conversation.helpers.js";
-import Conversation from "../../models/Conversation.js";
+} from "./helpers/conversation.helpers.js";
+import Conversation from "../models/Conversation.js";
 
 /**
  * Crea una nueva conversación o actualiza una existente,

@@ -11,7 +11,7 @@ import authRoutes from "./api/routes/authRoutes.js";
 import conversationsRoutes from "./api/routes/conversationsRoutes.js";
 import agentsRoutes from "./api/routes/agentRoutes.js";
 import messageRoutes from "./api/routes/messageRoutes.js";
-import metricsRoutes from "./routes/metricsRoutes.js";
+import metricsRoutes from "./api/routes/metricsRoutes.js";
 
 startConversationCleanupJob();
 
