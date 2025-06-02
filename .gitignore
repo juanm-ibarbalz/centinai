@@ -7,6 +7,8 @@
 /analyzer/__pycache__/
 /analyzer/*.csv
 /analyzer/venv/
+.pyc
+
 
 # General
 .DS_Store
