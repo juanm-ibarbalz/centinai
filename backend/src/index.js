@@ -6,7 +6,7 @@ dotenv.config();
 
 import connectDB from "./db/connect.js";
 import webhookRoutes from "./api/routes/webhookRoutes.js";
-import { startConversationCleanupJob } from "./utils/conversationCleaner.js";
+import { startConversationCleanupJob } from "./services/cleaner/conversationCleaner.js";
 import authRoutes from "./api/routes/authRoutes.js";
 import conversationsRoutes from "./api/routes/conversationsRoutes.js";
 import agentsRoutes from "./api/routes/agentRoutes.js";

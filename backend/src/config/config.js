@@ -1,5 +1,7 @@
 // Centralized configuration for CentinAI backend
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 dotenv.config();
 
 /**
@@ -57,10 +59,25 @@ export const limitsConfig = {
   maxAgentsPerUser: 3,
 };
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const projectRoot = path.resolve(__dirname, "../../../");
+const scriptPath = path.join(projectRoot, "analyzer", "initi_analyzer.py");
+const pythonBin = process.env.PYTHON_BIN || "python3";
+
 /**
  * Configuración relacionada al sistema de análisis.
  */
 export const analyzerConfig = {
-  exportDir: "tmp/analyzer_jobs", // relativo a la raíz del backend
-  command: 'python3 analyzer.py --batchFile="{file}"',
+  exportDir: "tmp/analyzer_jobs",
+
+  /**
+   * Devuelve el comando shell para ejecutar el analizador con un archivo específico.
+   * @param {string} filePath Ruta absoluta al archivo JSON a procesar.
+   * @returns {string} Comando completo para ejecutar.
+   */
+  getCommand(filePath) {
+    return `${pythonBin} "${scriptPath}" "${filePath}"`;
+  },
 };

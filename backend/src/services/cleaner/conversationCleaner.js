@@ -1,12 +1,14 @@
 import cron from "node-cron";
-import Conversation from "../models/Conversation.js";
-import { conversationConfig } from "../config/config.js";
-import { exportConversationsToJson } from "./exportConversations.js";
-import { dispatchToAnalyzer } from "../services/analyzerDispatcher.js";
+import Conversation from "../../models/Conversation.js";
+import { conversationConfig } from "../../config/config.js";
+import {
+  buildExportPayloads,
+  exportConversationsToJson,
+} from "./exportConversations.js";
+import { dispatchToAnalyzer } from "./analyzerDispatcher.js";
 
 /**
- * Cierra las conversaciones vencidas por timeout.
- * Luego, las manda a exportar.
+ * Cierra las conversaciones vencidas por timeout y las devuelve.
  */
 export const closeExpiredConversations = async () => {
   const now = new Date();
@@ -19,7 +21,7 @@ export const closeExpiredConversations = async () => {
 
   if (conversationsToClose.length === 0) {
     console.warn("No hay conversaciones para cerrar por timeout.");
-    return;
+    return [];
   }
 
   const convIds = conversationsToClose.map((c) => c._id);
@@ -29,24 +31,25 @@ export const closeExpiredConversations = async () => {
     { $set: { status: "closed", endTime: now } },
   );
 
-  if (conversationsToClose.length > 0) {
-    const jsonPath = exportConversationsToJson(conversationsToClose);
-    dispatchToAnalyzer(jsonPath);
-  }
-
   console.log(`🧹 ${convIds.length} conversaciones cerradas por timeout.`);
+  return conversationsToClose;
 };
 
 /**
- * Inicia el job periódico que ejecuta el cierre de conversaciones.
- * No hace más nada, solo cierra y devuelve las que cerró.
+ * Inicia el job periódico que ejecuta el cierre de conversaciones,
+ * las prepara para análisis y despacha al analyzer.
  */
 export const startConversationCleanupJob = () => {
   const intervalMinutes = conversationConfig.cleanupIntervalMinutes;
 
   cron.schedule(`*/${intervalMinutes} * * * *`, async () => {
     try {
-      await closeExpiredConversations();
+      const conversations = await closeExpiredConversations();
+      if (conversations.length === 0) return;
+
+      const payloads = await buildExportPayloads(conversations);
+      const jsonPath = exportConversationsToJson(payloads);
+      dispatchToAnalyzer(jsonPath);
     } catch (error) {
       console.error(
         "❌ Error en limpieza automática de conversaciones:",

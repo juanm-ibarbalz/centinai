@@ -1,0 +1,36 @@
+{
+  "_id": "1conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e",
+  "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
+  "userCellphone": "5491111000000",
+  "agentData": {
+    "agentId": null,
+    "modelLLM": "gpt-3.5-turbo",
+    "agentName": "AuroraBot Plus",
+    "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c"
+  },
+  "startTime": "2025-05-09T17:07:10.649+00:00",
+  "endTime": "2025-05-09T19:10:00.582+00:00",
+  "durationSeconds": 180,
+  "tokenUsage": {
+    "promptTokens": 49,
+    "completionTokens": 0,
+    "totalTokens": 49,
+    "cost": 7.3e-05
+  },
+  "successful": true,
+  "tags": [
+    "consulta",
+    "queja"
+  ],
+  "messageCount": {
+    "user": 2,
+    "agent": 2,
+    "total": 4
+  },
+  "metadata": {
+    "language": "es",
+    "channel": "webchat",
+    "sentimentTrend": "negative"
+  },
+  "conversationId": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e"
+}

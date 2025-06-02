@@ -1,14 +1,17 @@
 import { exec } from "child_process";
-import { analyzerConfig } from "../config/config.js";
+import { analyzerConfig } from "../../config/config.js";
 
 /**
  * Ejecuta el análisis de un archivo JSON mediante un script Python.
  * @param {string} filePath - Ruta absoluta al archivo JSON a analizar
  */
 export const dispatchToAnalyzer = (filePath) => {
-  if (!filePath) return;
+  if (!filePath) {
+    console.warn("⚠️ dispatchToAnalyzer: no se recibió filePath");
+    return;
+  }
 
-  const command = analyzerConfig.command.replace("{file}", filePath);
+  const command = analyzerConfig.getCommand(filePath);
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
