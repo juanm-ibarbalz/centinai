@@ -1,0 +1,70 @@
+{
+    "conversation": {
+      "_id": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e",
+      "from": "5491111000000",
+      "userName": "Sofía",
+      "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
+      "status": "closed",
+      "startTime": "2025-05-09T17:07:10.649+00:00",
+      "lastUpdated": "2025-05-09T17:07:10.974+00:00",
+      "createdAt": "2025-05-09T17:07:10.650+00:00",
+      "updatedAt": "2025-05-09T19:10:00.582+00:00",
+      "agentPhoneNumberId": "105111000111001",
+      "endTime": "2025-05-09T19:10:00.582+00:00"
+    },
+    "messages": [
+      {
+        "_id": "msg-conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e-01",
+        "conversationId": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e",
+        "timestamp": "2025-05-03T16:00:00.000+00:00",
+        "from": "5491111000000",
+        "userName": "Sofía",
+        "text": "Hola, quería consultar por un pedido.",
+        "direction": "user",
+        "status": "active",
+        "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
+        "createdAt": "2025-05-09T17:07:10.701+00:00",
+        "updatedAt": "2025-05-09T17:07:10.701+00:00"
+      },
+      {
+        "_id": "msg-conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e-02",
+        "conversationId": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e",
+        "timestamp": "2025-05-03T16:01:00.000+00:00",
+        "from": "105111000111001",
+        "userName": "Agente",
+        "text": "¡Hola! Claro, decime el número de pedido por favor.",
+        "direction": "agent",
+        "status": "active",
+        "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
+        "createdAt": "2025-05-09T17:07:10.843+00:00",
+        "updatedAt": "2025-05-09T17:07:10.843+00:00"
+      },
+      {
+        "_id": "msg-conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e-03",
+        "conversationId": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e",
+        "timestamp": "2025-05-03T16:02:00.000+00:00",
+        "from": "5491111000000",
+        "userName": "Sofía",
+        "text": "¿Cuánto tarda el envío?",
+        "direction": "user",
+        "status": "active",
+        "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
+        "createdAt": "2025-05-09T17:07:11.018+00:00",
+        "updatedAt": "2025-05-09T17:07:11.018+00:00"
+      },
+      {
+        "_id": "msg-conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e-04",
+        "conversationId": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e",
+        "timestamp": "2025-05-03T16:03:00.000+00:00",
+        "from": "105111000111001",
+        "userName": "Agente",
+        "text": "En general demora entre 2 y 5 días hábiles.",
+        "direction": "agent",
+        "status": "active",
+        "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
+        "createdAt": "2025-05-09T17:07:11.140+00:00",
+        "updatedAt": "2025-05-09T17:07:11.140+00:00"
+      }
+    ]
+  }
+  
