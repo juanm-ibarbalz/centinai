@@ -34,6 +34,7 @@ const HamburgerMenu = ({ userName = "Usuario" }) => {
     }
   };
 
+  /*
   const [agentPhoneNumberId, setAgentPhoneNumberId] = useState(null);
   useEffect(() => {
     const fetchPhoneNumberId = async () => {
@@ -57,7 +58,7 @@ const HamburgerMenu = ({ userName = "Usuario" }) => {
 
     fetchPhoneNumberId();
   }, []);
-
+*/
   return (
     <div className={`sidebar-menu left ${!isOpen ? "collapsed" : "open"}`}>
       <button onClick={toggleMenu} className="toggle-menu-btn">
