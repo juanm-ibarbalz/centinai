@@ -1,6 +1,0 @@
-pymongo
-pandas
-python-dotenv
-flask
-gunicorn
-flask-cors

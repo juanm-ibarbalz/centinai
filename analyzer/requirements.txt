@@ -2,6 +2,9 @@ pymongo
 pandas
 python-dotenv
 flask
+<<<<<<< Updated upstream
+gunicorn
+=======
 gunicorn
 pytest
 tiktoken
