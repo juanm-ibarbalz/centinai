@@ -18,6 +18,9 @@ export const agentValidationSchema = z.object({
   }),
 
   fieldMapping: z.record(z.string(), z.string()).optional(),
+  modelName: z
+    .string()
+    .min(1, "El nombre del modelo del agente es obligatorio"),
 });
 
 /**
@@ -104,4 +107,5 @@ export const updateAgentSchema = z.object({
   payloadFormat: z.enum(["structured", "custom"]).optional(),
   authMode: z.enum(["query", "header", "body"]).optional(),
   fieldMapping: z.record(z.string(), z.string()).optional(),
+  modelName: z.string().min(1).optional(),
 });

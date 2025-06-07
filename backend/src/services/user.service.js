@@ -24,7 +24,13 @@ export const updateUserService = async (userId, updates) => {
     }
   }
 
-  Object.assign(user, updates);
+  const allowed = ["name", "email"];
+  for (const key of allowed) {
+    if (updates[key] !== undefined) {
+      user[key] = updates[key];
+    }
+  }
+
   await user.save();
   return user;
 };

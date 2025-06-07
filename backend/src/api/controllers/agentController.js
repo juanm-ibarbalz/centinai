@@ -38,6 +38,7 @@ export const createAgentController = async (req, res) => {
       payloadFormat: agent.payloadFormat,
       authMode: agent.authMode,
       secretToken: agent.secretToken,
+      modelName: agent.modelName,
     });
   } catch (err) {
     console.error("Error al registrar agente:", err);
@@ -152,6 +153,7 @@ export const updateAgentController = async (req, res) => {
         authMode: updatedAgent.authMode,
         description: updatedAgent.description,
         fieldMapping: updatedAgent.fieldMapping,
+        modelName: updatedAgent.modelName,
       },
     });
   } catch (err) {

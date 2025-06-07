@@ -15,13 +15,15 @@ import { sendError, sendSuccess } from "../../utils/responseUtils.js";
  * @param {Response} res
  */
 export const updateUserController = async (req, res) => {
+  const userId = req.user.id;
+
   const result = updateUserSchema.safeParse(req.body);
   if (!result.success) {
-    return sendError(res, 400, "invalid_payload");
+    return sendError(res, 400, "invalid_payload", parsed.error.format());
   }
 
   try {
-    const updated = await updateUserService(req.user.id, result.data);
+    const updated = await updateUserService(userId, result.data);
     return sendSuccess(res, 200, {
       message: "Usuario actualizado correctamente",
       user: {
@@ -43,6 +45,8 @@ export const updateUserController = async (req, res) => {
  * @param {Response} res
  */
 export const changePasswordController = async (req, res) => {
+  const userId = req.user.id;
+
   const result = changePasswordSchema.safeParse(req.body);
   if (!result.success) {
     return sendError(res, 400, "invalid_payload");
@@ -50,7 +54,7 @@ export const changePasswordController = async (req, res) => {
 
   try {
     await changeUserPassword(
-      req.user.id,
+      userId,
       result.data.currentPassword,
       result.data.newPassword,
     );

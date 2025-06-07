@@ -1,5 +1,6 @@
 import { sendError } from "../../utils/responseUtils.js";
 import { processIncomingRequest } from "../../services/webhook.service.js";
+import { webhookAuthSchema } from "../../schemas/webhook.schema.js";
 
 /**
  * Procesa los mensajes entrantes del webhook.
@@ -9,6 +10,17 @@ import { processIncomingRequest } from "../../services/webhook.service.js";
  * @param {Response} res
  */
 export const handleIncomingMessage = async (req, res) => {
+  const parsed = webhookAuthSchema.safeParse({
+    secret: req.query.secret,
+    xAgentSecret: req.headers["x-agent-secret"],
+    agentSecret: req.body.agentSecret,
+  });
+  if (!parsed.success) {
+    return sendError(res, 400, "invalid_webhook_auth", parsed.error.format());
+  }
+
+  req.agentSecret = parsed.data.secret;
+
   try {
     await processIncomingRequest(req);
     res.sendStatus(200);

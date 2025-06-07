@@ -5,6 +5,7 @@ import Message from "../models/Message.js";
 import { limitsConfig } from "../config/config.js";
 import { generateAgentId } from "../utils/idGenerator.js";
 import { validateAgentLogic } from "../validators/agent.validator.js";
+
 /**
  * Crea un nuevo agente para un usuario dado si el número de teléfono no está ya registrado
  * y el usuario no superó el límite de agentes permitidos.
@@ -17,6 +18,7 @@ import { validateAgentLogic } from "../validators/agent.validator.js";
  * @param {string} data.payloadFormat - Formato del payload ("structured" | "custom")
  * @param {string} data.authMode - Método de autenticación ("query" | "header" | "body")
  * @param {Object} [data.fieldMapping] - Mapping requerido si `payloadFormat` es "custom"
+ * @param {string} [data.modelName] - Nombre del modelo asociado al agente
  * @returns {Promise<Agent>} - Agente recién creado
  * @throws {Error} - Si ya existe un agente o se supera el límite
  */
@@ -29,13 +31,15 @@ export const createAgentService = async ({
   payloadFormat,
   authMode,
   fieldMapping,
+  modelName,
 }) => {
-  const logicError = validateAgentLogic(result.data);
+  const logicError = validateAgentLogic({ payloadFormat, fieldMapping });
   if (logicError) {
     const err = new Error(logicError);
     err.status = 400;
     throw err;
   }
+
   const existing = await Agent.findOne({ phoneNumberId });
   if (existing) {
     const err = new Error("Este agente ya está registrado");
@@ -62,6 +66,7 @@ export const createAgentService = async ({
     authMode,
     fieldMapping: fieldMapping || {},
     secretToken: crypto.randomUUID(),
+    modelName,
     createdAt: new Date(),
   });
 
@@ -174,15 +179,12 @@ export const updateAgentService = async (userId, agentId, updates) => {
     throw error;
   }
 
-  const nextPayloadFormat = updates.payloadFormat || agent.payloadFormat;
-  const nextFieldMapping =
-    updates.fieldMapping !== undefined
-      ? updates.fieldMapping
-      : agent.fieldMapping;
+  const finalPayloadFormat = updates.payloadFormat ?? agent.payloadFormat;
+  const finalFieldMapping = updates.fieldMapping ?? agent.fieldMapping;
 
   const logicError = validateAgentLogic({
-    payloadFormat: nextPayloadFormat,
-    fieldMapping: nextFieldMapping,
+    payloadFormat: finalPayloadFormat,
+    fieldMapping: finalFieldMapping,
   });
   if (logicError) {
     const err = new Error(logicError);
@@ -191,10 +193,24 @@ export const updateAgentService = async (userId, agentId, updates) => {
   }
 
   if (updates.payloadFormat === "structured") {
-    updates.fieldMapping = {}; // borrar mapping si cambia a structured
+    agent.fieldMapping = {};
   }
 
-  Object.assign(agent, updates);
+  const allowed = [
+    "name",
+    "description",
+    "payloadFormat",
+    "authMode",
+    "fieldMapping",
+    "modelName",
+  ];
+
+  for (const key of allowed) {
+    if (updates[key] !== undefined) {
+      agent[key] = updates[key];
+    }
+  }
+
   await agent.save();
   return agent;
 };
