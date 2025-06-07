@@ -32,7 +32,7 @@ export const registerUser = async ({ email, password, name }) => {
   const existing = await User.findOne({ email });
   if (existing) {
     const error = new Error("Email ya registrado");
-    error.status = 400;
+    error.status = 409;
     throw error;
   }
 

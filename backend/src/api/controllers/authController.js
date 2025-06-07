@@ -22,7 +22,11 @@ export const register = async (req, res) => {
     const user = await registerUser(result.data);
     return sendSuccess(res, 201, {
       message: "Usuario creado",
-      user: user.email,
+      user: {
+        _id: user._id.toString(),
+        email: user.email,
+        name: user.name,
+      },
     });
   } catch (err) {
     return sendError(res, err.status || 500, err.message || "server_error");

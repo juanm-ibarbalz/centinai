@@ -7,7 +7,12 @@ import {
 
 const router = express.Router();
 
+// Rutas del webhook
+
+// GET /metrics → Lista métricas de un agente
 router.get("/", authenticate, getMetricsByAgent);
+
+// GET /metrics/:conversationId → Obtiene métricas de una conversación específica
 router.get("/:conversationId", authenticate, getMetricByConversation);
 
 export default router;
