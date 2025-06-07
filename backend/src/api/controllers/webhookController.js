@@ -1,6 +1,6 @@
 import { sendError } from "../../utils/responseUtils.js";
 import { processIncomingRequest } from "../../services/webhook.service.js";
-import { webhookAuthSchema } from "../../schemas/webhook.schema.js";
+import { webhookAuthSchema } from "../../validators/webhook.validator.js";
 
 /**
  * Procesa los mensajes entrantes del webhook.

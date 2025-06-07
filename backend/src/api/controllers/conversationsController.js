@@ -1,6 +1,6 @@
 import { findConversationsByAgent } from "../../services/conversation.service.js";
 import { sendError, sendSuccess } from "../../utils/responseUtils.js";
-import { getConversationsQuerySchema } from "../validators/conversations.validator.js";
+import { getConversationsQuerySchema } from "../../validators/conversation.validator.js";
 
 /**
  * Controlador para obtener las conversaciones de un agente del usuario autenticado.

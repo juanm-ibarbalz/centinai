@@ -6,7 +6,7 @@ import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 import {
   listMetricsQuerySchema,
   getMetricParamsSchema,
-} from "../../schemas/metricsSchemas.js";
+} from "../../validators/metrics.validator.js";
 
 /**
  * Controlador para obtener métricas de todas las conversaciones de un agente

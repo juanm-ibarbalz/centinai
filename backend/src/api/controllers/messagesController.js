@@ -1,6 +1,6 @@
 import { getMessagesByConversationId } from "../../services/message.service.js";
 import { sendError } from "../../utils/responseUtils.js";
-import { listMessagesQuerySchema } from "../validators/messages.validator.js";
+import { listMessagesQuerySchema } from "../../validators/message.validator.js";
 
 /**
  * Lista los mensajes de una conversación específica, con paginación.
