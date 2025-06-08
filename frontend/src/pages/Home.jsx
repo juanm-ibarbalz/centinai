@@ -16,7 +16,7 @@ const Home = () => {
       window.Android.logoutToken();
     }
     navigate("/login");
-  };  
+  };
 
   useEffect(() => {
     const fetchAgents = async () => {
@@ -43,24 +43,40 @@ const Home = () => {
 
   return (
     <>
-    <LogoutButton onClick={handleLogout} />
-    <div className="dashboard-container">
-      <h1>¡Hola desde la Home pública! 👋</h1>
+      <div className="dashboard-container">
+        <h1>¡Hola desde la Home pública! 👋</h1>
 
-      {loading ? (
-        <p>Cargando agentes...</p>
-      ) : agents.length === 0 ? (
-        <p>No tenés agentes registrados todavía.</p>
-      ) : (
-        <AgentList
-          agents={agents}
-          onViewConversations={(phoneNumberId) =>
-            navigate(`/conversationsDash/${phoneNumberId}`)
-          }
-        />
-      )}
-    </div>
-    </> 
+        <button
+          style={{
+            marginBottom: "1rem",
+            padding: "0.7rem 1.2rem",
+            backgroundColor: "#29FFD8",
+            color: "#0B0E23",
+            border: "none",
+            fontWeight: "bold",
+            borderRadius: "8px",
+            cursor: "pointer",
+            boxShadow: "0 0 12px #29FFD8",
+          }}
+          onClick={() => navigate("/createAgent")}
+        >
+          AÑADIR AGENTE
+        </button>
+
+        {loading ? (
+          <p>Cargando agentes...</p>
+        ) : agents.length === 0 ? (
+          <p>No tenés agentes registrados todavía.</p>
+        ) : (
+          <AgentList
+            agents={agents}
+            onViewConversations={(phoneNumberId) =>
+              navigate(`/conversationsDash/${phoneNumberId}`)
+            }
+          />
+        )}
+      </div>
+    </>
   );
 };
 

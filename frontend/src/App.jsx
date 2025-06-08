@@ -16,6 +16,7 @@ import HamburgerMenu from "./components/MenuHamburguesa";
 import Dashboards from "./pages/Dashboards";
 import useIsMobile from "./hooks/useIsMobile";
 import MobileAuth from "./pages/MobileAuth";
+import CreateAgent from "./pages/CreateAgent";
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -36,7 +37,10 @@ function AppWrapper() {
       {/* 👈 Menú persistente */}
       <Routes>
         <Route path="/login" element={isMobile ? <MobileAuth /> : <Auth />} />
-        <Route path="/register" element={isMobile ? <MobileAuth /> : <Register />} />
+        <Route
+          path="/register"
+          element={isMobile ? <MobileAuth /> : <Register />}
+        />
 
         <Route
           path="/home"
@@ -65,7 +69,14 @@ function AppWrapper() {
           }
         />
 
-        
+        <Route
+          path="/createAgent"
+          element={
+            <ProtectedRoute>
+              <CreateAgent />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Redirección automática de raíz a login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
