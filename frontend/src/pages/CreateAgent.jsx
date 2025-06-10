@@ -16,6 +16,7 @@ const CreateAgent = () => {
     localNumber: "",
     mapping: "",
     authMethod: "",
+    modelName: "",
   });
 
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const CreateAgent = () => {
     return (
       form.name.trim().length >= 4 &&
       form.description.trim().length >= 15 &&
+      form.modelName.trim().length >= 4 &&
       validatePhone()
     );
   };
@@ -86,6 +88,7 @@ const CreateAgent = () => {
       phoneNumberId,
       name: form.name.trim(),
       description: form.description.trim(),
+      modelName: form.modelName.trim(),
       payloadFormat: isStructured ? "structured" : "custom",
       authMode: form.authMethod,
       ...(isStructured
@@ -100,29 +103,28 @@ const CreateAgent = () => {
     };
 
     try {
-  console.log("✅ Payload enviado:", finalForm);
+      console.log("✅ Payload enviado:", finalForm);
 
-  const res = await fetch(`${API_URL}/agents`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(finalForm),
-  });
+      const res = await fetch(`${API_URL}/agents`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(finalForm),
+      });
 
-  if (!res.ok) {
-    const errorData = await res.json();
-    console.error("❌ Error del backend:", errorData);
-    return;
-  }
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("❌ Error del backend:", errorData);
+        return;
+      }
 
-  localStorage.removeItem("agentStep1");
-  navigate("/home");
-} catch (error) {
-  console.error("Error al crear el agente:", error);
-}
-
+      localStorage.removeItem("agentStep1");
+      navigate("/home");
+    } catch (error) {
+      console.error("Error al crear el agente:", error);
+    }
   };
 
   const renderValidationMessage = (condition, text) => (
@@ -223,6 +225,37 @@ const CreateAgent = () => {
             {renderValidationMessage(
               form.description.trim().length >= 15,
               "mínimo 15 caracteres"
+            )}
+
+            <label htmlFor="modelName">Modelo de IA:</label>
+            <select
+              id="modelName"
+              name="modelName"
+              value={form.modelName}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccionar modelo...</option>
+              <option value="gpt-4">OpenAI - GPT-4</option>
+              <option value="gpt-4o">OpenAI - GPT-4o</option>
+              <option value="gpt-3.5-turbo">OpenAI - GPT-3.5 Turbo</option>
+              <option value="gemini-1.5-pro">Google - Gemini 1.5 Pro</option>
+              <option value="gemini-1.5-flash">
+                Google - Gemini 1.5 Flash
+              </option>
+              <option value="claude-3-opus">Anthropic - Claude 3 Opus</option>
+              <option value="claude-3-sonnet">
+                Anthropic - Claude 3 Sonnet
+              </option>
+              <option value="mistral-medium">Mistral - Medium</option>
+              <option value="mistral-small">Mistral - Small</option>
+              <option value="titan-text-express">
+                Amazon - Titan Text Express
+              </option>
+            </select>
+            {renderValidationMessage(
+              form.modelName.trim().length >= 4,
+              "debe seleccionar un modelo válido"
             )}
 
             <button type="button" onClick={handleNext}>
