@@ -1,42 +1,39 @@
+// frontend/src/pages/MobileAuth.jsx
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import Login from "./Login";
-import Register from "./Register";
+import { useNavigate } from "react-router-dom";
+import LoginPage from "./Login"; // Cambiado para claridad
+import RegisterPage from "./Register"; // Cambiado para claridad
 import "./MobileAuth.css";
 import logo from "../assets/centinai-logo.png";
 
-export default function MobileAuth() {
+// Recibe onAuthSuccess, setAuthError, e isRegisterMode
+export default function MobileAuthPage({ onAuthSuccess, setAuthError, isRegisterMode }) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const isLogin = location.pathname === "/login";
-
-  const handleSuccess = () => {
-    navigate("/home");
-  };
+  const isLoginView = !isRegisterMode;
 
   return (
     <div className="mobile-auth-container">
       <img src={logo} alt="CentinAI Logo" className="mobile-logo" />
 
-      {isLogin ? (
+      {isLoginView ? (
         <>
           <h2 className="mobile-title">Bienvenid@</h2>
           <p className="mobile-subtitle">Ingresá tus credenciales</p>
-          <Login onSuccess={handleSuccess} />
+          <LoginPage onSuccess={onAuthSuccess} setAuthErrorOuter={setAuthError} />
         </>
       ) : (
         <>
           <h2 className="mobile-title">Crear cuenta</h2>
           <p className="mobile-subtitle">Ingresá tus datos</p>
-          <Register onSuccess={handleSuccess} />
+          <RegisterPage onSuccess={onAuthSuccess} setAuthErrorOuter={setAuthError} />
         </>
       )}
 
       <button
         className="mobile-alt-button"
-        onClick={() => navigate(isLogin ? "/register" : "/login")}
+        onClick={() => navigate(isLoginView ? "/register" : "/login")}
       >
-        {isLogin
+        {isLoginView
           ? "¿No tenés cuenta? Registrate"
           : "¿Ya tenés cuenta? Iniciá sesión"}
       </button>
