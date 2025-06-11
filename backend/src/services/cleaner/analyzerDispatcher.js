@@ -7,7 +7,7 @@ import { analyzerConfig } from "../../config/config.js";
  */
 export const dispatchToAnalyzer = (filePath) => {
   if (!filePath) {
-    console.warn("⚠️ dispatchToAnalyzer: no se recibió filePath");
+    console.warn("dispatchToAnalyzer: no se recibió filePath");
     return;
   }
 
@@ -15,12 +15,12 @@ export const dispatchToAnalyzer = (filePath) => {
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
-      console.error(`❌ Error al ejecutar analyzer.py: ${error.message}`);
+      console.error(`Error al ejecutar analyzer.py: ${error.message}`);
       return;
     }
     if (stderr) {
-      console.warn(`⚠️ Stderr del analyzer: ${stderr}`);
+      console.warn(`Stderr del analyzer: ${stderr}`);
     }
-    console.log(`✅ Analyzer ejecutado para: ${filePath}`);
+    console.log(`Analyzer ejecutado para: ${filePath}`);
   });
 };

@@ -29,15 +29,8 @@ const generateToken = (user) => {
  * @throws {Error} - Si el email ya está registrado
  */
 export const registerUser = async ({ email, password, name }) => {
-  const existing = await User.findOne({ email });
-  if (existing) {
-    const error = new Error("Email ya registrado");
-    error.status = 409;
-    throw error;
-  }
-
   const hashed = await bcrypt.hash(password, 10);
-  const userId = generateUserId(); // genera usr-uuid
+  const userId = generateUserId();
 
   const user = new User({ _id: userId, email, password: hashed, name });
   await user.save();
@@ -45,21 +38,13 @@ export const registerUser = async ({ email, password, name }) => {
 };
 
 /**
- * Verifica las credenciales y devuelve un token de sesión, iniciandola.
- * @param {Object} data - Datos de login
- * @param {string} data.email - Email del usuario
- * @param {string} data.password - Contraseña sin encriptar
- * @returns {Promise<{ user: User, token: string }>} - Usuario y JWT generado
+ * Verifica la password y devuelve un token de sesión, iniciandola.
+ * @param {Object} user - Usuario a iniciar sesión
+ * @param {string} password - Contraseña sin encriptar
+ * @returns {Promise<string>} - JWT generado
  * @throws {Error} - Si las credenciales no son válidas
  */
-export const loginUser = async ({ email, password }) => {
-  const user = await User.findOne({ email });
-  if (!user) {
-    const error = new Error("Credenciales inválidas");
-    error.status = 401;
-    throw error;
-  }
-
+export const loginUser = async (user, password) => {
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
     const error = new Error("Credenciales inválidas");
@@ -71,5 +56,5 @@ export const loginUser = async ({ email, password }) => {
   await user.save();
 
   const token = generateToken(user);
-  return { user, token };
+  return token;
 };

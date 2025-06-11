@@ -3,7 +3,6 @@ import Message from "../models/Message.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
 import {
   getAgentPhoneNumberId,
-  findAgentByPhoneNumber,
   buildMessage,
 } from "./helpers/message.helpers.js";
 
@@ -41,7 +40,7 @@ const processAgentMessage = async (parsed, agent) => {
 
     const existingConversation = await Conversation.findOne({
       agentPhoneNumberId,
-      from: parsed.recipient_id,
+      from: parsed.from,
       status: "open",
     });
 
@@ -91,7 +90,6 @@ const processUserMessage = async (parsed, agent) => {
  * Obtiene mensajes de una conversación perteneciente al usuario, con paginación.
  * Lanza error si la conversación no existe o no pertenece al usuario autenticado.
  * @param {string} conversationId
- * @param {string} userId
  * @param {number} limit
  * @param {number} offset
  * @returns {Promise<Array>}
@@ -102,14 +100,7 @@ export const getMessagesByConversationId = async (
   limit,
   offset,
 ) => {
-  const convo = await Conversation.findOne({ _id: conversationId, userId });
-  if (!convo) {
-    const error = new Error("Unauthorized or conversation not found");
-    error.status = 404;
-    throw error;
-  }
-
-  return await Message.find({ conversationId })
+  return await Message.find({ conversationId, userId })
     .sort({ timestamp: 1 })
     .skip(offset)
     .limit(limit);

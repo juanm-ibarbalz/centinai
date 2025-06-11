@@ -16,7 +16,7 @@ import {
 export const getMetricsByAgent = async (req, res) => {
   const parsed = listMetricsQuerySchema.safeParse(req.query);
   if (!parsed.success) {
-    return sendError(res, 400, "invalid_query", parsed.error.format());
+    return sendError(res, 400, "invalid_query", parsed.error);
   }
 
   const { agentPhoneNumberId, limit, offset } = parsed.data;
@@ -27,7 +27,7 @@ export const getMetricsByAgent = async (req, res) => {
       userId,
       agentPhoneNumberId,
       limit,
-      offset,
+      offset
     );
     return sendSuccess(res, 200, metrics);
   } catch (err) {
@@ -43,7 +43,7 @@ export const getMetricsByAgent = async (req, res) => {
 export const getMetricByConversation = async (req, res) => {
   const parsedParams = getMetricParamsSchema.safeParse(req.params);
   if (!parsedParams.success) {
-    return sendError(res, 400, "invalid_params", parsedParams.error.format());
+    return sendError(res, 400, "invalid_params", parsedParams.error);
   }
 
   const { conversationId } = parsedParams.data;
@@ -52,15 +52,11 @@ export const getMetricByConversation = async (req, res) => {
   try {
     const metric = await findMetricByConversationIdAndUser(
       conversationId,
-      userId,
+      userId
     );
-    if (!metric) {
-      return sendError(res, 404, "metric_not_found_or_forbidden");
-    }
 
     return sendSuccess(res, 200, metric);
   } catch (err) {
-    console.error("Error obteniendo métricas de conversación:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };

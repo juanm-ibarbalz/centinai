@@ -1,42 +1,4 @@
 import get from "lodash.get";
-import Agent from "../../models/Agent.js";
-
-/**
- * Identifica al agente que envió la solicitud usando el token según authMode.
- * @param {import("express").Request} req
- * @returns {Promise<Agent|null>}
- */
-export const identifyAgent = async (req) => {
-  const fromQuery = req.query.secret;
-  const fromHeader = req.headers["x-agent-secret"];
-  const fromBody = req.body?.agentSecret;
-
-  if (fromQuery) {
-    const agent = await Agent.findOne({
-      secretToken: fromQuery,
-      authMode: "query",
-    });
-    if (agent) return agent;
-  }
-
-  if (fromHeader) {
-    const agent = await Agent.findOne({
-      secretToken: fromHeader,
-      authMode: "header",
-    });
-    if (agent) return agent;
-  }
-
-  if (fromBody) {
-    const agent = await Agent.findOne({
-      secretToken: fromBody,
-      authMode: "body",
-    });
-    if (agent) return agent;
-  }
-
-  return null;
-};
 
 /**
  * Aplica el mapeo del agente al payload entrante.
@@ -64,7 +26,6 @@ export const applyMapping = (
           timestamp: "message.timestamp",
           userName: "message.userName",
           direction: "message.direction",
-          recipient_id: "message.recipient_id",
         }
       : mapping;
 
@@ -73,7 +34,6 @@ export const applyMapping = (
   const timestamp = get(payload, finalMapping.timestamp);
   const userName = get(payload, finalMapping.userName) || "Desconocido";
   const directionRaw = get(payload, finalMapping.direction);
-  const recipient_id = get(payload, finalMapping.recipient_id);
 
   if (!text || !from || !timestamp) return null;
 
@@ -84,7 +44,6 @@ export const applyMapping = (
 
   return {
     from,
-    recipient_id,
     userName,
     timestamp,
     text,

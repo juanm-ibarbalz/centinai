@@ -22,10 +22,10 @@ export const exportConversationsToJson = (conversations) => {
 
     fs.writeFileSync(filePath, JSON.stringify(conversations, null, 2), "utf-8");
 
-    console.log(`✅ Archivo exportado: ${filePath}`);
+    console.log(`Archivo exportado: ${filePath}`);
     return filePath;
   } catch (error) {
-    console.error("❌ Error al exportar conversaciones a JSON:", error);
+    console.error("Error al exportar conversaciones a JSON:", error);
     return null;
   }
 };

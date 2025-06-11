@@ -1,7 +1,4 @@
-import {
-  identifyAgent,
-  applyMapping,
-} from "../services/helpers/webhook.helpers.js";
+import { applyMapping } from "../services/helpers/webhook.helpers.js";
 import { saveIncomingMessage } from "./message.service.js";
 
 /**
@@ -9,13 +6,6 @@ import { saveIncomingMessage } from "./message.service.js";
  * @param {import("express").Request} req
  */
 export const processIncomingRequest = async (req) => {
-  const agent = await identifyAgent(req);
-  if (!agent) {
-    const error = new Error("agent_not_found");
-    error.status = 400;
-    throw error;
-  }
-
   const parsed = applyMapping(
     req.body,
     agent.fieldMapping || {},

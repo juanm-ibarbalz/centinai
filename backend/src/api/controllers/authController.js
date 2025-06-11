@@ -4,10 +4,11 @@ import {
   registerSchema,
 } from "../../validators/auth.validator.js";
 import { sendError, sendSuccess } from "../../utils/responseUtils.js";
+import User from "../../models/User.js";
 
 /**
  * Controlador para registrar un nuevo usuario.
- * Valida el cuerpo de la solicitud y crea el usuario en la base de datos.
+ * Valida el cuerpo de la solicitud, que el usuario no exista y crea el usuario en la base de datos.
  * @route POST /auth/register
  * @param {Request} req
  * @param {Response} res
@@ -15,7 +16,12 @@ import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 export const register = async (req, res) => {
   const result = registerSchema.safeParse(req.body);
   if (!result.success) {
-    return sendError(res, 400, "invalid_payload");
+    return sendError(res, 400, "invalid_payload", result.error);
+  }
+
+  const existingUser = await User.findOne({ email: result.data.email });
+  if (existingUser) {
+    return sendError(res, 409, "invalid_credentials");
   }
 
   try {
@@ -43,18 +49,22 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const result = loginSchema.safeParse(req.body);
   if (!result.success) {
-    return sendError(res, 400, "invalid_payload");
+    return sendError(res, 400, "invalid_payload", result.error);
+  }
+
+  const user = await User.findOne({ email: result.data.email });
+  if (!user) {
+    return sendError(res, 401, "invalid_credentials");
   }
 
   try {
-    const { user, token } = await loginUser(result.data);
+    const token = await loginUser(user, result.data.password);
     return sendSuccess(res, 200, {
       message: "Login exitoso",
       token,
       user: {
         id: user._id,
         email: user.email,
-        last_login_at: user.last_login_at,
       },
     });
   } catch (err) {

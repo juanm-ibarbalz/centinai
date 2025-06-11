@@ -138,6 +138,7 @@ Creates a new agent.
 
 - If payloadFormat is "structured", fieldMapping must be empty or undefined.
 - If "custom", the fieldMapping must include "text", "from", and "timestamp".
+- fieldMapping can include "userName" and "direction" to optimize tagging.
 
 **Responses:**
 

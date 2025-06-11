@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import connectDB from "../db/connect.js";
+import { TEST_USER } from "./utils.js";
 
 let mongoServer;
 
@@ -11,10 +12,10 @@ beforeAll(async () => {
   const uri = mongoServer.getUri();
   await connectDB(uri);
 
-  const hashed = await bcrypt.hash("12345678", 10);
+  const hashed = await bcrypt.hash(TEST_USER.password, 10);
   await User.create({
     _id: new mongoose.Types.ObjectId(),
-    email: "juanmartin@test.com",
+    email: TEST_USER.email,
     password: hashed,
     name: "Juan Martín",
   });

@@ -42,60 +42,13 @@ export const validateAgentLogic = (data) => {
     data.payloadFormat === "custom" &&
     (!mapping ||
       !["text", "from", "timestamp"].every((key) =>
-        Object.keys(mapping).includes(key),
+        Object.keys(mapping).includes(key)
       ))
   ) {
     return "El fieldMapping debe incluir como mínimo: text, from y timestamp";
   }
 
   return null;
-};
-
-/**
- * Valida el PATCH de mapping: estructura, existencia del agente y lógica cruzada.
- *
- * @param {Object} req - Request de Express
- * @returns {Promise<{ fieldMapping: Object, agent: Object }> }
- * @throws {Object} - Error con status y message
- */
-export const validateUpdateMappingRequest = async (req) => {
-  const result = agentValidationSchema.partial().safeParse(req.body);
-  if (!result.success) {
-    throw {
-      status: 400,
-      message: "invalid_payload",
-      zod: result.error.format(),
-    };
-  }
-
-  const fieldMapping = result.data.fieldMapping;
-
-  const agent = await Agent.findOne({
-    _id: req.params.id,
-    userId: req.user.id,
-  });
-
-  if (!agent) {
-    throw { status: 404, message: "agent_not_found" };
-  }
-
-  if (agent.payloadFormat === "structured") {
-    throw {
-      status: 400,
-      message: "field_mapping_not_allowed_with_structured_format",
-    };
-  }
-
-  const logicError = validateAgentLogic({
-    payloadFormat: agent.payloadFormat,
-    fieldMapping,
-  });
-
-  if (logicError) {
-    throw { status: 400, message: logicError };
-  }
-
-  return { fieldMapping, agent };
 };
 
 /**
