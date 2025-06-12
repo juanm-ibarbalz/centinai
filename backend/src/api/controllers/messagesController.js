@@ -1,6 +1,7 @@
 import { getMessagesByConversationId } from "../../services/message.service.js";
-import { sendError } from "../../utils/responseUtils.js";
+import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 import { listMessagesQuerySchema } from "../../validators/message.validator.js";
+import Conversation from "../../models/Conversation.js";
 
 /**
  * Lista los mensajes de una conversación específica, con paginación.
@@ -12,11 +13,17 @@ import { listMessagesQuerySchema } from "../../validators/message.validator.js";
 export const listMessages = async (req, res) => {
   const parsed = listMessagesQuerySchema.safeParse(req.query);
   if (!parsed.success) {
-    return sendError(res, 400, "invalid_query", parsed.error.format());
+    return sendError(res, 400, "invalid_query", parsed.error);
   }
 
   const { conversationId, limit, offset } = parsed.data;
   const userId = req.user.id;
+
+  const conversation = await Conversation.findOne({
+    _id: conversationId,
+    userId,
+  });
+  if (!conversation) return sendError(res, 404, "conversation_not_found");
 
   try {
     const messages = await getMessagesByConversationId(

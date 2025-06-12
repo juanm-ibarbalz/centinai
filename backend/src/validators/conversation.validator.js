@@ -15,13 +15,13 @@ export const getConversationsQuerySchema = z.object({
   sortBy: z
     .string()
     .optional()
-    .refine((v) => ["duration", "cost", "date"].includes(v), {
+    .refine((v) => !v || ["duration", "cost", "date"].includes(v), {
       message: "sortBy inválido",
     }),
   sortOrder: z
     .string()
     .optional()
-    .refine((v) => ["asc", "desc"].includes(v), {
+    .refine((v) => !v || ["asc", "desc"].includes(v), {
       message: "sortOrder inválido",
     }),
   dateFrom: z

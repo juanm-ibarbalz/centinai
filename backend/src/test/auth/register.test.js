@@ -1,10 +1,9 @@
 import request from "supertest";
-import app from "../app.js";
-import { jest } from "@jest/globals";
+import app from "../../app.js";
+import { errorMessages } from "../../utils/errorMessages.js";
 
 describe("POST /auth/register", () => {
   const endpoint = "/auth/register";
-  jest.setTimeout(15000);
 
   it("should register a new user (201)", async () => {
     const payload = {
@@ -26,10 +25,15 @@ describe("POST /auth/register", () => {
   });
 
   it("should fail when missing fields (400)", async () => {
-    const res = await request(app).post(endpoint).send({}); // sin email ni password ni name
+    const res = await request(app).post(endpoint).send({});
 
     expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
+    expect(res.body).toHaveProperty("description", {
+      email: "Required",
+      password: "Required",
+      name: "Required",
+    });
   });
 
   it("should fail on invalid email format (400)", async () => {
@@ -40,7 +44,8 @@ describe("POST /auth/register", () => {
     });
 
     expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
+    expect(res.body).toHaveProperty("description", { email: "Email inválido" });
   });
 
   it("should fail on too-short password (400)", async () => {
@@ -51,18 +56,20 @@ describe("POST /auth/register", () => {
     });
 
     expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
+    expect(res.body).toHaveProperty("description", {
+      password: "La contraseña debe tener al menos 8 caracteres",
+    });
   });
 
   it("should fail when email already exists (409)", async () => {
-    // Usamos el email seed ("juanmartin@example.com") que ya existe
     const res = await request(app).post(endpoint).send({
-      email: "juanmartin@test.com",
+      email: "juanmartin@test.com", // coincide con el seed de setup.js
       password: "AnotherPass1!",
       name: "Duplicate",
     });
 
     expect(res.status).toBe(409);
-    expect(res.body).toHaveProperty("error");
+    expect(res.body).toHaveProperty("error", errorMessages.invalid_credentials);
   });
 });

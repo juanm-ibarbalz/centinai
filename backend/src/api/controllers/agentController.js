@@ -9,10 +9,11 @@ import {
 import {
   agentValidationSchema,
   validateAgentLogic,
-  validateUpdateMappingRequest,
   updateAgentSchema,
 } from "../../validators/agent.validator.js";
 import { sendError, sendSuccess } from "../../utils/responseUtils.js";
+import { limitsConfig } from "../../config/config.js";
+import Agent from "../../models/Agent.js";
 
 /**
  * Controlador para registrar un nuevo agente.
@@ -23,14 +24,32 @@ import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 export const createAgentController = async (req, res) => {
   const result = agentValidationSchema.safeParse(req.body);
   if (!result.success) {
-    return sendError(res, 400, "invalid_payload");
+    return sendError(res, 400, "invalid_payload", result.error);
   }
 
   const userId = req.user.id;
   const data = { ...result.data, userId };
 
+  // validación de existencia
+  const exists = await Agent.findOne({ phoneNumberId: data.phoneNumberId });
+  if (exists) return sendError(res, 400, "agent_already_exists");
+
+  // validación de límite
+  const count = await Agent.countDocuments({ userId });
+  if (count >= limitsConfig.maxAgentsPerUser) {
+    return sendError(res, 400, "max_agents_reached");
+  }
+
+  // validación de lógica cruzada
+  const logicError = validateAgentLogic({
+    payloadFormat: data.payloadFormat,
+    fieldMapping: data.fieldMapping,
+  });
+  if (logicError) return sendError(res, 400, "invalid_payload", logicError);
+
   try {
     const agent = await createAgentService(data);
+
     return sendSuccess(res, 201, {
       id: agent._id,
       name: agent.name,
@@ -42,11 +61,7 @@ export const createAgentController = async (req, res) => {
     });
   } catch (err) {
     console.error("Error al registrar agente:", err);
-    const known =
-      err.message === "Este agente ya está registrado"
-        ? "max_agents_reached"
-        : err.message;
-    return sendError(res, 400, known);
+    return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
@@ -55,9 +70,15 @@ export const createAgentController = async (req, res) => {
  * @route DELETE /agents/:id
  */
 export const deleteAgentController = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  const agent = await Agent.findOne({ _id: id, userId });
+  if (!agent) return sendError(res, 404, "agent_not_found");
+
   try {
-    await deleteAgentWithCascade(req.user.id, req.params.id);
-    res.sendStatus(204);
+    await deleteAgentWithCascade(agent.phoneNumberId);
+    return sendSuccess(res, 204);
   } catch (err) {
     console.error("Error eliminando agente:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
@@ -76,7 +97,7 @@ export const getAgentsController = async (req, res) => {
     return sendSuccess(res, 200, agents);
   } catch (err) {
     console.error("Error obteniendo agentes:", err);
-    return sendError(res, 500, "server_error");
+    return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
@@ -85,25 +106,28 @@ export const getAgentsController = async (req, res) => {
  * @route PATCH /agents/:id/mapping
  */
 export const updateAgentMappingController = async (req, res) => {
-  try {
-    const { fieldMapping } = await validateUpdateMappingRequest(req);
+  const { id } = req.params;
+  const userId = req.user.id;
+  const agent = await Agent.findOne({ _id: id, userId });
+  if (!agent) return sendError(res, 404, "agent_not_found");
 
-    const updated = await updateAgentMapping(
-      req.user.id,
-      req.params.id,
-      fieldMapping,
-    );
+  const fieldMapping = req.body.fieldMapping;
+
+  const logicError = validateAgentLogic({
+    payloadFormat: agent.payloadFormat,
+    fieldMapping: fieldMapping,
+  });
+  if (logicError) return sendError(res, 400, "invalid_payload", logicError);
+
+  try {
+    const updatedFieldMapping = await updateAgentMapping(id, fieldMapping);
 
     return sendSuccess(res, 200, {
       message: "Mapping actualizado correctamente",
-      fieldMapping: updated.fieldMapping,
+      fieldMapping: updatedFieldMapping,
     });
   } catch (err) {
-    if (err.zod) {
-      console.error("Errores de Zod:", err.zod);
-    } else {
-      console.error("Error validando mapping:", err);
-    }
+    console.error("Error actualizando mapping:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
@@ -113,8 +137,14 @@ export const updateAgentMappingController = async (req, res) => {
  * @route POST /agents/:id/rotate-secret
  */
 export const rotateSecretTokenController = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  const agent = await Agent.findOne({ _id: id, userId });
+  if (!agent) return sendError(res, 404, "agent_not_found");
+
   try {
-    const newToken = await rotateSecretToken(req.user.id, req.params.id);
+    const newToken = await rotateSecretToken(id);
     return sendSuccess(res, 200, {
       message: "Secret token regenerado correctamente",
       secretToken: newToken,
@@ -131,17 +161,22 @@ export const rotateSecretTokenController = async (req, res) => {
  * @route PATCH /agents/:id
  */
 export const updateAgentController = async (req, res) => {
-  const result = updateAgentSchema.safeParse(req.body);
+  const { id } = req.params;
+  const userId = req.user.id;
+  const update = req.body;
+
+  const result = updateAgentSchema.safeParse(update);
   if (!result.success) {
-    return sendError(res, 400, "invalid_payload");
+    return sendError(res, 400, "invalid_payload", result.error);
+  }
+
+  const agent = await Agent.findOne({ _id: id, userId });
+  if (!agent) {
+    return sendError(res, 404, "agent_not_found");
   }
 
   try {
-    const updatedAgent = await updateAgentService(
-      req.user.id,
-      req.params.id,
-      result.data,
-    );
+    const updatedAgent = await updateAgentService(id, update);
 
     return sendSuccess(res, 200, {
       message: "Agente actualizado correctamente",

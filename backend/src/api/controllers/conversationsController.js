@@ -1,6 +1,7 @@
 import { findConversationsByAgent } from "../../services/conversation.service.js";
 import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 import { getConversationsQuerySchema } from "../../validators/conversation.validator.js";
+import Agent from "../../models/Agent.js";
 
 /**
  * Controlador para obtener las conversaciones de un agente del usuario autenticado.
@@ -20,8 +21,9 @@ import { getConversationsQuerySchema } from "../../validators/conversation.valid
 export const getConversationsByAgent = async (req, res) => {
   const parsed = getConversationsQuerySchema.safeParse(req.query);
   if (!parsed.success) {
-    return sendError(res, 400, "invalid_query", parsed.error.format());
+    return sendError(res, 400, "invalid_query", parsed.error);
   }
+
   const {
     agentPhoneNumberId,
     limit,
@@ -31,6 +33,12 @@ export const getConversationsByAgent = async (req, res) => {
     dateFrom,
     dateTo,
   } = parsed.data;
+
+  const agent = await Agent.findOne({
+    phoneNumberId: agentPhoneNumberId,
+    userId: req.user.id,
+  });
+  if (!agent) return sendError(res, 404, "agent_not_found");
 
   try {
     const conversations = await findConversationsByAgent(

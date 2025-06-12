@@ -1,6 +1,7 @@
-import { sendError } from "../../utils/responseUtils.js";
+import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 import { processIncomingRequest } from "../../services/webhook.service.js";
 import { webhookAuthSchema } from "../../validators/webhook.validator.js";
+import Agent from "../../models/Agent.js";
 
 /**
  * Procesa los mensajes entrantes del webhook.
@@ -16,16 +17,16 @@ export const handleIncomingMessage = async (req, res) => {
     agentSecret: req.body.agentSecret,
   });
   if (!parsed.success) {
-    return sendError(res, 400, "invalid_webhook_auth", parsed.error.format());
+    return sendError(res, 400, "invalid_webhook_auth", parsed.error);
   }
 
-  req.agentSecret = parsed.data.secret;
+  const agent = await Agent.findOne({ secretToken: parsed.data.secret });
+  if (!agent) return sendError(res, 404, "agent_not_found");
 
   try {
-    await processIncomingRequest(req);
-    res.sendStatus(200);
+    await processIncomingRequest(req, agent);
+    return sendSuccess(res, 200, { message: "[WEBHOOK OK]" });
   } catch (err) {
-    console.error("[WEBHOOK ERROR]", err);
     sendError(res, err.status || 500, err.message || "server_error");
   }
 };

@@ -46,8 +46,8 @@ export const conversationConfig = {
  */
 export const securityConfig = {
   loginRateLimit: {
-    windowMinutes: 1,
-    maxAttempts: 5,
+    windowMinutes: 2,
+    maxAttempts: 10,
     errorMessage: "Demasiados intentos. Intente nuevamente en un minuto.",
   },
 };

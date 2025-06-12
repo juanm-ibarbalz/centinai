@@ -1,6 +1,7 @@
 export const errorMessages = {
+  agent_already_exists: "Agente ya existente",
   agent_not_found: "Agente no encontrado",
-  max_agents_reached: "El usuario ya tiene 3 agentes registrados",
+  max_agents_reached: "Alcanzado el límite máximo de agentes por usuario",
   conversation_not_found: "Conversación no encontrada",
   unauthorized_access: "No tienes permisos para acceder a este recurso",
   missing_token: "Token de autorización requerido",
@@ -9,4 +10,9 @@ export const errorMessages = {
   invalid_payload: "Datos enviados inválidos",
   generic_error: "Ocurrió un error inesperado",
   server_error: "Ocurrió un error de servidor",
+  invalid_query: "Consulta por query inválida",
+  invalid_credentials: "Credenciales inválidas",
+  user_not_found: "Usuario no encontrado",
+  metric_not_found: "Métrica no encontrada",
+  invalid_webhook_auth: "Autenticación del webhook inválida",
 };

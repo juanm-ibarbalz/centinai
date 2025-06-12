@@ -129,7 +129,8 @@ Creates a new agent.
   "fieldMapping": {
     "text": "body.text",
     "from": "body.from",
-    "timestamp": "body.timestamp"
+    "timestamp": "body.timestamp",
+    "to": "body.destinatary"
   }
 }
 ```
@@ -137,7 +138,8 @@ Creates a new agent.
 **Validation rules:**
 
 - If payloadFormat is "structured", fieldMapping must be empty or undefined.
-- If "custom", the fieldMapping must include "text", "from", and "timestamp".
+- If "custom", the fieldMapping must include "text", "from", "timestamp" and "to".
+- fieldMapping can include "userName" to optimize tagging.
 
 **Responses:**
 
@@ -178,7 +180,8 @@ Updates an agent's `fieldMapping`.
   "fieldMapping": {
     "text": "msg.text",
     "from": "msg.user",
-    "timestamp": "msg.time"
+    "timestamp": "msg.time",
+    "to": "msg.destinatary"
   }
 }
 ```
@@ -210,7 +213,8 @@ Updates general agent information.
   "fieldMapping": {
     "text": "payload.text",
     "from": "payload.sender",
-    "timestamp": "payload.date"
+    "timestamp": "payload.date",
+    "to": "payload.destinatary"
   }
 }
 ```
@@ -273,6 +277,7 @@ Can be done via `secretToken` in:
 - `text`
 - `from`
 - `timestamp`
+- `to`
 
 **Responses:**
 

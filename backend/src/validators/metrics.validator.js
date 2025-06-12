@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 export const listMetricsQuerySchema = z.object({
-  agentPhoneNumberId: z.string().min(1, {
-    message: "El ID del número de teléfono del agente es obligatorio",
-  }),
+  agentPhoneNumberId: z.string().min(1),
   limit: z
     .string()
     .optional()
