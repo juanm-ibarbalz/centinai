@@ -22,13 +22,45 @@ describe("POST /agents", () => {
     await Agent.deleteMany({ userId });
   });
 
-  it("should create a new agent (201)", async () => {
+  it("should create a new structured agent (201)", async () => {
     const payload = {
       name: "Agent A",
       phoneNumberId: "phone-123",
       payloadFormat: "structured",
       authMode: "query",
       modelName: "gpt-3.5-turbo",
+    };
+
+    const res = await request(app)
+      .post(endpoint)
+      .set("Authorization", `Bearer ${token}`)
+      .send(payload);
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchObject({
+      id: expect.any(String),
+      name: payload.name,
+      phoneNumberId: payload.phoneNumberId,
+      payloadFormat: payload.payloadFormat,
+      authMode: payload.authMode,
+      secretToken: expect.any(String),
+    });
+  });
+
+  it("should create a new custom agent (201)", async () => {
+    const payload = {
+      name: "Agent A",
+      phoneNumberId: "phone-234",
+      payloadFormat: "custom",
+      authMode: "query",
+      modelName: "gpt-3.5-turbo",
+      fieldMapping: {
+        text: "message.text",
+        from: "message.from",
+        to: "message.to",
+        timestamp: "message.timestamp",
+        userName: "message.userName",
+      },
     };
 
     const res = await request(app)
@@ -127,7 +159,7 @@ describe("POST /agents", () => {
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body).toHaveProperty(
       "description",
-      "El fieldMapping debe incluir como mínimo: text, from y timestamp"
+      "El fieldMapping debe incluir como mínimo: text, from, timestamp y to"
     );
   });
 

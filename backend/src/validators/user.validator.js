@@ -3,10 +3,12 @@ import { z } from "zod";
 /**
  * Valida actualizaciones de perfil (nombre, email).
  */
-export const updateUserSchema = z.object({
-  name: z.string().min(1).optional(),
-  email: z.string().email().optional(),
-});
+export const updateUserSchema = z
+  .object({
+    name: z.string().min(1).optional(),
+    email: z.string().email().optional(),
+  })
+  .strict();
 
 /**
  * Valida el cambio de contraseña del usuario.

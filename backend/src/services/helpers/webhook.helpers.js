@@ -7,47 +7,40 @@ import get from "lodash.get";
  * @param {Object} payload - El body recibido
  * @param {Object} mapping - El fieldMapping del agente (si aplica)
  * @param {string} format - payloadFormat ("structured" | "custom")
- * @param {string|null} agentPhoneNumberId - Para inferir direction si falta
  * @returns {Object|null} - Mensaje parseado o null si es inválido
  */
-export const applyMapping = (
-  payload,
-  mapping,
-  format,
-  agentPhoneNumberId = null,
-) => {
+export const applyMapping = (payload, mapping, format) => {
   if (!["structured", "custom"].includes(format)) return null;
 
   const finalMapping =
     format === "structured"
       ? {
-          text: "message.text",
-          from: "message.from",
-          timestamp: "message.timestamp",
-          userName: "message.userName",
-          direction: "message.direction",
+          text: "text",
+          from: "from",
+          to: "to",
+          timestamp: "timestamp",
+          userName: "userName",
         }
       : mapping;
 
   const text = get(payload, finalMapping.text);
   const from = get(payload, finalMapping.from);
+  const to = get(payload, finalMapping.to);
   const timestamp = get(payload, finalMapping.timestamp);
   const userName = get(payload, finalMapping.userName) || "Desconocido";
-  const directionRaw = get(payload, finalMapping.direction);
 
-  if (!text || !from || !timestamp) return null;
+  if (!text || (!from && !to) || !timestamp) return null;
 
-  let direction = directionRaw;
-  if (!direction && agentPhoneNumberId) {
-    direction = from === agentPhoneNumberId ? "agent" : "user";
-  }
+  let direction = "user";
+  if (to) direction = "agent";
 
   return {
     from,
+    to,
     userName,
     timestamp,
     text,
     direction: direction || "user",
-    status: "active",
+    status: "open",
   };
 };

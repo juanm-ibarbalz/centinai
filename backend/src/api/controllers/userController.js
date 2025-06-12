@@ -16,25 +16,36 @@ import User from "../../models/User.js";
  * @param {Response} res
  */
 export const updateUserController = async (req, res) => {
-  const result = updateUserSchema.safeParse(req.body);
+  const update = req.body;
+  const result = updateUserSchema.safeParse(update);
   if (!result.success) {
-    return sendError(res, 400, "invalid_payload", parsed.error);
+    return sendError(res, 400, "invalid_payload", result.error);
   }
 
   const user = await User.findById(req.user.id);
   if (!user) return sendError(res, 404, "user_not_found");
 
-  if (result.email == user.email) {
+  const email = update.email;
+  const name = update.name;
+  if (email && email === user.email) {
     return sendError(res, 400, "invalid_payload", {
       message: "El email no ha cambiado",
     });
   }
 
-  const existing = await User.findOne({ email: updates.email });
-  if (existing) {
+  if (name && name === user.name) {
     return sendError(res, 400, "invalid_payload", {
-      message: "El email ya está en uso",
+      message: "El name no ha cambiado",
     });
+  }
+
+  if (email) {
+    const existing = await User.findOne({ email: email });
+    if (existing) {
+      return sendError(res, 400, "invalid_payload", {
+        message: "El email ya está en uso",
+      });
+    }
   }
 
   try {
@@ -72,14 +83,13 @@ export const changePasswordController = async (req, res) => {
     await changeUserPassword(
       user,
       result.data.currentPassword,
-      result.data.newPassword,
+      result.data.newPassword
     );
 
     return sendSuccess(res, 200, {
       message: "Contraseña actualizada correctamente",
     });
   } catch (err) {
-    console.error("Error al cambiar contraseña:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };

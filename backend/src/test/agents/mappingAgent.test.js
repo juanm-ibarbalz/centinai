@@ -56,7 +56,8 @@ describe("PATCH /agents/:id/mapping", () => {
         text: "msg.text",
         from: "msg.from",
         timestamp: "msg.ts",
-        extra: "msg.extra",
+        to: "msg.to",
+        extra: "msg.extra", // no deberia tomarlo en cuenta
       },
     };
     const res = await request(app)
@@ -85,7 +86,7 @@ describe("PATCH /agents/:id/mapping", () => {
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body).toHaveProperty(
       "description",
-      "El fieldMapping debe incluir como mínimo: text, from y timestamp"
+      "El fieldMapping debe incluir como mínimo: text, from, timestamp y to"
     );
   });
 

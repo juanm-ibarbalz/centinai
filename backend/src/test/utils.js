@@ -2,11 +2,17 @@ import request from "supertest";
 import app from "../app.js";
 
 // Credenciales del seed user
-export const TEST_USER = { email: "juanmartin@test.com", password: "12345678" };
+export const TEST_USER = {
+  email: "juanmartin@test.com",
+  password: "12345678",
+  name: "Juan Martín",
+};
 
 // login con token
 export async function getTestUserToken() {
-  const res = await request(app).post("/auth/login").send(TEST_USER);
+  const res = await request(app)
+    .post("/auth/login")
+    .send({ email: TEST_USER.email, password: TEST_USER.password });
   return res.body.token;
 }
 
@@ -28,6 +34,7 @@ export async function createAgent(token, overrides = {}) {
       text: "body.message",
       from: "body.sender",
       timestamp: "body.time",
+      to: "body.recipient",
     };
   }
 

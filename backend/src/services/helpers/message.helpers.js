@@ -2,17 +2,6 @@ import Message from "../../models/Message.js";
 import { generateMessageId } from "../../utils/idGenerator.js";
 
 /**
- * Determina el phoneNumberId del agente según el sentido del mensaje.
- * @param {Object} parsed - Objeto mapeado del mensaje
- * @returns {string} - phoneNumberId
- */
-export const getAgentPhoneNumberId = ({
-  direction,
-  agentPhoneNumberId,
-  from,
-}) => (direction === "user" ? agentPhoneNumberId : from);
-
-/**
  * Construye un documento Message listo para guardar.
  * @param {Object} parsed - Objeto mapeado del mensaje
  * @param {string} userId - ID del usuario dueño del agente

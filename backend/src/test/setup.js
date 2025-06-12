@@ -17,7 +17,7 @@ beforeAll(async () => {
     _id: new mongoose.Types.ObjectId(),
     email: TEST_USER.email,
     password: hashed,
-    name: "Juan Martín",
+    name: TEST_USER.name,
   });
 });
 

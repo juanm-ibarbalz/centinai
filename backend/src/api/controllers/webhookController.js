@@ -20,14 +20,13 @@ export const handleIncomingMessage = async (req, res) => {
     return sendError(res, 400, "invalid_webhook_auth", parsed.error);
   }
 
-  const agent = Agent.findOne({ secretToken: parsed.data.secret });
+  const agent = await Agent.findOne({ secretToken: parsed.data.secret });
   if (!agent) return sendError(res, 404, "agent_not_found");
 
   try {
-    await processIncomingRequest(req);
+    await processIncomingRequest(req, agent);
     return sendSuccess(res, 200, { message: "[WEBHOOK OK]" });
   } catch (err) {
-    console.error("[WEBHOOK ERROR]", err);
     sendError(res, err.status || 500, err.message || "server_error");
   }
 };

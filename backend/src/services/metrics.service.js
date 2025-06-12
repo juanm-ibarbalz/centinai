@@ -13,7 +13,7 @@ export const findMetricsByAgent = async (
     userId,
     "agentData.agentId": agentPhoneNumberId,
   })
-    .sort({ endtime: 1 })
+    .sort({ endTime: -1 })
     .skip(offset)
     .limit(limit);
 };

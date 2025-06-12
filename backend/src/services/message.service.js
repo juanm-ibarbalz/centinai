@@ -1,10 +1,7 @@
 import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
-import {
-  getAgentPhoneNumberId,
-  buildMessage,
-} from "./helpers/message.helpers.js";
+import { buildMessage } from "./helpers/message.helpers.js";
 
 /**
  * Procesa y guarda un mensaje entrante desde el webhook.
@@ -13,15 +10,14 @@ import {
  * @returns {Promise<void>}
  */
 export const saveIncomingMessage = async (parsed, agent) => {
+  if (!parsed) return;
+  if (!agent) return;
+
   try {
-    if (!parsed) return;
-    if (!agent) return;
-
     if (parsed.direction === "agent") {
-      return await processAgentMessage(parsed, agent);
+      await processAgentMessage(parsed, agent);
     }
-
-    return await processUserMessage(parsed, agent);
+    await processUserMessage(parsed, agent);
   } catch (err) {
     console.error("Error procesando mensaje entrante:", err);
   }
@@ -36,11 +32,9 @@ export const saveIncomingMessage = async (parsed, agent) => {
  */
 const processAgentMessage = async (parsed, agent) => {
   try {
-    const agentPhoneNumberId = getAgentPhoneNumberId(parsed);
-
     const existingConversation = await Conversation.findOne({
-      agentPhoneNumberId,
-      from: parsed.from,
+      agentPhoneNumberId: parsed.agentPhoneNumberId,
+      from: parsed.to,
       status: "open",
     });
 
@@ -52,7 +46,7 @@ const processAgentMessage = async (parsed, agent) => {
     const messageDoc = buildMessage(
       parsed,
       agent.userId,
-      existingConversation._id,
+      existingConversation._id
     );
     await messageDoc.save();
   } catch (err) {
@@ -69,14 +63,11 @@ const processAgentMessage = async (parsed, agent) => {
  */
 const processUserMessage = async (parsed, agent) => {
   try {
-    const agentPhoneNumberId = getAgentPhoneNumberId(parsed);
-    const from = parsed.from;
-
     const conversationId = await createOrUpdateConversation(
       agent.userId,
-      agentPhoneNumberId,
+      parsed.agentPhoneNumberId,
       parsed.userName,
-      from,
+      parsed.from
     );
 
     const messageDoc = buildMessage(parsed, agent.userId, conversationId);
@@ -98,7 +89,7 @@ export const getMessagesByConversationId = async (
   conversationId,
   userId,
   limit,
-  offset,
+  offset
 ) => {
   return await Message.find({ conversationId, userId })
     .sort({ timestamp: 1 })

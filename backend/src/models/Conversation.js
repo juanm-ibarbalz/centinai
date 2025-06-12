@@ -12,7 +12,7 @@ const conversationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "active",
+      default: "open",
     },
     startTime: {
       type: Date,
@@ -27,7 +27,7 @@ const conversationSchema = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
-  },
+  }
 );
 
 conversationSchema.index({ from: 1, agentPhoneNumberId: 1, status: 1 });

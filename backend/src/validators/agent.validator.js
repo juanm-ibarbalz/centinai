@@ -26,7 +26,7 @@ export const agentValidationSchema = z.object({
 /**
  * Valida reglas de negocio adicionales para un agente.
  * - structured → no debe tener fieldMapping
- * - custom → debe tener text, from y timestamp en el mapping
+ * - custom → debe tener text, from, timestamp y to en el mapping
  *
  * @param {Object} data - Objeto ya parseado con los datos del agente
  * @returns {string|null} - Mensaje de error si hay problema, o null si es válido
@@ -41,11 +41,11 @@ export const validateAgentLogic = (data) => {
   if (
     data.payloadFormat === "custom" &&
     (!mapping ||
-      !["text", "from", "timestamp"].every((key) =>
+      !["text", "from", "timestamp", "to"].every((key) =>
         Object.keys(mapping).includes(key)
       ))
   ) {
-    return "El fieldMapping debe incluir como mínimo: text, from y timestamp";
+    return "El fieldMapping debe incluir como mínimo: text, from, timestamp y to";
   }
 
   return null;

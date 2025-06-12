@@ -81,12 +81,15 @@ describe("GET /metrics", () => {
         sentimentTrend: "neutral",
       },
     };
+
+    await new Promise((resolve) => setTimeout(resolve, 500)); // esperar medio segundo para que las fechas sean diferentes
+
     const doc2 = {
       ...doc1,
       _id: new mongoose.Types.ObjectId().toString(),
       conversationId: "conv2",
-      startTime: new Date(Date.now() - 1000 * 60 * 5), // 5 minutos antes
-      endTime: new Date(Date.now() - 1000 * 60 * 4), // 4 minutos antes
+      startTime: new Date(),
+      endTime: new Date(),
     };
     await Metric.create([doc1, doc2]);
 

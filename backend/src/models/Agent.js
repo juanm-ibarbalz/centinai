@@ -33,7 +33,7 @@ const agentSchema = new mongoose.Schema(
   },
   {
     versionKey: false,
-  },
+  }
 );
 
 agentSchema.index({ secretToken: 1, authMode: 1 });

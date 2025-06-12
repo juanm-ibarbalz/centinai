@@ -5,12 +5,12 @@ import { saveIncomingMessage } from "./message.service.js";
  * Procesa una solicitud entrante desde el webhook y delega el procesamiento del mensaje
  * @param {import("express").Request} req
  */
-export const processIncomingRequest = async (req) => {
+export const processIncomingRequest = async (req, agent) => {
   const parsed = applyMapping(
     req.body,
     agent.fieldMapping || {},
     agent.payloadFormat,
-    agent.phoneNumberId,
+    agent.phoneNumberId
   );
 
   if (!parsed) {

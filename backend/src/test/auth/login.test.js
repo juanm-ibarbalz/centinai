@@ -7,7 +7,7 @@ describe("POST /auth/login", () => {
   const endpoint = "/auth/login";
 
   it("should login successfully and return token & user info (200)", async () => {
-    const payload = TEST_USER;
+    const payload = { email: TEST_USER.email, password: TEST_USER.password };
 
     const res = await request(app).post(endpoint).send(payload);
 

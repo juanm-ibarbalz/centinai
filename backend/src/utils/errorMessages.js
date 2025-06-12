@@ -14,4 +14,5 @@ export const errorMessages = {
   invalid_credentials: "Credenciales inválidas",
   user_not_found: "Usuario no encontrado",
   metric_not_found: "Métrica no encontrada",
+  invalid_webhook_auth: "Autenticación del webhook inválida",
 };
