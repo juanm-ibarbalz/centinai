@@ -15,4 +15,5 @@ export const errorMessages = {
   user_not_found: "Usuario no encontrado",
   metric_not_found: "Métrica no encontrada",
   invalid_webhook_auth: "Autenticación del webhook inválida",
+  invalid_mapping_or_payload: "Mapping o payload inválido",
 };

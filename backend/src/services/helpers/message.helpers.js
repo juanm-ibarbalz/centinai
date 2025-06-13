@@ -4,18 +4,25 @@ import { generateMessageId } from "../../utils/idGenerator.js";
 /**
  * Construye un documento Message listo para guardar.
  * @param {Object} parsed - Objeto mapeado del mensaje
- * @param {string} userId - ID del usuario dueño del agente
  * @param {string} conversationId - ID de la conversación asociada
+ * @throws {Error} Si hay un error al generar el ID del mensaje
  * @returns {Message} - Documento listo para guardar
  */
-export const buildMessage = (parsed, userId, conversationId) => {
-  const { from, timestamp, userName, direction, type, text } = parsed;
+export const buildMessage = (parsed, conversationId) => {
+  const { from, timestamp, userName, direction, type, text, userId } = parsed;
+
+  const generatedMessageId = generateMessageId(conversationId);
+  if (generatedMessageId === null) {
+    const err = new Error("Error generating message ID");
+    err.status = 500;
+    throw err;
+  }
 
   return new Message({
-    _id: generateMessageId(conversationId),
+    _id: generatedMessageId,
     from,
     timestamp: new Date(Number(timestamp) * 1000),
-    userName: userName || null,
+    userName,
     direction,
     type,
     text,

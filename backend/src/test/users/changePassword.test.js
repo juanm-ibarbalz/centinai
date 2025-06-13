@@ -1,6 +1,5 @@
 import request from "supertest";
 import app from "../../app.js";
-import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../../models/User.js";

@@ -11,16 +11,16 @@ import Agent from "../../models/Agent.js";
  * @param {Response} res
  */
 export const handleIncomingMessage = async (req, res) => {
-  const parsed = webhookAuthSchema.safeParse({
+  const auth = webhookAuthSchema.safeParse({
     secret: req.query.secret,
     xAgentSecret: req.headers["x-agent-secret"],
     agentSecret: req.body.agentSecret,
   });
-  if (!parsed.success) {
-    return sendError(res, 400, "invalid_webhook_auth", parsed.error);
+  if (!auth.success) {
+    return sendError(res, 400, "invalid_webhook_auth", auth.error);
   }
 
-  const agent = await Agent.findOne({ secretToken: parsed.data.secret });
+  const agent = await Agent.findOne({ secretToken: auth.data.secret });
   if (!agent) return sendError(res, 404, "agent_not_found");
 
   try {

@@ -1,12 +1,12 @@
 import {
   findOpenConversation,
-  shouldCloseConversation,
   closeConversation,
   updateTimestamp,
   createNewConversation,
   buildConversationMatchStage,
   buildConversationSortStage,
   buildConversationProjectStage,
+  isExpired,
 } from "./helpers/conversation.helpers.js";
 import Conversation from "../models/Conversation.js";
 
@@ -17,28 +17,52 @@ import Conversation from "../models/Conversation.js";
  * @param {string} agentPhoneNumberId - Número de teléfono del agente
  * @param {string} userName - Nombre del usuario
  * @param {string} from - Identificador del remitente (número de teléfono del cliente)
+ * @throws {Error} - Si hay un error al crear o actualizar la conversación
  * @returns {Promise<string>} - ID de la conversación activa
  */
 export const createOrUpdateConversation = async (
   userId,
   agentPhoneNumberId,
   userName,
-  from,
+  from
 ) => {
   const now = new Date();
-  const conversation = await findOpenConversation(from, agentPhoneNumberId);
+  let conversation = await findOpenConversation(from, agentPhoneNumberId);
 
-  if (shouldCloseConversation(conversation, now)) {
-    if (conversation) await closeConversation(conversation);
-    return await createNewConversation(
-      userId,
-      agentPhoneNumberId,
-      userName,
-      from,
-    );
+  if (isExpired(conversation, now)) {
+    try {
+      await closeConversation(conversation, now);
+    } catch {
+      const err = new Error("Error closing conversation");
+      err.status = 500;
+      throw err;
+    }
+    conversation = null;
   }
 
-  await updateTimestamp(conversation);
+  if (!conversation) {
+    try {
+      conversation = await createNewConversation(
+        userId,
+        agentPhoneNumberId,
+        userName,
+        from
+      );
+    } catch {
+      const err = new Error("Error creating new conversation");
+      err.status = 500;
+      throw err;
+    }
+  } else {
+    try {
+      await updateTimestamp(conversation, now);
+    } catch {
+      const err = new Error("Error updating conversation timestamp");
+      err.status = 500;
+      throw err;
+    }
+  }
+
   return conversation._id;
 };
 
@@ -60,14 +84,14 @@ export const createOrUpdateConversation = async (
 export const findConversationsByAgent = async (
   userId,
   agentPhoneNumberId,
-  { limit, offset, sortBy, sortOrder, dateFrom, dateTo },
+  { limit, offset, sortBy, sortOrder, dateFrom, dateTo }
 ) => {
   // 1) Stage $match
   const matchStage = buildConversationMatchStage(
     userId,
     agentPhoneNumberId,
     dateFrom,
-    dateTo,
+    dateTo
   );
 
   // 2) Stage $lookup

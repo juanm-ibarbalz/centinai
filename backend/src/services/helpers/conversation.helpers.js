@@ -19,45 +19,37 @@ export const findOpenConversation = async (from, agentPhoneNumberId) => {
 };
 
 /**
- * Determina si una conversación ya venció por tiempo de inactividad.
- * @param {Conversation|null} conversation
- * @param {Date} now - Fecha actual
- * @returns {boolean}
+ * Determina si una conversación ha expirado por inactividad.
+ * @param {Object} conv - La conversación a evaluar.
+ * @param {Date} [now=new Date()] - Fecha actual para comparar, por defecto ahora.
+ * @returns {boolean} - true si la conversación está expirada, false en caso contrario.
  */
-export const shouldCloseConversation = (conversation, now) => {
-  if (!conversation) return true;
-  return now - conversation.updatedAt > TIMEOUT;
-};
+export function isExpired(conversation, now = new Date()) {
+  if (!conversation) return false;
+  return now.getTime() - conversation.updatedAt.getTime() > TIMEOUT;
+}
 
 /**
  * Cierra una conversación activa, marcando endTime.
  * @param {Conversation} conversation
+ * @param {Date} [endTime=new Date()] - Fecha de cierre, por defecto ahora.
  * @returns {Promise<void>}
  */
-export const closeConversation = async (conversation) => {
-  try {
-    conversation.status = "closed";
-    conversation.endTime = new Date();
-    await conversation.save();
-  } catch (err) {
-    console.error("Error cerrando conversación:", err);
-    throw err;
-  }
+export const closeConversation = async (conversation, now = new Date()) => {
+  conversation.status = "closed";
+  conversation.endTime = now;
+  await conversation.save();
 };
 
 /**
  * Actualiza el timestamp de una conversación existente.
  * @param {Conversation} conversation
+ * @param {Date} [endTime=new Date()] - Fecha de cierre, por defecto ahora.
  * @returns {Promise<void>}
  */
-export const updateTimestamp = async (conversation) => {
-  try {
-    conversation.lastUpdated = new Date();
-    await conversation.save();
-  } catch (err) {
-    console.error("Error actualizando conversación:", err);
-    throw err;
-  }
+export const updateTimestamp = async (conversation, now = new Date()) => {
+  conversation.lastUpdated = now;
+  await conversation.save();
 };
 
 /**
@@ -66,34 +58,32 @@ export const updateTimestamp = async (conversation) => {
  * @param {string} agentPhoneNumberId
  * @param {string} userName
  * @param {string} from
- * @returns {Promise<string>} - ID de la conversación creada
+ * @returns {Promise<Conversation>} - La nueva conversación creada
  */
 export const createNewConversation = async (
   userId,
   agentPhoneNumberId,
   userName,
-  from,
+  from
 ) => {
-  try {
-    const conversationId = generateConversationId(from, agentPhoneNumberId);
+  const generatedConversationId = generateConversationId(
+    from,
+    agentPhoneNumberId
+  );
 
-    const newConversation = new Conversation({
-      _id: conversationId,
-      from,
-      userId,
-      userName,
-      agentPhoneNumberId,
-      status: "open",
-      startTime: new Date(),
-      lastUpdated: new Date(),
-    });
+  const newConversation = new Conversation({
+    _id: generatedConversationId,
+    from,
+    userId,
+    userName,
+    agentPhoneNumberId,
+    status: "open",
+    startTime: new Date(),
+    lastUpdated: new Date(),
+  });
 
-    await newConversation.save();
-    return newConversation._id;
-  } catch (err) {
-    console.error("Error creando nueva conversación:", err);
-    throw err;
-  }
+  await newConversation.save();
+  return newConversation;
 };
 
 /**

@@ -277,7 +277,8 @@ Can be done via `secretToken` in:
 - `text`
 - `from`
 - `timestamp`
-- `to`
+- `to` (when sending "agent echo's")
+- `userName` (optional)
 
 **Responses:**
 

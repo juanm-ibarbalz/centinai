@@ -29,7 +29,7 @@ describe("GET /metrics", () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", errorMessages.invalid_query);
     expect(res.body.description).toMatchObject({
-      agentPhoneNumberId: "Required",
+      agentPhoneNumberId: expect.any(String),
     });
   });
 

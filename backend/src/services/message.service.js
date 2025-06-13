@@ -6,20 +6,12 @@ import { buildMessage } from "./helpers/message.helpers.js";
 /**
  * Procesa y guarda un mensaje entrante desde el webhook.
  * @param {Object} parsed - Objeto de mensaje adaptado desde webhook
- * @param {Object} agent - Documento del agente asociado
- * @returns {Promise<void>}
  */
-export const saveIncomingMessage = async (parsed, agent) => {
-  if (!parsed) return;
-  if (!agent) return;
-
-  try {
-    if (parsed.direction === "agent") {
-      await processAgentMessage(parsed, agent);
-    }
-    await processUserMessage(parsed, agent);
-  } catch (err) {
-    console.error("Error procesando mensaje entrante:", err);
+export const saveIncomingMessage = async (parsed) => {
+  if (parsed.direction === "agent") {
+    await processAgentMessage(parsed);
+  } else {
+    await processUserMessage(parsed);
   }
 };
 
@@ -27,54 +19,42 @@ export const saveIncomingMessage = async (parsed, agent) => {
  * Procesa un mensaje enviado por un agente (message_echo).
  * Lo guarda solo si hay una conversación abierta.
  * @param {Object} parsed - Mensaje mapeado
- * @param {Object} agent - Documento Agent
- * @returns {Promise<void>}
+ * @throws {Error} Si no hay una conversación activa para el mensaje del agente
  */
-const processAgentMessage = async (parsed, agent) => {
-  try {
-    const existingConversation = await Conversation.findOne({
-      agentPhoneNumberId: parsed.agentPhoneNumberId,
-      from: parsed.to,
-      status: "open",
-    });
+const processAgentMessage = async (parsed) => {
+  const existingConversation = await Conversation.findOne({
+    agentPhoneNumberId: parsed.agentPhoneNumberId,
+    from: parsed.to,
+    status: "open",
+  });
 
-    if (!existingConversation) {
-      console.warn("Mensaje del agente sin conversación activa. Ignorado.");
-      return;
-    }
-
-    const messageDoc = buildMessage(
-      parsed,
-      agent.userId,
-      existingConversation._id
+  if (!existingConversation) {
+    const err = new Error(
+      "Agent message without an active conversation. Ignored."
     );
-    await messageDoc.save();
-  } catch (err) {
-    console.error("Error procesando mensaje del agente:", err);
+    err.status = 400;
+    throw err;
   }
+
+  const messageDoc = buildMessage(parsed, existingConversation._id);
+  await messageDoc.save();
 };
 
 /**
  * Procesa un mensaje entrante desde un usuario externo.
  * Crea o actualiza una conversación y guarda el mensaje.
  * @param {Object} parsed - Mensaje mapeado
- * @param {Object} agent - Documento Agent
- * @returns {Promise<void>}
  */
-const processUserMessage = async (parsed, agent) => {
-  try {
-    const conversationId = await createOrUpdateConversation(
-      agent.userId,
-      parsed.agentPhoneNumberId,
-      parsed.userName,
-      parsed.from
-    );
+const processUserMessage = async (parsed) => {
+  const conversationId = await createOrUpdateConversation(
+    parsed.userId,
+    parsed.agentPhoneNumberId,
+    parsed.userName,
+    parsed.from
+  );
 
-    const messageDoc = buildMessage(parsed, agent.userId, conversationId);
-    await messageDoc.save();
-  } catch (err) {
-    console.error("Error procesando mensaje del usuario:", err);
-  }
+  const messageDoc = buildMessage(parsed, conversationId);
+  await messageDoc.save();
 };
 
 /**
