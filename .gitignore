@@ -7,7 +7,7 @@
 /analyzer/__pycache__/
 /analyzer/*.csv
 /analyzer/venv/
-.pyc
+*.pyc
 
 
 # General
@@ -15,3 +15,4 @@
 *.log
 *.tmp
 .env
+*.zip    

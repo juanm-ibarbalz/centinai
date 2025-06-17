@@ -1,6 +1,6 @@
 {
     "conversation": {
-      "_id": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa1560004e",
+      "_id": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa15600042",
       "from": "5491111000000",
       "userName": "Sofía",
       "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
@@ -19,7 +19,7 @@
         "timestamp": "2025-05-03T16:00:00.000+00:00",
         "from": "5491111000000",
         "userName": "Sofía",
-        "text": "Hola, quería consultar por un pedido.",
+        "text": "Hola, quería consultar por un pedido, genial todo.",
         "direction": "user",
         "status": "active",
         "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
@@ -45,7 +45,7 @@
         "timestamp": "2025-05-03T16:02:00.000+00:00",
         "from": "5491111000000",
         "userName": "Sofía",
-        "text": "¿Cuánto tarda el envío?",
+        "text": "¿Cuánto tarda el envío?, gracias. No funciona. Me confundi. No entiendo.",
         "direction": "user",
         "status": "active",
         "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",

@@ -1,0 +1,366 @@
+#HAY QUE MEJORAR LA CALIDAD DE LAS KEYWORDS Y CANTIDAD
+#ADEMAS, LAS KEYWORDS NO DEBEN SER FRASES QUE CONTENGAN OTRAS KEYWORDS
+#EJEMPLO: GENIAL Y GENIAL TODO SON 2 KEYWORDS QUE VA A GENERAR QUE EL SCORE DE ESA FRASE SEA = 2
+#O TENEMOS LA KEYWORD GENIAL, O TENEMOS LA KEYWORD GENIAL TODO.
+
+frustration:
+  - no entiendo
+  - no me sirve
+  - no funciona
+  - no me ayuda
+  - no es lo que necesito
+  - esto no sirve
+  - no me resolvió nada
+  - no me queda claro
+  - no me dijeron nada
+  - sigo sin respuesta
+  - no me contestaron
+  - me siguen diciendo lo mismo
+  - no se entiende
+  - esto es confuso
+  - no entiendo nada
+  - pésimo servicio
+  - mal servicio
+  - no anda
+  - anda mal
+  - no me atendieron
+  - me dejaron colgado
+  - no me solucionan
+  - siempre lo mismo
+  - no me ayudan
+  - me ignoran
+  - estoy esperando
+  - tarda mucho
+  - ya pregunté esto
+  - otra vez lo mismo
+  - no puede ser
+  - es una vergüenza
+  - esto es inútil
+  - nadie responde
+  - qué pasa
+  - otra vez no
+  - sigo igual
+  - nada cambia
+  - todo mal
+  - un desastre
+  - me cansé
+  - me tienen harto
+  - esto es un chiste
+  - me siento estafado
+  - no hay solución
+  - nadie soluciona
+  - no entiendo la respuesta
+  - no me aclaran nada
+  - qué hago ahora
+  - esto no tiene sentido
+  - no me sirve lo que dicen
+  - no sé qué hacer
+  - qué es esto
+  - ya me pasó antes
+  - me pasa siempre
+  - no responden nunca
+  - sigue igual
+  - no avanza
+  - es muy lento
+  - nunca contestan
+  - no me atienden
+  - no me dan bola
+  - pésima atención
+  - re mal
+  - qué desastre
+  - no se puede
+  - me quiero ir
+  - nadie explica nada
+  - muy mal explicado
+  - nada que ver
+  - me cortaron
+  - no tiene lógica
+  - no está claro
+  - es cualquiera
+  - no dan solución
+  - esto no ayuda
+  - me confundí más
+  - cada vez peor
+  - no me gusta
+  - me colgaron
+  - me dejan sin respuesta
+  - ya llamé
+  - ya hablé
+  - y ahora qué
+  - quién me ayuda
+  - otra vez yo
+  - ya hice eso
+  - no sirve para nada
+  - es imposible
+  - esto no va
+  - no me contestan bien
+  - es un lío
+  - me dejaron esperando
+  - sigo esperando
+  - nadie atiende
+  - qué porquería
+  - estoy frustrado
+  - esto no es solución
+  - no puedo más
+  - qué bronca
+  - me tienen de acá para allá
+  - sigo sin entender
+  - no se entiende nada
+
+positive_closing:
+  - gracias
+  - muchas gracias
+  - mil gracias
+  - perfecto
+  - excelente
+  - buenísimo
+  - joya
+  - listo
+  - ok
+  - está bien
+  - todo ok
+  - dale
+  - de acuerdo
+  - confirmado
+  - entendido
+  - recibido
+  - está claro
+  - gracias por la ayuda
+  - gracias por todo
+  - solucionado
+  - se resolvió
+  - ya está
+  - todo resuelto
+  - me sirve
+  - bárbaro
+  - muy bien
+  - impecable
+  - resuelto
+  - súper claro
+  - claro
+  - excelente atención
+  - buena atención
+  - te agradezco
+  - te lo agradezco
+  - agradecido
+  - gracias nuevamente
+  - funciona
+  - funcionó
+  - gracias igualmente
+  - todo en orden
+  - sin problemas
+  - quedó claro
+  - quedó resuelto
+  - gracias por responder
+  - ya entendí
+  - bien
+  - ok gracias
+  - gracias ok
+  - entendido gracias
+  - ya fue
+  - joyita
+  - va como piña
+  - bien ahí
+  - gracias totales
+  - me aclaraste todo
+  - está todo claro
+  - te pasaste
+  - sos crack
+  - joya gracias
+  - barbaro gracias
+  - está joya
+  - quedó joya
+  - todo claro
+  - excelente explicación
+  - perfecto gracias
+  - gracias bro
+  - gracias genio
+  - todo entendido
+  - todo solucionado
+  - todo perfecto
+  - bien explicado
+  - buen servicio
+  - ya me contestaron
+  - ya me ayudaron
+  - muy amable
+  - gracias por tu tiempo
+  - muy atento
+  - gracias por responderme
+  - ya me ayudaste
+  - muy útil
+  - re bien
+  - bien ahí loco
+  - ok buenísimo
+  - todo excelente
+  - genial todo
+  - buen laburo
+  - muy rápido
+  - solucionado rápido
+  - quedó de diez
+  - está de diez
+  - diez puntos
+  - gracias por tu atención
+  - ya entendí gracias
+  - todo solucionado gracias
+  - se entendió
+  - quedó entendido
+  - anduvo
+  - anda bien
+  - quedó funcionando
+  - está todo bien
+  - buen trato
+  - quedó claro gracias
+
+repetition:
+  - y si no
+  - pero cómo
+  - qué pasa si
+  - me repetís
+  - otra vez
+  - cómo es eso
+  - no entendí bien
+  - podrías explicar mejor
+  - me podés repetir
+  - cómo funciona
+  - cuál es el siguiente paso
+  - eso qué significa
+  - cómo hago ahora
+  - y ahora qué
+  - qué más tengo que hacer
+  - eso es seguro
+  - cómo se hace
+  - lo podés aclarar
+  - me decís otra vez
+  - no lo veo claro
+  - estás seguro
+  - eso está bien
+  - qué más
+  - me confirmás
+  - eso no lo entendí
+  - podés decirlo otra vez
+  - por qué
+  - cómo lo hago
+  - de qué estás hablando
+  - no me quedó claro
+  - qué querés decir
+  - cómo sería eso
+  - podés volver a explicar
+  - eso aplica a mí
+  - eso es para mi caso
+  - cómo aplico eso
+  - estás diciendo que
+  - me explicás de nuevo
+  - eso incluye
+  - eso cubre mi situación
+  - qué debo hacer
+  - podés detallar más
+  - eso sirve para mí
+  - eso está confirmado
+  - puedo estar seguro
+  - eso es correcto
+  - cómo se interpreta
+  - eso tiene sentido
+  - lo podés resumir
+
+escalation:
+  - quiero hablar con alguien
+  - pasame con un humano
+  - pésima atención
+  - me tienen harto
+  - nadie me ayuda
+  - qué desastre
+  - quiero cancelar todo
+  - esto es una vergüenza
+  - me voy a quejar
+  - no sirve para nada
+  - son un desastre
+  - me cansé
+  - me están tomando el pelo
+  - no puede ser
+  - esto es ridículo
+  - siempre lo mismo
+  - nadie responde
+  - nadie se hace cargo
+  - quiero escalar esto
+  - necesito a un supervisor
+  - quiero soporte real
+  - me siento estafado
+  - qué porquería
+  - esto es lo peor
+  - otra vez lo mismo
+  - ya hice esto mil veces
+  - es una estafa
+  - quiero darme de baja
+  - quiero hacer un reclamo
+  - quiero que me llamen
+  - quién se hace cargo
+  - son unos inútiles
+  - quiero soluciones ya
+  - no me dejan otra opción
+  - me van a escuchar
+  - estoy harto
+  - esto es inaceptable
+  - no los recomiendo más
+  - no pienso seguir así
+  - ya fue todo
+  - se pasan
+  - nadie se contacta
+  - no me dan respuesta
+  - es un desastre esto
+  - nadie atiende
+  - para qué tienen bot
+  - esto no resuelve nada
+  - dónde me quejo
+  - no me sirven
+  - no tienen vergüenza
+
+confusion:
+  - no entiendo
+  - no me queda claro
+  - qué significa
+  - cómo es eso
+  - eso no se entiende
+  - me confundí
+  - es confuso
+  - eso es raro
+  - no me cierra
+  - cómo dijiste
+  - qué dijiste
+  - eso no se puede
+  - eso no tiene sentido
+  - no me ayuda
+  - qué hago ahora
+  - es poco claro
+  - me perdí
+  - no entiendo bien
+  - es complicado
+  - no sé cómo seguir
+  - no sé qué hacer
+  - cómo hago eso
+  - no sé si entendí
+  - eso me confunde
+  - no estoy seguro
+  - no se entiende bien
+  - no me queda bien
+  - no sé si aplica
+  - no me queda bien explicado
+  - estoy en duda
+  - no me convence
+  - no está claro
+  - no veo la lógica
+  - es contradictorio
+  - me enredé
+  - no tiene explicación
+  - no sé si está bien
+  - no me convence tu respuesta
+  - me genera dudas
+  - eso no ayuda
+  - eso es ambiguo
+  - es difícil de entender
+  - se entiende mal
+  - no tiene lógica
+  - no es claro
+  - me mareé
+  - no aclara nada
+  - no aporta claridad
+  - sigo sin entender

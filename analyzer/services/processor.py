@@ -4,6 +4,9 @@ from typing import Any, Dict, List
 from datetime import datetime
 import os
 import json
+from analyzer.storage.session_writter import save_session
+from analyzer.behavior_analysis.success_evaluator import SuccessEvaluator
+
 
 
 def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
@@ -13,7 +16,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
         "conversation": { … },
         "messages": [ … ]
       }
-    y devuelve únicamente la “sesión” con esta estructura (2):
+    y devuelve únicamente la "sesión" con esta estructura (2):
       {
         "_id": "<conversation_id>",                     # usamos el mismo ID de conversación
         "userId": "<userId>",
@@ -60,7 +63,9 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     user_count = _calc_messages_by_direction(normalized_msgs, direction="user")
     agent_count = _calc_messages_by_direction(normalized_msgs, direction="agent")
     total_count = len(normalized_msgs)
-
+    #Agrego una estructura para luego poder mandar mas facil las stats de la conversacion a el behavior analysis
+    message_stats = {"user_count": user_count,"agent_count": agent_count,"total_count": total_count
+}
     # 4) Calcular duración en segundos (primer vs. último mensaje)
     duration = _calc_conversation_duration(normalized_msgs)
 
@@ -79,14 +84,17 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     token_usage = _calc_tokens(normalized_msgs, conv,agent_data)
 
     # 7) Armar tags y metadata (place-holders; complete según tu análisis NLP, etc.)
+    # TODO: Implementar NLP para tags y metadata
     tags = ["consulta", "queja"]
     metadata = {
         "language": "es",
         "channel": "webchat",
         "sentimentTrend": "negative"
     }
+    #8) Determinamos si la conv fue succefull o no
+    successful = _determinate_successful(conv, msgs, message_stats)
 
-    # 8) Construir el diccionario final (sin mensajes individuales)
+    # 9) Construir el diccionario final (sin mensajes individuales)
     session_doc = {
         "_id": conv["_id"],                       # mismo ID de la conversación
         "userId": conv["userId"],
@@ -113,6 +121,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(session_doc, f, ensure_ascii=False, indent=2)
 
+    save_session(session_doc)
 
     return session_doc
 
@@ -237,3 +246,7 @@ def _get_agent_data_from_conversation(conversation: Dict[str, Any]) -> Dict[str,
         raise ValueError(f"No se encontró agente con userId={user_id}")
 
     return agent_data
+
+def _determinate_successful(conversation: dict, messages: list, message_stats: dict) -> bool:
+    evaluator = SuccessEvaluator(conversation, messages, message_stats)
+    return evaluator.is_successful()
