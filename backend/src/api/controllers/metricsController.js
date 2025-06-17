@@ -3,6 +3,10 @@ import {
   findMetricByConversationIdAndUser,
 } from "../../services//metrics.service.js";
 import { sendError, sendSuccess } from "../../utils/responseUtils.js";
+import {
+  listMetricsQuerySchema,
+  getMetricParamsSchema,
+} from "../../validators/metrics.validator.js";
 
 /**
  * Controlador para obtener métricas de todas las conversaciones de un agente
@@ -10,19 +14,20 @@ import { sendError, sendSuccess } from "../../utils/responseUtils.js";
  * @route GET /metrics?agentPhoneNumberId=xxx
  */
 export const getMetricsByAgent = async (req, res) => {
-  const { id: userId } = req.user;
-  const { agentPhoneNumberId, limit = 20, offset = 0 } = req.query;
-
-  if (!agentPhoneNumberId) {
-    return sendError(res, 400, "missing_agent_id");
+  const parsed = listMetricsQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    return sendError(res, 400, "invalid_query", parsed.error);
   }
+
+  const { agentPhoneNumberId, limit, offset } = parsed.data;
+  const userId = req.user.id;
 
   try {
     const metrics = await findMetricsByAgent(
       userId,
       agentPhoneNumberId,
-      parseInt(limit),
-      parseInt(offset),
+      limit,
+      offset
     );
     return sendSuccess(res, 200, metrics);
   } catch (err) {
@@ -36,21 +41,22 @@ export const getMetricsByAgent = async (req, res) => {
  * @route GET /metrics/:conversationId
  */
 export const getMetricByConversation = async (req, res) => {
-  const { id: userId } = req.user;
-  const { conversationId } = req.params;
+  const parsedParams = getMetricParamsSchema.safeParse(req.params);
+  if (!parsedParams.success) {
+    return sendError(res, 400, "invalid_params", parsedParams.error);
+  }
+
+  const { conversationId } = parsedParams.data;
+  const userId = req.user.id;
 
   try {
     const metric = await findMetricByConversationIdAndUser(
       conversationId,
-      userId,
+      userId
     );
-    if (!metric) {
-      return sendError(res, 404, "metric_not_found_or_forbidden");
-    }
 
     return sendSuccess(res, 200, metric);
   } catch (err) {
-    console.error("Error obteniendo métricas de conversación:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };

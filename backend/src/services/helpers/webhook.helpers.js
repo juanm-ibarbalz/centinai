@@ -1,41 +1,11 @@
 import get from "lodash.get";
-import Agent from "../../models/Agent.js";
 
-/**
- * Identifica al agente que envió la solicitud usando el token según authMode.
- * @param {import("express").Request} req
- * @returns {Promise<Agent|null>}
- */
-export const identifyAgent = async (req) => {
-  const fromQuery = req.query.secret;
-  const fromHeader = req.headers["x-agent-secret"];
-  const fromBody = req.body?.agentSecret;
-
-  if (fromQuery) {
-    const agent = await Agent.findOne({
-      secretToken: fromQuery,
-      authMode: "query",
-    });
-    if (agent) return agent;
-  }
-
-  if (fromHeader) {
-    const agent = await Agent.findOne({
-      secretToken: fromHeader,
-      authMode: "header",
-    });
-    if (agent) return agent;
-  }
-
-  if (fromBody) {
-    const agent = await Agent.findOne({
-      secretToken: fromBody,
-      authMode: "body",
-    });
-    if (agent) return agent;
-  }
-
-  return null;
+const STRUCTURED_MAPPING = {
+  text: "text",
+  from: "from",
+  to: "to",
+  timestamp: "timestamp",
+  userName: "userName",
 };
 
 /**
@@ -45,50 +15,94 @@ export const identifyAgent = async (req) => {
  * @param {Object} payload - El body recibido
  * @param {Object} mapping - El fieldMapping del agente (si aplica)
  * @param {string} format - payloadFormat ("structured" | "custom")
- * @param {string|null} agentPhoneNumberId - Para inferir direction si falta
+ * @param {string} agentPhoneNumberId - ID del número de teléfono del agente
  * @returns {Object|null} - Mensaje parseado o null si es inválido
  */
-export const applyMapping = (
-  payload,
-  mapping,
-  format,
-  agentPhoneNumberId = null,
-) => {
+export const applyMapping = (payload, mapping, format, agentPhoneNumberId) => {
   if (!["structured", "custom"].includes(format)) return null;
 
-  const finalMapping =
-    format === "structured"
-      ? {
-          text: "message.text",
-          from: "message.from",
-          timestamp: "message.timestamp",
-          userName: "message.userName",
-          direction: "message.direction",
-          recipient_id: "message.recipient_id",
-        }
-      : mapping;
+  const isStructured = format === "structured";
+  const finalMapping = isStructured ? STRUCTURED_MAPPING : mapping;
 
   const text = get(payload, finalMapping.text);
-  const from = get(payload, finalMapping.from);
+  const rawFrom = get(payload, finalMapping.from);
+  const rawTo = get(payload, finalMapping.to);
   const timestamp = get(payload, finalMapping.timestamp);
-  const userName = get(payload, finalMapping.userName) || "Desconocido";
-  const directionRaw = get(payload, finalMapping.direction);
-  const recipient_id = get(payload, finalMapping.recipient_id);
+  const userName = get(payload, finalMapping.userName) || "Usuario";
 
-  if (!text || !from || !timestamp) return null;
+  if (!text || !timestamp) return null;
 
-  let direction = directionRaw;
-  if (!direction && agentPhoneNumberId) {
-    direction = from === agentPhoneNumberId ? "agent" : "user";
-  }
+  const participants = mapParticipants(rawFrom, rawTo, agentPhoneNumberId);
+  if (!participants) return null;
 
+  const { from, to, direction } = participants;
   return {
     from,
-    recipient_id,
+    to,
     userName,
     timestamp,
     text,
-    direction: direction || "user",
-    status: "active",
+    direction,
+    status: "open",
+    agentPhoneNumberId,
   };
 };
+
+/**
+ * Mapea los participantes (from, to) y determina la dirección del mensaje.
+ * Devuelve un objeto con los campos from, to y direction ("agent" o "user"),
+ * o null si los datos no son válidos o no se puede determinar la dirección.
+ *
+ * @param {string} rawFrom - Valor crudo del campo "from" extraído del payload.
+ * @param {string} rawTo - Valor crudo del campo "to" extraído del payload.
+ * @param {string} agentPhone - Número de teléfono del agente.
+ * @returns {{from: string, to: string, direction: "agent"|"user"} | null} Objeto con participantes y dirección, o null si inválido.
+ */
+
+function mapParticipants(rawFrom, rawTo, agentPhone) {
+  const hasFrom = !!rawFrom;
+  const hasTo = !!rawTo;
+
+  if (
+    rawFrom === rawTo || // ambos son el agente o el usuario, o son undefined
+    (hasFrom && rawFrom === agentPhone && !hasTo) || // solo from = agente
+    (hasTo && rawTo === agentPhone && !hasFrom) // solo to = agente
+  ) {
+    return null;
+  }
+
+  if (rawFrom === agentPhone && hasTo) {
+    return { from: agentPhone, to: rawTo, direction: "agent" };
+  }
+
+  if (rawTo === agentPhone && hasFrom) {
+    return { from: rawFrom, to: agentPhone, direction: "user" };
+  }
+
+  if (hasFrom && !hasTo) {
+    return { from: rawFrom, to: agentPhone, direction: "user" };
+  }
+
+  if (!hasFrom && hasTo) {
+    return { from: agentPhone, to: rawTo, direction: "agent" };
+  }
+
+  // no se cumple ningún caso, se retorna null
+  return null;
+}
+
+/* 
+| Cases for applyMapping function
+/
+| from        | to          |
+| ----------- | ----------- |
+| agentNumber | agentNumber |  null
+| agentNumber | userNumber  |  direction = "agent"
+| agentNumber | no          |  null      
+| userNumber  | agentNumber |  direction = "user"
+| userNumber  | userNumber  |  null       
+| userNumber  | no          |  direction = "user"     
+| no          | agentNumber |  null
+| no          | userNumber  |  direction = "agent"
+| no          | no          |  null
+*/

@@ -7,13 +7,13 @@ export const findMetricsByAgent = async (
   userId,
   agentPhoneNumberId,
   limit,
-  offset,
+  offset
 ) => {
   return await Metric.find({
     userId,
     "agentData.agentId": agentPhoneNumberId,
   })
-    .sort({ startTime: -1 }) // orden opcional: más recientes primero
+    .sort({ endTime: -1 })
     .skip(offset)
     .limit(limit);
 };
@@ -23,7 +23,14 @@ export const findMetricsByAgent = async (
  */
 export const findMetricByConversationIdAndUser = async (
   conversationId,
-  userId,
+  userId
 ) => {
-  return await Metric.findOne({ conversationId, userId });
+  const metric = await Metric.findOne({ conversationId, userId });
+  if (!metric) {
+    const err = new Error("metric_not_found");
+    err.status = 404;
+    throw err;
+  }
+
+  return metric;
 };

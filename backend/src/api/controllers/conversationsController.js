@@ -1,27 +1,50 @@
 import { findConversationsByAgent } from "../../services/conversation.service.js";
 import { sendError, sendSuccess } from "../../utils/responseUtils.js";
+import { getConversationsQuerySchema } from "../../validators/conversation.validator.js";
+import Agent from "../../models/Agent.js";
 
 /**
  * Controlador para obtener las conversaciones de un agente del usuario autenticado.
- * Soporta paginación con los parámetros limit y offset.
- * @route GET /conversations?agentPhoneNumberId=xxx&limit=20&offset=0
+ * Soporta:
+ *   • Paginación: limit, offset
+ *   • Ordenamiento: sortBy = duration | cost | date ; sortOrder = asc | desc
+ *   • Filtrado por rango de fecha: dateFrom, dateTo (ISO strings)
+ *
+ * @route GET /conversations?agentPhoneNumberId=xxx
+ *                       &limit=20&offset=0
+ *                       &sortBy=duration|cost|date
+ *                       &sortOrder=asc|desc
+ *                       &dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD
  * @param {Request} req
  * @param {Response} res
  */
 export const getConversationsByAgent = async (req, res) => {
-  const { id: userId } = req.user;
-  const { agentPhoneNumberId, limit = 20, offset = 0 } = req.query;
-
-  if (!agentPhoneNumberId) {
-    return sendError(res, 400, "missing_agent_id");
+  const parsed = getConversationsQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    return sendError(res, 400, "invalid_query", parsed.error);
   }
+
+  const {
+    agentPhoneNumberId,
+    limit,
+    offset,
+    sortBy,
+    sortOrder,
+    dateFrom,
+    dateTo,
+  } = parsed.data;
+
+  const agent = await Agent.findOne({
+    phoneNumberId: agentPhoneNumberId,
+    userId: req.user.id,
+  });
+  if (!agent) return sendError(res, 404, "agent_not_found");
 
   try {
     const conversations = await findConversationsByAgent(
-      userId,
+      req.user.id,
       agentPhoneNumberId,
-      parseInt(limit),
-      parseInt(offset),
+      { limit, offset, sortBy, sortOrder, dateFrom, dateTo },
     );
     return sendSuccess(res, 200, conversations);
   } catch (err) {

@@ -2,9 +2,8 @@ import crypto from "crypto";
 import Agent from "../models/Agent.js";
 import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
-import { limitsConfig } from "../config/config.js";
 import { generateAgentId } from "../utils/idGenerator.js";
-import { validateAgentLogic } from "../validators/agent.validator.js";
+
 /**
  * Crea un nuevo agente para un usuario dado si el número de teléfono no está ya registrado
  * y el usuario no superó el límite de agentes permitidos.
@@ -17,10 +16,10 @@ import { validateAgentLogic } from "../validators/agent.validator.js";
  * @param {string} data.payloadFormat - Formato del payload ("structured" | "custom")
  * @param {string} data.authMode - Método de autenticación ("query" | "header" | "body")
  * @param {Object} [data.fieldMapping] - Mapping requerido si `payloadFormat` es "custom"
+ * @param {string} [data.modelName] - Nombre del modelo asociado al agente
  * @returns {Promise<Agent>} - Agente recién creado
  * @throws {Error} - Si ya existe un agente o se supera el límite
  */
-
 export const createAgentService = async ({
   userId,
   phoneNumberId,
@@ -29,27 +28,8 @@ export const createAgentService = async ({
   payloadFormat,
   authMode,
   fieldMapping,
+  modelName,
 }) => {
-  const logicError = validateAgentLogic(result.data);
-  if (logicError) {
-    const err = new Error(logicError);
-    err.status = 400;
-    throw err;
-  }
-  const existing = await Agent.findOne({ phoneNumberId });
-  if (existing) {
-    const err = new Error("Este agente ya está registrado");
-    err.status = 400;
-    throw err;
-  }
-
-  const count = await Agent.countDocuments({ userId });
-  if (count >= limitsConfig.maxAgentsPerUser) {
-    const err = new Error("Límite de 3 agentes por usuario alcanzado");
-    err.status = 400;
-    throw err;
-  }
-
   const agentId = generateAgentId(userId);
 
   const agent = new Agent({
@@ -62,6 +42,7 @@ export const createAgentService = async ({
     authMode,
     fieldMapping: fieldMapping || {},
     secretToken: crypto.randomUUID(),
+    modelName,
     createdAt: new Date(),
   });
 
@@ -71,21 +52,11 @@ export const createAgentService = async ({
 
 /**
  * Elimina un agente por ID y todos sus datos relacionados, validando propiedad.
- * @param {string} userId - ID del usuario autenticado
- * @param {string} agentId - ID del agente a eliminar
+ * @param {string} phoneNumberId - ID del número de teléfono del agente a eliminar
  * @returns {Promise<void>}
  * @throws {Error} - Si el agente no existe o no pertenece al usuario
  */
-export const deleteAgentWithCascade = async (userId, agentId) => {
-  const agent = await Agent.findOne({ _id: agentId, userId });
-  if (!agent) {
-    const err = new Error("Agente no encontrado");
-    err.status = 404;
-    throw err;
-  }
-
-  const phoneNumberId = agent.phoneNumberId;
-
+export const deleteAgentWithCascade = async (phoneNumberId) => {
   const conversations = await Conversation.find({
     agentPhoneNumberId: phoneNumberId,
   });
@@ -93,7 +64,7 @@ export const deleteAgentWithCascade = async (userId, agentId) => {
 
   await Message.deleteMany({ conversationId: { $in: conversationIds } });
   await Conversation.deleteMany({ agentPhoneNumberId: phoneNumberId });
-  await agent.deleteOne();
+  await Agent.deleteOne({ phoneNumberId });
 };
 
 /**
@@ -103,98 +74,93 @@ export const deleteAgentWithCascade = async (userId, agentId) => {
  */
 export const getAgentsByUser = async (userId) => {
   return Agent.find({ userId })
-    .select("name phoneNumberId payloadFormat authMode description")
-    .sort({ createdAt: -1 });
+    .select("name phoneNumberId payloadFormat authMode description modelName")
+    .sort({ createdAt: 1 });
 };
 
 /**
- * Actualiza el fieldMapping de un agente si su formato lo permite.
+ * Actualiza el fieldMapping de un agente.
  *
- * @param {string} userId - ID del usuario autenticado
  * @param {string} agentId - ID del agente a modificar
- * @param {Object} newMapping - Nuevo objeto de mapeo
- * @returns {Promise<Agent>} - Agente actualizado
- * @throws {Error} - Si el agente no existe o su formato es "structured"
+ * @param {Object} fieldMapping - Nuevo objeto de mapeo
+ * @returns {Promise<Object>} - FieldMapping actualizado
  */
 
-export const updateAgentMapping = async (userId, agentId, newMapping) => {
-  const agent = await Agent.findOne({ _id: agentId, userId });
+export const updateAgentMapping = async (agentId, fieldMapping) => {
+  const agent = await Agent.findByIdAndUpdate(
+    agentId,
+    { fieldMapping },
+    { new: true }
+  );
   if (!agent) {
-    const err = new Error("Agente no encontrado");
+    const err = new Error("agent_not_found");
     err.status = 404;
     throw err;
   }
 
-  if (agent.payloadFormat === "structured") {
-    const err = new Error("field_mapping_not_allowed_with_structured_format");
-    err.status = 400;
-    throw err;
-  }
-
-  agent.fieldMapping = newMapping;
-  await agent.save();
-  return agent;
+  return agent.fieldMapping;
 };
 
 /**
  * Regenera el secretToken de un agente y lo devuelve.
  *
- * @param {string} userId - ID del usuario autenticado
  * @param {string} agentId - ID del agente a actualizar
  * @returns {Promise<string>} - Nuevo token generado
  * @throws {Error} - Si el agente no existe o no pertenece al usuario
  */
-export const rotateSecretToken = async (userId, agentId) => {
-  const agent = await Agent.findOne({ _id: agentId, userId });
+export const rotateSecretToken = async (agentId) => {
+  const agent = await Agent.findByIdAndUpdate(
+    agentId,
+    { secretToken: crypto.randomUUID() },
+    { new: true }
+  );
   if (!agent) {
-    const err = new Error("Agente no encontrado");
+    const err = new Error("agent_not_found");
     err.status = 404;
     throw err;
   }
 
-  agent.secretToken = crypto.randomUUID();
-  await agent.save();
   return agent.secretToken;
 };
 
 /**
- * Actualiza los datos de un agente con validación de negocio.
+ * Actualiza los datos de un agente.
  *
- * @param {string} userId - ID del usuario autenticado
  * @param {string} agentId - ID del agente a actualizar
- * @param {Object} updates - Datos de actualización
+ * @param {Object} data - Datos de actualización
  * @returns {Promise<Agent>} - Agente actualizado
  * @throws {Error} - Si no se encuentra o la lógica es inválida
  */
-export const updateAgentService = async (userId, agentId, updates) => {
-  const agent = await Agent.findOne({ _id: agentId, userId });
-  if (!agent) {
-    const error = new Error("Agente no encontrado");
-    error.status = 404;
-    throw error;
+export const updateAgentService = async (agentId, data) => {
+  const allowedFields = [
+    "name",
+    "description",
+    "modelName",
+    "payloadFormat",
+    "authMode",
+  ];
+
+  const safeUpdate = {};
+
+  for (const key of allowedFields) {
+    if (data[key] !== undefined) {
+      safeUpdate[key] = data[key];
+    }
   }
 
-  const nextPayloadFormat = updates.payloadFormat || agent.payloadFormat;
-  const nextFieldMapping =
-    updates.fieldMapping !== undefined
-      ? updates.fieldMapping
-      : agent.fieldMapping;
+  // si se actualiza a "structured", eliminamos el fieldMapping
+  if (data.payloadFormat === "structured") {
+    safeUpdate.fieldMapping = {};
+  }
 
-  const logicError = validateAgentLogic({
-    payloadFormat: nextPayloadFormat,
-    fieldMapping: nextFieldMapping,
+  const agent = await Agent.findByIdAndUpdate(agentId, safeUpdate, {
+    new: true,
   });
-  if (logicError) {
-    const err = new Error(logicError);
-    err.status = 400;
+  if (!agent) {
+    const err = new Error("agent_not_found");
+    err.status = 404;
     throw err;
   }
 
-  if (updates.payloadFormat === "structured") {
-    updates.fieldMapping = {}; // borrar mapping si cambia a structured
-  }
-
-  Object.assign(agent, updates);
-  await agent.save();
   return agent;
 };

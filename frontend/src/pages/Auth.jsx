@@ -1,18 +1,13 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import Login from './Login';
-import Register from './Register';
+// frontend/src/pages/Auth.jsx
+import { useNavigate } from 'react-router-dom';
+import LoginPage from './Login'; // Cambiado para claridad
+import RegisterPage from './Register'; // Cambiado para claridad
 import './Auth.css';
 import logo from '../assets/centinai-logo.png';
 
-export default function Auth() {
+// Recibe onAuthSuccess, setAuthError, e isLoginMode
+export default function AuthPage({ onAuthSuccess, setAuthError, isLoginMode }) {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const isLogin = location.pathname === "/login";
-
-  const handleSuccess = () => {
-    navigate('/home');
-  };
 
   return (
     <div className="auth-container">
@@ -22,21 +17,21 @@ export default function Auth() {
         </div>
 
         <div className="auth-left">
-          <h2>{isLogin ? "¡Qué bueno verte de nuevo!" : "Bienvenido"}</h2>
+          <h2>{isLoginMode ? "¡Qué bueno verte de nuevo!" : "Bienvenido"}</h2>
           <p>
-            {isLogin
+            {isLoginMode
               ? "Inicia sesión con tus credenciales para continuar."
               : "Para unirte a nuestra comunidad por favor registrate con tus datos"}
           </p>
-          <button onClick={() => navigate(isLogin ? "/register" : "/login")}>
-            {isLogin ? "¿No tenés cuenta? Registrate" : "¿Ya tenés cuenta? Iniciá sesión"}
+          <button onClick={() => navigate(isLoginMode ? "/register" : "/login")}>
+            {isLoginMode ? "¿No tenés cuenta? Registrate" : "¿Ya tenés cuenta? Iniciá sesión"}
           </button>
         </div>
 
         <div className="auth-right">
-          {isLogin
-            ? <Login onSuccess={handleSuccess} />
-            : <Register onSuccess={handleSuccess} />}
+          {isLoginMode
+            ? <LoginPage onSuccess={onAuthSuccess} setAuthErrorOuter={setAuthError} />
+            : <RegisterPage onSuccess={onAuthSuccess} setAuthErrorOuter={setAuthError} />}
         </div>
       </div>
     </div>

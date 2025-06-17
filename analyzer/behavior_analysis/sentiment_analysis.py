@@ -1,0 +1,1 @@
+#This class we aint sure we will develope it. Its unnecesary, but maybe in an future. It will consult to an sentiment extractor API.

@@ -60,6 +60,56 @@ Authenticates a user and returns a JWT.
 
 ---
 
+## Conversations Endpoints
+
+### GET /conversations
+
+Returns all conversations for the authenticated user filtered by agent, with pagination, sorting, and date-range options.
+
+**Query parameters:**
+
+- `agentPhoneNumberId` (required): the identifier of the agent.
+- `limit` (optional): maximum number of results to return. Default: 20.
+- `offset` (optional): number of results to skip. Default: 0.
+- `sortBy` (optional): one of `duration`, `cost`, or `date`. Default: `date`.
+- `sortOrder` (optional): `asc` or `desc`. Default: `desc`.
+- `dateFrom` (optional): ISO 8601 date string; includes conversations created **on or after** this date.
+- `dateTo` (optional): ISO 8601 date string; includes conversations created **on or before** this date.
+
+**Responses:**
+
+- **200 OK** – JSON object with a `conversations` array. Each element includes conversation fields and embedded metrics:
+  ```json
+  {
+    "conversations": [
+      {
+        "_id": "conv-AAA1",
+        "userId": "usr-123",
+        "agentPhoneNumberId": "5491111000000",
+        "createdAt": "2025-05-03T14:22:00.000Z",
+        "lastUpdated": "2025-05-03T14:30:00.000Z",
+        "metrics": {
+          "durationSeconds": 145,
+          "tokenUsage": { "cost": 0.012 }
+        }
+      },
+      {
+        "_id": "conv-BBB2",
+        "userId": "usr-123",
+        "agentPhoneNumberId": "5491111000000",
+        "createdAt": "2025-05-05T10:15:00.000Z",
+        "lastUpdated": "2025-05-05T10:25:00.000Z",
+        "metrics": {
+          "durationSeconds": 95,
+          "tokenUsage": { "cost": 0.009 }
+        }
+      }
+    ]
+  }
+  ```
+
+---
+
 ## Agent Endpoints
 
 ### POST /agents
@@ -72,13 +122,15 @@ Creates a new agent.
 {
   "phoneNumberId": "123456",
   "name": "Agent 1",
+  "modelName": "gpt-4",
   "payloadFormat": "structured",
   "authMode": "header",
   "description": "optional",
   "fieldMapping": {
     "text": "body.text",
     "from": "body.from",
-    "timestamp": "body.timestamp"
+    "timestamp": "body.timestamp",
+    "to": "body.destinatary"
   }
 }
 ```
@@ -86,7 +138,8 @@ Creates a new agent.
 **Validation rules:**
 
 - If payloadFormat is "structured", fieldMapping must be empty or undefined.
-- If "custom", the fieldMapping must include "text", "from", and "timestamp".
+- If "custom", the fieldMapping must include "text", "from", "timestamp" and "to".
+- fieldMapping can include "userName" to optimize tagging.
 
 **Responses:**
 
@@ -127,7 +180,8 @@ Updates an agent's `fieldMapping`.
   "fieldMapping": {
     "text": "msg.text",
     "from": "msg.user",
-    "timestamp": "msg.time"
+    "timestamp": "msg.time",
+    "to": "msg.destinatary"
   }
 }
 ```
@@ -153,12 +207,14 @@ Updates general agent information.
 ```json
 {
   "name": "Updated Name",
+  "modelName": "gpt-4-turbo",
   "description": "New description",
   "payloadFormat": "custom",
   "fieldMapping": {
     "text": "payload.text",
     "from": "payload.sender",
-    "timestamp": "payload.date"
+    "timestamp": "payload.date",
+    "to": "payload.destinatary"
   }
 }
 ```
@@ -221,6 +277,8 @@ Can be done via `secretToken` in:
 - `text`
 - `from`
 - `timestamp`
+- `to` (when sending "agent echo's")
+- `userName` (optional)
 
 **Responses:**
 

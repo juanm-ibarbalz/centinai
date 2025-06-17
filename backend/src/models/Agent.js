@@ -29,10 +29,11 @@ const agentSchema = new mongoose.Schema(
       type: Object,
       default: {},
     },
+    modelName: { type: String },
   },
   {
     versionKey: false,
-  },
+  }
 );
 
 agentSchema.index({ secretToken: 1, authMode: 1 });

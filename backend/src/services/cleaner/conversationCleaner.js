@@ -28,10 +28,10 @@ export const closeExpiredConversations = async () => {
 
   await Conversation.updateMany(
     { _id: { $in: convIds } },
-    { $set: { status: "closed", endTime: now } },
+    { $set: { status: "closed", endTime: now } }
   );
 
-  console.log(`🧹 ${convIds.length} conversaciones cerradas por timeout.`);
+  console.log(`${convIds.length} conversaciones cerradas por timeout.`);
   return conversationsToClose;
 };
 
@@ -51,10 +51,7 @@ export const startConversationCleanupJob = () => {
       const jsonPath = exportConversationsToJson(payloads);
       dispatchToAnalyzer(jsonPath);
     } catch (error) {
-      console.error(
-        "❌ Error en limpieza automática de conversaciones:",
-        error,
-      );
+      console.error("Error en limpieza automática de conversaciones:", error);
     }
   });
 };
