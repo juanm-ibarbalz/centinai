@@ -19,7 +19,9 @@ class KeywordDetector:
             if hits >= 2:
                 context.score -= min(2, hits)
                 if category not in context.tags:
-                    context.tags.append(category)
+                    tag_to_add = "soft.repetition" if category == "repetition" else category
+                    context.tags.append(tag_to_add)
+
 
         hits = sum(1 for kw in self.keywords.get(positive_category, []) if any(kw in msg["text"].lower() for msg in user_messages))
         context.score += hits

@@ -11,10 +11,15 @@ class BehaviorExtrasEvaluator:
             if "long_user_interaction" not in context.tags:
                 context.tags.append("long_user_interaction")
 
-        if self._detect_repeated_messages(context.messages):
-            context.score -= 1
-            if "repeated_message" not in context.tags:
-                context.tags.append("repeated_message")
+            if self._detect_repeated_messages(context.messages):
+                context.score -= 1
+                if "soft.repetition" in context.tags:
+                    tag_to_add = "hard.repetition"
+                else:
+                    tag_to_add = "soft.repetition"
+                if tag_to_add not in context.tags:
+                    context.tags.append(tag_to_add)
+
 
         if self._is_long_duration(context.conversation):
             context.score -= 1
