@@ -45,7 +45,6 @@ describe("GET /metrics/:conversationId", () => {
       userId,
       userCellphone: "549111",
       agentData: { agentId: "111", modelLLM: "m1", agentName: "A1" },
-      startTime: new Date(),
       endTime: new Date(),
       durationSeconds: 12,
       tokenUsage: {

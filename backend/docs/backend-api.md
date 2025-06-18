@@ -87,7 +87,7 @@ Returns all conversations for the authenticated user filtered by agent, with pag
         "userId": "usr-123",
         "agentPhoneNumberId": "5491111000000",
         "createdAt": "2025-05-03T14:22:00.000Z",
-        "lastUpdated": "2025-05-03T14:30:00.000Z",
+        "updatedAt": "2025-05-03T14:30:00.000Z",
         "metrics": {
           "durationSeconds": 145,
           "tokenUsage": { "cost": 0.012 }
@@ -98,7 +98,7 @@ Returns all conversations for the authenticated user filtered by agent, with pag
         "userId": "usr-123",
         "agentPhoneNumberId": "5491111000000",
         "createdAt": "2025-05-05T10:15:00.000Z",
-        "lastUpdated": "2025-05-05T10:25:00.000Z",
+        "updatedAt": "2025-05-05T10:25:00.000Z",
         "metrics": {
           "durationSeconds": 95,
           "tokenUsage": { "cost": 0.009 }

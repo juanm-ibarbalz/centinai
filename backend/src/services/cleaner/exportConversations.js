@@ -17,9 +17,7 @@ export const exportConversationsToJson = (conversations) => {
       fs.mkdirSync(TMP_DIR, { recursive: true });
     }
 
-    const filename = generateBatchId();
-    const filePath = path.join(TMP_DIR, filename);
-
+    const filePath = path.join(TMP_DIR, generateBatchId());
     fs.writeFileSync(filePath, JSON.stringify(conversations, null, 2), "utf-8");
 
     console.log(`Archivo exportado: ${filePath}`);

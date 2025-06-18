@@ -7,8 +7,35 @@
 /analyzer/__pycache__/
 /analyzer/*.csv
 /analyzer/venv/
-*.pyc
 
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Python virtual environments
+venv/
+ENV/
+.venv/
+env/
+env.bak/
+venv.bak/
+
+# Python package files
+*.egg
+*.egg-info/
+.installed.cfg
+*.egg-info/
+.eggs/
+eggs/
+develop-eggs/
+dist/
+downloads/
+wheels/
+sdist/
+var/
+parts/
 
 # General
 .DS_Store

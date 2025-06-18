@@ -48,7 +48,7 @@ export const closeConversation = async (conversation, now = new Date()) => {
  * @returns {Promise<void>}
  */
 export const updateTimestamp = async (conversation, now = new Date()) => {
-  conversation.lastUpdated = now;
+  conversation.updatedAt = now;
   await conversation.save();
 };
 
@@ -78,8 +78,6 @@ export const createNewConversation = async (
     userName,
     agentPhoneNumberId,
     status: "open",
-    startTime: new Date(),
-    lastUpdated: new Date(),
   });
 
   await newConversation.save();
@@ -145,7 +143,7 @@ export function buildConversationProjectStage() {
       userId: 1,
       agentPhoneNumberId: 1,
       createdAt: 1,
-      lastUpdated: 1,
+      updatedAt: 1,
       "metrics.durationSeconds": 1,
       "metrics.tokenUsage.cost": 1,
     },

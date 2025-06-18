@@ -1,26 +1,31 @@
-import { exec } from "child_process";
-import { analyzerConfig } from "../../config/config.js";
+import fs from "fs";
+import axios from "axios";
+
+const analyzerUrl = process.env.ANALYZER_URL;
+if (!analyzerUrl) {
+  console.warn("dispatchToAnalyzer: falta ANALYZER_URL en .env");
+}
 
 /**
  * Ejecuta el análisis de un archivo JSON mediante un script Python.
  * @param {string} filePath - Ruta absoluta al archivo JSON a analizar
  */
-export const dispatchToAnalyzer = (filePath) => {
+export const dispatchToAnalyzer = async (filePath) => {
   if (!filePath) {
     console.warn("dispatchToAnalyzer: no se recibió filePath");
     return;
   }
 
-  const command = analyzerConfig.getCommand(filePath);
+  try {
+    const payload = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error al ejecutar analyzer.py: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.warn(`Stderr del analyzer: ${stderr}`);
-    }
-    console.log(`Analyzer ejecutado para: ${filePath}`);
-  });
+    const response = await axios.post(`${analyzerUrl}/analyze`, payload, {
+      timeout: 120000,
+    });
+
+    console.log(`Resultado del analyzer para ${filePath}:`, response.data);
+  } catch (err) {
+    console.error("Error en dispatchToAnalyzer:", err.message || err);
+    throw err;
+  }
 };

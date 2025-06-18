@@ -5,5 +5,6 @@ COPY package*.json ./
 RUN npm install --omit=dev
 
 COPY . .
-EXPOSE 3001
-CMD ["npm", "start"]
+EXPOSE $PORT
+
+CMD ["sh", "-c", "npm start"]

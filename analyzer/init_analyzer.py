@@ -1,26 +1,29 @@
 # analyzer/initi_analyzer.py
 
 import json
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 
 # Importamos la función principal de procesamiento desde services/process.py
-from analyzer.services.processor import process_conversation
+from services.processor import process_conversation
 
 
-def initiate_analyzer(raw_json: Dict[str, Any]) -> Dict[str, Any]:
+def initiate_analyzer(raw_json: Union[Dict[str, Any], List[Dict[str, Any]]]) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
     """
-    1. Recibe un dict con la conversación completa (un JSON ya parseado).
-    2. Hace un chequeo mínimo para asegurarse de que existan las claves
-       'conversation' y 'messages'.
-    3. Si falta alguna de esas claves, lanza una excepción ValueError.
-    4. En caso contrario, llama a process_conversation(raw_json) y devuelve
-       el resultado (por ejemplo, el JSON de la sesión ya armado).
+    1. Recibe un dict con la conversación completa (un JSON ya parseado), o una lista de dichos dicts.
+    2. Si es una lista, procesa cada elemento recursivamente.
+    3. Hace un chequeo mínimo para asegurarse de que existan las claves 'conversation' y 'messages'.
+       Si falta alguna, lanza ValueError.
+    4. Si la estructura está ok, llama a process_conversation(raw_json) y devuelve el resultado.
     """
-    # Chequeo mínimo de estructura
+    # Si recibimos una lista, procesamos cada elemento recursivamente
+    if isinstance(raw_json, list):
+        return [initiate_analyzer(item) for item in raw_json]
+
+    # Ahora raw_json es un dict, chequeamos la estructura
     if "conversation" not in raw_json or "messages" not in raw_json:
-        raise ValueError("The JSON received dont have the structure expected.")
+        raise ValueError("The JSON received doesn't have the structure expected.")
 
-    # Si la estructura está ok, delegamos al módulo de procesamiento
+    # Procesamiento normal de una sola sesión
     session_result = process_conversation(raw_json)
     return session_result
 

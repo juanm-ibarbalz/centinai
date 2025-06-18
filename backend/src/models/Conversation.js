@@ -14,15 +14,7 @@ const conversationSchema = new mongoose.Schema(
       type: String,
       default: "open",
     },
-    startTime: {
-      type: Date,
-      default: Date.now,
-    },
     endTime: Date,
-    lastUpdated: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
     timestamps: true,

@@ -12,6 +12,52 @@ These instructions will help you get a copy of the project up and running on you
 - [Git](https://git-scm.com/)
 - On Windows, use **Git Bash** or **WSL** to run `*.sh` scripts.
 
+### Configuration
+
+1. **Root environment file**  
+   In the project root (alongside `docker-compose.yml`) create a `.env` containing port mappings:
+
+   ```env
+   BACKEND_HOST_PORT=<your-backend-host-port>
+   BACKEND_CONTAINER_PORT=<your-backend-container-port>
+
+   FRONTEND_HOST_PORT=<your-frontend-host-port>
+   FRONTEND_CONTAINER_PORT=<your-frontend-container-port>
+
+   APIFLASK_HOST_PORT=<your-apiflask-host-port>
+   APIFLASK_CONTAINER_PORT=<your-apiflask-container-port>
+
+   MONGO_HOST_PORT=<your-mongo-host-port>
+   MONGO_CONTAINER_PORT=<your-mongo-container-port>
+
+   ```
+
+2. **Module environment files**
+
+   - frontend/.env:
+
+   ```bash
+      VITE_API_URL=http://<your-localhost>:${BACKEND_HOST_PORT}
+   ```
+
+   - backend/.env:
+
+   ```bash
+      MONGO_URI=<your-mongo-uri>
+      PORT=${BACKEND_CONTAINER_PORT}
+      JWT_SECRET=<your-jwt-secret>
+      JWT_EXPIRES_IN=<token-expiration>
+      ANALYZER_URL=http://<your-localhost>:${APIFLASK_HOST_PORT}
+   ```
+
+   - analyzer/.env:
+
+   ```bash
+      MONGO_URI=<your-mongo-uri>
+      MONGO_DB_TEST=<your-test-db-name>
+      PORT=${APIFLASK_CONTAINER_PORT}
+   ```
+
 ### Installing
 
 1. Clone the repository:
@@ -21,25 +67,7 @@ These instructions will help you get a copy of the project up and running on you
    cd centinai
    ```
 
-2. Create environment files in each module folder:
-
-   - `frontend/.env` (e.g., `VITE_API_URL=http://localhost:3001`)
-   - `backend/.env` with:
-
-     ```env
-     MONGO_URI=<your-mongo-uri>
-     PORT=<backend-port>
-     JWT_SECRET=<your-jwt-secret>
-     JWT_EXPIRES_IN=<token-expiration>
-     PYTHON_BIN=python3
-     ```
-
-   - `analyzer/.env` with:
-
-     ```env
-     MONGO_URI=<your-mongo-uri>
-     MONGO_DB_TEST=<your-test-db-name>
-     ```
+2. Create environment files as shown above.
 
 3. Start all services:
 
@@ -47,7 +75,7 @@ These instructions will help you get a copy of the project up and running on you
    ./start.sh
    ```
 
-This will build and start all containers in detached mode.
+This will build and start all containers in detached mode using the port mappings from the root .env.
 
 ## Deployment
 
@@ -62,7 +90,7 @@ To deploy on a live system using Docker Compose:
    ./start.sh
    ```
 
-5. Open ports (3000 for frontend, 3001 for backend) or configure a reverse proxy (e.g., Nginx) to serve multiple services under one domain.
+5. Open ports or configure a reverse proxy to serve multiple services under one domain.
 
 ## Built With
 
@@ -74,7 +102,7 @@ To deploy on a live system using Docker Compose:
 
 ## Authors
 
-- Juan Martín Ibarbalz - Backend
+- Juan Martín Ibarbalz - Backend / Deployment
 - Franco Monti - Frontend
 - Francisco Haro - Analyzer
 - Yamileth Cabrera - Frontend Mobile Adaptation ([centinai-mobile](https://github.com/juanm-ibarbalz/centinai-mobile))

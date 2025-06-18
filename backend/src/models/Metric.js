@@ -7,7 +7,7 @@ const TokenUsageSchema = new mongoose.Schema(
     totalTokens: Number,
     cost: Number,
   },
-  { _id: false },
+  { _id: false }
 );
 
 const MessageCountSchema = new mongoose.Schema(
@@ -16,7 +16,7 @@ const MessageCountSchema = new mongoose.Schema(
     agent: Number,
     total: Number,
   },
-  { _id: false },
+  { _id: false }
 );
 
 const MetadataSchema = new mongoose.Schema(
@@ -25,7 +25,7 @@ const MetadataSchema = new mongoose.Schema(
     channel: String,
     sentimentTrend: String,
   },
-  { _id: false },
+  { _id: false }
 );
 
 const AgentDataSchema = new mongoose.Schema(
@@ -34,7 +34,7 @@ const AgentDataSchema = new mongoose.Schema(
     modelLLM: String,
     agentName: String,
   },
-  { _id: false },
+  { _id: false }
 );
 
 const MetricSchema = new mongoose.Schema(
@@ -44,7 +44,7 @@ const MetricSchema = new mongoose.Schema(
     userId: { type: String, required: true },
     userCellphone: { type: String, required: true },
     agentData: AgentDataSchema,
-    startTime: Date,
+    createdAt: Date,
     endTime: Date,
     durationSeconds: Number,
     tokenUsage: TokenUsageSchema,
@@ -55,7 +55,7 @@ const MetricSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 MetricSchema.index({ userId: 1, "agentData.agentId": 1 });

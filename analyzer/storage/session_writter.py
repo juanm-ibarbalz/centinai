@@ -1,4 +1,4 @@
-from ..db.mongo_client import db
+from db.mongo_client import db
 
 def save_session(session_data: dict):
     """

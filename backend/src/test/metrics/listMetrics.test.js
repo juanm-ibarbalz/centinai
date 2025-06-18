@@ -63,7 +63,6 @@ describe("GET /metrics", () => {
       userId,
       userCellphone: "549111",
       agentData: { agentId: "111", modelLLM: "m1", agentName: "A1" },
-      startTime: new Date(),
       endTime: new Date(),
       durationSeconds: 10,
       tokenUsage: {
@@ -88,7 +87,6 @@ describe("GET /metrics", () => {
       ...doc1,
       _id: new mongoose.Types.ObjectId().toString(),
       conversationId: "conv2",
-      startTime: new Date(),
       endTime: new Date(),
     };
     await Metric.create([doc1, doc2]);
@@ -100,7 +98,6 @@ describe("GET /metrics", () => {
       userId,
       userCellphone: "549111",
       agentData: { agentId: "999", modelLLM: "mX", agentName: "AX" },
-      startTime: new Date(),
       endTime: new Date(),
       durationSeconds: 5,
       tokenUsage: {
