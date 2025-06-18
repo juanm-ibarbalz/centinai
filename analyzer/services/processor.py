@@ -8,6 +8,7 @@ from analyzer.storage.session_writter import save_session
 from analyzer.behavior_analysis.success_evaluator import SuccessEvaluator
 from analyzer.db.agent_repo import AgentRepo
 from analyzer.services.token_utils import tokenize_texts, calculate_cost_with_tokonomics
+from analyzer.utils.util_get_messages_by_direction import get_messages_by_direction
 
 
 def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:

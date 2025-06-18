@@ -19,8 +19,8 @@ services:
 
   analyzer:
     build: 
-      context: .
-      dockerfile: analyzer/Dockerfile
+      context: ./analyzer
+      dockerfile: Dockerfile
     ports:
       - "${APIFLASK_HOST_PORT}:${APIFLASK_CONTAINER_PORT}"
     depends_on:

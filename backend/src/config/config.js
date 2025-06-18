@@ -34,8 +34,8 @@ export const idConfig = {
  * Configuración relacionada a la duración y limpieza de conversaciones.
  */
 export const conversationConfig = {
-  timeoutMs: 120 * 60 * 1000, // 2 horas de inactividad
-  cleanupIntervalMinutes: 5, // limpieza cada 5 minutos
+  timeoutMs: 5 * 60 * 1000, // 2 horas de inactividad
+  cleanupIntervalMinutes: 1, // limpieza cada 5 minutos
   defaultConversationStatus: "open",
 };
 

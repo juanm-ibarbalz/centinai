@@ -8,9 +8,9 @@ import {
 import { dispatchToAnalyzer } from "./analyzerDispatcher.js";
 
 /**
- * Cierra las conversaciones vencidas por timeout y las devuelve.
+ * Obtiene las conversaciones vencidas por timeout.
  */
-export const closeExpiredConversations = async () => {
+export const getExpiredConversations = async () => {
   const now = new Date();
   const timeoutLimit = new Date(now.getTime() - conversationConfig.timeoutMs);
 
@@ -24,15 +24,19 @@ export const closeExpiredConversations = async () => {
     return [];
   }
 
-  const convIds = conversationsToClose.map((c) => c._id);
+  return conversationsToClose;
+};
 
+/**
+ * Cierra las conversaciones por sus IDs.
+ */
+export const closeConversationsById = async (convIds, now = new Date()) => {
+  if (!convIds || convIds.length === 0) return;
   await Conversation.updateMany(
     { _id: { $in: convIds } },
     { $set: { status: "closed", endTime: now } }
   );
-
   console.log(`${convIds.length} conversaciones cerradas por timeout.`);
-  return conversationsToClose;
 };
 
 /**
@@ -44,12 +48,15 @@ export const startConversationCleanupJob = () => {
 
   cron.schedule(`*/${intervalMinutes} * * * *`, async () => {
     try {
-      const conversations = await closeExpiredConversations();
+      const conversations = await getExpiredConversations();
       if (conversations.length === 0) return;
 
       const payloads = await buildExportPayloads(conversations);
       const jsonPath = exportConversationsToJson(payloads);
-      dispatchToAnalyzer(jsonPath);
+      await dispatchToAnalyzer(jsonPath);
+
+      const convIds = conversations.map((c) => c._id);
+      await closeConversationsById(convIds);
     } catch (error) {
       console.error("Error en limpieza automática de conversaciones:", error);
     }

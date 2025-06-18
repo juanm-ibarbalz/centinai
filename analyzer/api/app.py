@@ -1,14 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import os, sys
-
-# Añadir el directorio raíz del analyzer al path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# Cambiar al directorio raíz del analyzer para que las importaciones relativas funcionen
-os.chdir(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from init_analyzer import initiate_analyzer
+import os
+from analyzer.init_analyzer import initiate_analyzer
 
 app = Flask(__name__)
 CORS(app)
@@ -34,5 +27,5 @@ def analyze():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.getenv("PORT", 5000))
+    port = int(os.getenv("PORT", 8000))
     app.run(host="0.0.0.0", port=port) 
