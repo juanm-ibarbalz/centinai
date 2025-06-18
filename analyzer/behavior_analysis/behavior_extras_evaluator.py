@@ -1,32 +1,27 @@
 # analyzer/behavior_analysis/behavior_extras_evaluator.py
 
+from datetime import datetime
 from difflib import SequenceMatcher
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .success_evaluator import SuccessEvaluator
+from analyzer.behavior_analysis.success_context import SuccessEvaluationContext
 
 class BehaviorExtrasEvaluator:
-    def run(self, evaluator: "SuccessEvaluator") -> "SuccessEvaluator":
-        # 1. Penalizar exceso de mensajes del usuario
-        if evaluator.message_stats["user_count"] > 10:
-            evaluator.score -= 1
-            if "long_user_interaction" not in evaluator.tags:
-                evaluator.tags.append("long_user_interaction")
+    def run(self, context: SuccessEvaluationContext) -> SuccessEvaluationContext:
+        if context.message_stats["user_count"] > 10:
+            context.score -= 1
+            if "long_user_interaction" not in context.tags:
+                context.tags.append("long_user_interaction")
 
-        # 2. Penalizar mensajes repetidos
-        if self._detect_repeated_messages(evaluator.messages):
-            evaluator.score -= 1
-            if "repeated_message" not in evaluator.tags:
-                evaluator.tags.append("repeated_message")
+        if self._detect_repeated_messages(context.messages):
+            context.score -= 1
+            if "repeated_message" not in context.tags:
+                context.tags.append("repeated_message")
 
-        # 3. Penalizar duración excesiva de la conversación
-        if self._is_long_duration(evaluator.conversation):
-            evaluator.score -= 1
-            if "long_duration" not in evaluator.tags:
-                evaluator.tags.append("long_duration")
+        if self._is_long_duration(context.conversation):
+            context.score -= 1
+            if "long_duration" not in context.tags:
+                context.tags.append("long_duration")
 
-        return evaluator
+        return context
 
     def _detect_repeated_messages(self, messages: list) -> bool:
         user_texts = [msg["text"].lower() for msg in messages if msg["direction"] == "user"]
@@ -43,7 +38,6 @@ class BehaviorExtrasEvaluator:
         return ratio >= threshold
 
     def _is_long_duration(self, conversation: dict) -> bool:
-        from datetime import datetime
         try:
             start = datetime.fromisoformat(conversation["startTime"].replace("Z", "+00:00"))
             end = datetime.fromisoformat(conversation["endTime"].replace("Z", "+00:00"))

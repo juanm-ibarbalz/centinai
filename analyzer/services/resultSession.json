@@ -1,5 +1,5 @@
 {
-  "_id": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa15600042",
+  "_id": "conv-54911111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa15600042",
   "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
   "userCellphone": "5491111000000",
   "agentData": {
@@ -12,12 +12,12 @@
   "endTime": "2025-05-09T19:10:00.582+00:00",
   "durationSeconds": 180,
   "tokenUsage": {
-    "promptTokens": 49,
+    "promptTokens": 30,
     "completionTokens": 0,
-    "totalTokens": 49,
-    "cost": 7.3e-05
+    "totalTokens": 30,
+    "cost": 4.5e-05
   },
-  "successful": true,
+  "successful": false,
   "tags": [
     "consulta",
     "queja"
@@ -32,5 +32,5 @@
     "channel": "webchat",
     "sentimentTrend": "negative"
   },
-  "conversationId": "conv-5491111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa15600042"
+  "conversationId": "conv-54911111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa15600042"
 }

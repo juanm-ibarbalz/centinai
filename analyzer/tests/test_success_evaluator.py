@@ -3,7 +3,8 @@
 import os
 import json
 import pytest
-from analyzer.behavior_analysis.success_evaluator import SuccessEvaluator
+from analyzer.behavior_analysis.success_engine import SuccessEvaluatorEngine
+from analyzer.behavior_analysis.success_context import SuccessEvaluationContext
 
 def _calc_messages_by_direction(messages, direction):
     return len([msg for msg in messages if msg.get("direction") == direction])
@@ -28,8 +29,10 @@ def test_success_evaluator_with_sample_json():
     message_stats = _build_message_stats(messages)
 
     # 2. Instanciar y ejecutar
-    evaluator = SuccessEvaluator(conversation, messages, message_stats)
-    success = evaluator.is_successful()
+    evaluator = SuccessEvaluatorEngine(
+        SuccessEvaluationContext(conversation, messages, message_stats)
+        )
+    success = evaluator.run()
 
     # 3. Imprimir resultados
     print(f"✅ Resultado: {'Successful' if success else 'Unsuccessful'}")

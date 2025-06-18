@@ -1,42 +1,29 @@
 # analyzer/behavior_analysis/keyword_detector.py
 
-from .keyword_loader import load_keywords
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .success_evaluator import SuccessEvaluator
+from analyzer.behavior_analysis.success_context import SuccessEvaluationContext
+from analyzer.behavior_analysis.keyword_loader import load_keywords
+from analyzer.utils.util_get_messages_by_direction import get_messages_by_direction
 
 class KeywordDetector:
     def __init__(self):
         self.keywords = load_keywords()
 
-    def run(self, evaluator: "SuccessEvaluator") -> "SuccessEvaluator":
+    def run(self, context: SuccessEvaluationContext) -> SuccessEvaluationContext:
         negative_categories = ["frustration", "repetition", "escalation", "confusion"]
         positive_category = "positive_closing"
 
-        user_messages = [
-            msg for msg in evaluator.messages
-            if msg.get("direction") == "user" and msg.get("text")
-        ]
+        user_messages = get_messages_by_direction(context.messages, "user")
 
-        # Evaluar negativas
         for category in negative_categories:
-            hits = 0
-            for kw in self.keywords.get(category, []):
-                if any(kw in msg["text"].lower() for msg in user_messages):
-                    hits += 1
+            hits = sum(1 for kw in self.keywords.get(category, []) if any(kw in msg["text"].lower() for msg in user_messages))
             if hits >= 2:
-                evaluator.score -= min(2, hits)
-                if category not in evaluator.tags:
-                    evaluator.tags.append(category)
+                context.score -= min(2, hits)
+                if category not in context.tags:
+                    context.tags.append(category)
 
-        # Evaluar positivas
-        hits = 0
-        for kw in self.keywords.get(positive_category, []):
-            if any(kw in msg["text"].lower() for msg in user_messages):
-                hits += 1
-        evaluator.score += hits
-        if hits >= 2 and positive_category not in evaluator.tags:
-            evaluator.tags.append(positive_category)
+        hits = sum(1 for kw in self.keywords.get(positive_category, []) if any(kw in msg["text"].lower() for msg in user_messages))
+        context.score += hits
+        if hits >= 2 and positive_category not in context.tags:
+            context.tags.append(positive_category)
 
-        return evaluator
+        return context
