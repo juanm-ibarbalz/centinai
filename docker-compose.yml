@@ -18,7 +18,9 @@ services:
       - ./backend/.env
 
   analyzer:
-    build: ./analyzer
+    build: 
+      context: .
+      dockerfile: analyzer/Dockerfile
     ports:
       - "${APIFLASK_HOST_PORT}:${APIFLASK_CONTAINER_PORT}"
     depends_on:

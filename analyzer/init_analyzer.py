@@ -4,7 +4,7 @@ import json
 from typing import Any, Dict, List, Union
 
 # Importamos la función principal de procesamiento desde services/process.py
-from services.processor import process_conversation
+from analyzer.services.processor import process_conversation
 
 
 def initiate_analyzer(raw_json: Union[Dict[str, Any], List[Dict[str, Any]]]) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
