@@ -9,3 +9,6 @@ tokonomics
 typing_extensions
 flask_cors
 pyyaml
+pysentimiento
+transformers
+torch

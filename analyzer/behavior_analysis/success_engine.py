@@ -15,6 +15,7 @@ class SuccessEvaluatorEngine:
     def run(self) -> bool:
         KeywordDetector().run(self.context)
         BehaviorExtrasEvaluator().run(self.context)
+        #TODO: HERE WE WILL CALLL TO SENTIMENT ANALYSIS IN THE FUTURE
         return self._define_score_result()
 
     def _define_score_result(self) -> bool:
