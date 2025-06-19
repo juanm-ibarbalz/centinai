@@ -1,5 +1,6 @@
 // frontend/src/hooks/useSessionLoader.js
 import { useState, useEffect, useCallback } from "react";
+import { API_URL } from "../config";
 
 // Variable global para almacenar el token inyectado por Android antes de que el hook esté listo
 let nativeTokenPromise = null;
@@ -259,7 +260,7 @@ export function useSessionLoader() {
               setUser(fetchedUser);
               authentic = true;
               console.log("Usuario obtenido del backend:", fetchedUser);
-            } else if (res.status(403)) {
+            } else if (res.status === 403) {
               console.warn("Token inválido o expirado. Eliminando sesión.");
               localStorage.removeItem("token");
               localStorage.removeItem("user");
