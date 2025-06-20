@@ -1,8 +1,8 @@
 # analyzer/behavior_analysis/success_engine.py
 
-from .success_context import SuccessEvaluationContext
-from .keyword_detector import KeywordDetector
-from .behavior_extras_evaluator import BehaviorExtrasEvaluator
+from behavior_analysis.success_context import SuccessEvaluationContext
+from behavior_analysis.keyword_detector import KeywordDetector
+from behavior_analysis.behavior_extras_evaluator import BehaviorExtrasEvaluator
 
 class SuccessEvaluatorEngine:
     """
