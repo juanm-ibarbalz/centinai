@@ -17,6 +17,7 @@ import HomePage from "./pages/Home"; // Renombrado para claridad
 import HamburgerMenu from "./components/MenuHamburguesa"; // Asumiendo que existe
 import DashboardsPage from "./pages/Dashboards"; // Renombrado para claridad
 import CreateAgent from "./pages/CreateAgent"; // Mantenemos CreateAgent de main
+import MyAgentsPage from "./pages/myAgents";
 
 import useIsMobile from "./hooks/useIsMobile";
 import MobileAuthPage from "./pages/MobileAuth"; // Renombrado para claridad
@@ -49,11 +50,12 @@ function AppWrapper() {
     clearSession, // Para el logout
     setupSession, // Para el login/registro
     setError: setAuthError, // Para mostrar errores de autenticación
-    error: authError // Para leer el error de autenticación si quieres mostrarlo globalmente
+    error: authError, // Para leer el error de autenticación si quieres mostrarlo globalmente
   } = useSessionLoader();
 
   const hiddenMenuRoutes = ["/login", "/register"];
-  const showMenu = !hiddenMenuRoutes.includes(location.pathname) && isAuthenticated;
+  const showMenu =
+    !hiddenMenuRoutes.includes(location.pathname) && isAuthenticated;
 
   const handleLogout = () => {
     console.log("App.jsx: handleLogout llamado");
@@ -64,12 +66,30 @@ function AppWrapper() {
   };
 
   if (isSessionLoading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Cargando sesión...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          color: "white",
+        }}
+      >
+        Cargando sesión...
+      </div>
+    );
   }
 
   return (
     <>
-      {showMenu && <HamburgerMenu onLogout={handleLogout} onNavigate={navigate} user={user} />}
+      {showMenu && (
+        <HamburgerMenu
+          onLogout={handleLogout}
+          onNavigate={navigate}
+          user={user}
+        />
+      )}
       {/* Puedes mostrar authError aquí si quieres un mensaje de error global */}
       {/* {authError && <p style={{color: 'red', textAlign: 'center'}}>{authError}</p>} */}
       <Routes>
@@ -116,15 +136,27 @@ function AppWrapper() {
 
         <Route
           path="/home"
-          element={<ProtectedRoute isAuthenticated={isAuthenticated}><HomePage user={user} /></ProtectedRoute>}
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <HomePage user={user} />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/dashboards"
-          element={<ProtectedRoute isAuthenticated={isAuthenticated}><DashboardsPage user={user} /></ProtectedRoute>}
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <DashboardsPage user={user} />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/conversationsDash/:phoneNumberId"
-          element={<ProtectedRoute isAuthenticated={isAuthenticated}><DashboardPage user={user} /></ProtectedRoute>}
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <DashboardPage user={user} />
+            </ProtectedRoute>
+          }
         />
 
         <Route
@@ -136,8 +168,27 @@ function AppWrapper() {
           }
         />
 
-        <Route path="/" element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} />
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} />
+        <Route
+          path="/myAgents"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <MyAgentsPage user={user} />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/"
+          element={
+            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+          }
+        />
       </Routes>
     </>
   );
