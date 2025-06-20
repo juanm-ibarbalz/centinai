@@ -1,16 +1,8 @@
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
 
-export default function LogoutButton() {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
+export default function LogoutButton({ onClick }) {
   return createPortal(
-    <button className="logout-button" onClick={handleClick}>
+    <button className="logout-button" onClick={onClick}>
       Cerrar sesión
     </button>,
     document.body

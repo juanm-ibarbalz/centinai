@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./MenuHamburguesa.css";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton"; // ✅ IMPORTACIÓN
@@ -10,7 +10,7 @@ import configIcon from "../assets/icons/ic_settings.svg";
 import userIcon from "../assets/icons/ic_user.svg";
 import robotIcon from "../assets/icons/ic_robot.svg";
 
-const HamburgerMenu = ({ userName = "Usuario" }) => {
+const HamburgerMenu = ({ userName = "Usuario", onLogout }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showLabels, setShowLabels] = useState(false);
@@ -31,11 +31,6 @@ const HamburgerMenu = ({ userName = "Usuario" }) => {
       setShowLabels(false);
       setTimeout(() => setIsOpen(false), 0);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
   };
 
   return (
@@ -82,7 +77,7 @@ const HamburgerMenu = ({ userName = "Usuario" }) => {
       {/* 🔽 Botón de logout antes del footer */}
       {isOpen && (
         <div className="logout-button-container">
-          <LogoutButton />
+          <LogoutButton onClick={onLogout} />
         </div>
       )}
 
