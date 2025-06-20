@@ -1,9 +1,6 @@
 import { z } from "zod";
 
-export const listMetricsQuerySchema = z.object({
-  agentPhoneNumberId: z.string().min(1, {
-    message: "El número del agente es obligatorio",
-  }),
+const paginationSchema = z.object({
   limit: z
     .string()
     .optional()
@@ -19,6 +16,14 @@ export const listMetricsQuerySchema = z.object({
       message: "El offset debe ser un número entero mayor o igual a 0",
     }),
 });
+
+export const listMetricsQuerySchema = paginationSchema.extend({
+  agentPhoneNumberId: z.string().min(1, {
+    message: "El número del agente es obligatorio",
+  }),
+});
+
+export const listAllMetricsQuerySchema = paginationSchema;
 
 export const getMetricParamsSchema = z.object({
   conversationId: z

@@ -15,12 +15,11 @@ import { useSessionLoader } from "../hooks/useSessionLoader";
 
 const Dashboards = () => {
   const [selectedDays, setSelectedDays] = useState(7); // default: 7 días
-  const graphCards = ["Daily Session Volume", "Costo total por LLM"];
 
-  const { user, token } = useSessionLoader();
-  const agentPhoneNumberId = user?.agentPhoneNumberId; // o como corresponda
+  const { token } = useSessionLoader();
 
-  const { data, loading } = useMetricData({ agentPhoneNumberId, source: "api", token });
+  // Al no pasar agentPhoneNumberId, el hook busca por usuario por defecto.
+  const { data, loading } = useMetricData({ source: "api", token });
   console.log("Datos métricas adaptados:", data, "loading:", loading);
 
   if (!loading && (!data || data.length === 0)) {

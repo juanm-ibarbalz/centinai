@@ -19,6 +19,16 @@ export const findMetricsByAgent = async (
 };
 
 /**
+ * Devuelve todas las métricas de un usuario (sólo del usuario autenticado).
+ */
+export const findMetricsByUser = async (userId, limit, offset) => {
+  return await Metric.find({ userId })
+    .sort({ endTime: -1 })
+    .skip(offset)
+    .limit(limit);
+};
+
+/**
  * Devuelve las métricas de una conversación si le pertenece al usuario.
  */
 export const findMetricByConversationIdAndUser = async (

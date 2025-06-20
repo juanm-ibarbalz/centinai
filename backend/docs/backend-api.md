@@ -546,6 +546,33 @@ Authorization: Bearer <token>
 
 ---
 
+### GET /metrics/all
+
+Returns all metrics for the authenticated user, regardless of the agent. Supports pagination.
+
+**Query parameters:**
+
+- `limit` (optional): maximum number of results to return. Default: 20.
+- `offset` (optional): number of results to skip. Default: 0.
+
+**Required header:**
+
+```
+Authorization: Bearer <token>
+```
+
+**Responses:**
+
+- 200 OK – Metrics successfully returned.
+- 400 Bad Request – Invalid parameters.
+- 401 Unauthorized – Invalid or missing token.
+
+**Example response:**
+
+The response format is the same as for `GET /metrics`.
+
+---
+
 ### GET /metrics/:conversationId
 
 Returns the metrics for a specific conversation if it belongs to the authenticated user.
