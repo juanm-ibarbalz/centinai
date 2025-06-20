@@ -8,6 +8,8 @@ import Conversaciones from "../metricas/Conversaciones";
 import TotalTokens from "../metricas/TotalTokens";
 import TotalCostRate from "../metricas/TotalCostRate";
 import CostPerSession from "../metricas/CostPerSession";
+import GraficoDonaSessionStatus from "../metricas/GraficoDonaSessionStatus";
+import AverageDurationChart from "../metricas/AverageDurationChart";
 
 const Dashboards = () => {
   const [selectedDays, setSelectedDays] = useState(7); // default: 7 días
@@ -40,12 +42,12 @@ const Dashboards = () => {
 
       {/* Gráficas (inferior) */}
       <div className="graphs-row">
-        {graphCards.map((title, i) => (
-          <div className="graph-card" key={i}>
-            <h3>{title}</h3>
-            <div className="graph-placeholder">GRAFICO</div>
-          </div>
-        ))}
+        <div className="graph-card">
+          <GraficoDonaSessionStatus data={DATAPRUEBA} days={selectedDays} />
+        </div>
+        <div className="graph-card">
+          <AverageDurationChart days={selectedDays} />
+        </div>
       </div>
     </div>
   );
