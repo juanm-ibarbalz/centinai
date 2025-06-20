@@ -59,7 +59,7 @@ def test_initiate_analyzer_full_cycle():
         "userId",
         "userCellphone",
         "agentData",
-        "createdAt",
+        "startTime",
         "endTime",
         "durationSeconds",
         "tokenUsage",

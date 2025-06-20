@@ -1,5 +1,5 @@
 {
-  "_id": "conv-54911111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa15600042",
+  "_id": "conv-549111110200000-1051110001111001-f30c5902-6bc7-4ff9-accd-c4aa15600042",
   "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
   "userCellphone": "5491111000000",
   "agentData": {
@@ -8,7 +8,7 @@
     "agentName": "AuroraBot Plus",
     "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c"
   },
-  "createdAt": "2025-05-09T17:07:10.649+00:00",
+  "startTime": "2025-05-09T17:07:10.649+00:00",
   "endTime": "2025-05-09T19:10:00.582+00:00",
   "durationSeconds": 180,
   "tokenUsage": {
@@ -32,5 +32,5 @@
     "channel": "webchat",
     "sentimentTrend": "negative"
   },
-  "conversationId": "conv-54911111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa15600042"
+  "conversationId": "conv-549111110200000-1051110001111001-f30c5902-6bc7-4ff9-accd-c4aa15600042"
 }

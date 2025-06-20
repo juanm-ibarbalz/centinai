@@ -3,8 +3,8 @@
 import os
 import json
 import pytest
-from analyzer.behavior_analysis.success_engine import SuccessEvaluatorEngine
-from analyzer.behavior_analysis.success_context import SuccessEvaluationContext
+from ..behavior_analysis.success_engine import SuccessEvaluatorEngine
+from ..behavior_analysis.success_context import SuccessEvaluationContext
 
 def _calc_messages_by_direction(messages, direction):
     return len([msg for msg in messages if msg.get("direction") == direction])

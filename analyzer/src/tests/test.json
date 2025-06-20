@@ -1,10 +1,12 @@
 {
     "conversation": {
-      "_id": "conv-54911111000000-105111000111001-f30c5902-6bc7-4ff9-accd-c4aa15600042",
+      "_id": "conv-549111110200000-1051110001111001-f30c5902-6bc7-4ff9-accd-c4aa15600042",
       "from": "5491111000000",
       "userName": "Sofía",
       "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
       "status": "closed",
+      "startTime": "2025-05-09T17:07:10.649+00:00",
+      "lastUpdated": "2025-05-09T17:07:10.974+00:00",
       "createdAt": "2025-05-09T17:07:10.650+00:00",
       "updatedAt": "2025-05-09T19:10:00.582+00:00",
       "agentPhoneNumberId": "105111000111001",

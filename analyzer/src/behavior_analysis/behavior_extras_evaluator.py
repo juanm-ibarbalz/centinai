@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from difflib import SequenceMatcher
-from analyzer.behavior_analysis.success_context import SuccessEvaluationContext
+from .success_context import SuccessEvaluationContext
 
 class BehaviorExtrasEvaluator:
     def run(self, context: SuccessEvaluationContext) -> SuccessEvaluationContext:
@@ -44,7 +44,7 @@ class BehaviorExtrasEvaluator:
 
     def _is_long_duration(self, conversation: dict) -> bool:
         try:
-            start = datetime.fromisoformat(conversation["createdAt"].replace("Z", "+00:00"))
+            start = datetime.fromisoformat(conversation["startTime"].replace("Z", "+00:00"))
             end = datetime.fromisoformat(conversation["endTime"].replace("Z", "+00:00"))
             duration_minutes = (end - start).total_seconds() / 60
             return duration_minutes > 20

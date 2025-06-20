@@ -1,8 +1,9 @@
 # analyzer/behavior_analysis/keyword_detector.py
 
-from analyzer.behavior_analysis.success_context import SuccessEvaluationContext
-from analyzer.behavior_analysis.keyword_loader import load_keywords
-from analyzer.utils.util_get_messages_by_direction import get_messages_by_direction
+from .success_context import SuccessEvaluationContext
+from src.behavior_analysis.keyword_loader import load_keywords
+from src.utils.util_get_messages_by_direction import get_messages_by_direction
+import os
 
 class KeywordDetector:
     def __init__(self):

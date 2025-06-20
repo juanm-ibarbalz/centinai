@@ -1,14 +1,15 @@
 # analyzer/services/process.py
 
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 from datetime import datetime
 import os
 import json
-from analyzer.storage.session_writter import save_session
-from analyzer.behavior_analysis.success_evaluator import SuccessEvaluator
-from analyzer.db.agent_repo import AgentRepo
-from analyzer.services.token_utils import tokenize_texts, calculate_cost_with_tokonomics
-from analyzer.utils.util_get_messages_by_direction import get_messages_by_direction
+
+from ..storage.session_writter import save_session
+from ..behavior_analysis.success_evaluator import SuccessEvaluator
+from ..utils.util_get_messages_by_direction import get_messages_by_direction
+from ..db.agent_repo import AgentRepo
+from .token_utils import tokenize_texts, calculate_cost_with_tokonomics
 
 
 def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
@@ -52,7 +53,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
         "userId": conv["userId"],
         "userCellphone": conv["from"],
         "agentData": agent_data,
-        "createdAt": conv["createdAt"],
+        "startTime": conv["startTime"],
         "endTime": conv.get("endTime"),
         "durationSeconds": duration,
         "tokenUsage": token_usage,
@@ -131,7 +132,6 @@ def _calc_tokens(messages: List[Dict[str, Any]], conversation: Dict[str, Any], a
     }
 
 
-
 def _get_agent_data_from_conversation(conversation: Dict[str, Any]) -> Dict[str, Any]:
     user_id = conversation.get("userId")
     if not user_id:
@@ -144,7 +144,6 @@ def _get_agent_data_from_conversation(conversation: Dict[str, Any]) -> Dict[str,
     if not agent_data:
         raise ValueError(f"No se encontró agente con userId={user_id}")
     return agent_data
-
 
 
 def _determinate_successful(conversation: dict, messages: list, message_stats: dict) -> bool:
