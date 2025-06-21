@@ -140,10 +140,11 @@ export function buildConversationProjectStage() {
   return {
     $project: {
       _id: 1,
-      userId: 1,
-      agentPhoneNumberId: 1,
+      userName: 1,
+      status: 1,
       createdAt: 1,
       updatedAt: 1,
+      endTime: 1,
       "metrics.durationSeconds": 1,
       "metrics.tokenUsage.cost": 1,
     },
