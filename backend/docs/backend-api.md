@@ -71,7 +71,8 @@ Authenticates a user and returns a JWT token.
     "token": "jwt-token-here",
     "user": {
       "id": "usr-123",
-      "email": "user@example.com"
+      "email": "user@example.com",
+      "username": "name"
     }
   }
   ```
