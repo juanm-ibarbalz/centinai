@@ -5,11 +5,12 @@ from datetime import datetime
 import os
 import json
 
-from ..storage.session_writter import save_session
-from ..behavior_analysis.success_evaluator import SuccessEvaluator
-from ..utils.util_get_messages_by_direction import get_messages_by_direction
-from ..db.agent_repo import AgentRepo
-from .token_utils import tokenize_texts, calculate_cost_with_tokonomics
+from storage.session_writter import save_session
+from behavior_analysis.success_evaluator import SuccessEvaluator
+from utils.util_get_messages_by_direction import get_messages_by_direction
+from db.agent_repo import AgentRepo
+from services.token_utils import tokenize_texts, calculate_cost_with_tokonomics
+from db.sessions_repo import SessionRepo
 
 
 def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
@@ -53,7 +54,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
         "userId": conv["userId"],
         "userCellphone": conv["from"],
         "agentData": agent_data,
-        "startTime": conv["startTime"],
+        "createdAt": conv["createdAt"],
         "endTime": conv.get("endTime"),
         "durationSeconds": duration,
         "tokenUsage": token_usage,
@@ -73,6 +74,12 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
         json.dump(session_doc, f, ensure_ascii=False, indent=2)
 
     save_session(session_doc)
+    # Guardar también en la colección 'metrics'
+    repo = SessionRepo()
+    try:
+        repo.save_session(session_doc)
+    finally:
+        repo.close()
     return session_doc
 
 

@@ -1,7 +1,7 @@
 # analyzer/src/behavior_analysis/success_evaluator.py
 
-from .keyword_detector import KeywordDetector
-from .behavior_extras_evaluator import BehaviorExtrasEvaluator
+from behavior_analysis.keyword_detector import KeywordDetector
+from behavior_analysis.behavior_extras_evaluator import BehaviorExtrasEvaluator
 
 class SuccessEvaluator:
     def __init__(self, conversation: dict, messages: list, message_stats: dict):
