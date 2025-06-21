@@ -32,7 +32,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     duration = _calc_conversation_duration(normalized_msgs)
     full_agent = _get_agent_data_from_conversation(conv)
     agent_data = {
-        "agentId": full_agent.get("agentId"),
+        "agentId": full_agent.get("_id"),
         "modelLLM": full_agent.get("modelName"),
         "agentName": full_agent.get("name"),
         "userId": full_agent.get("userId")

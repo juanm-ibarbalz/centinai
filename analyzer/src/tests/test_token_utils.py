@@ -4,7 +4,7 @@ import os
 import json
 import pytest
 
-from analyzer.services.token_utils import tokenize_texts, calculate_cost_with_tokonomics
+from src.services.token_utils import tokenize_texts, calculate_cost_with_tokonomics
 
 @pytest.fixture(scope="module")
 def agent_texts():
