@@ -19,7 +19,7 @@ const Dashboards = () => {
   const { token } = useSessionLoader();
 
   // Al no pasar agentPhoneNumberId, el hook busca por usuario por defecto.
-  const { data, loading } = useMetricData({ source: "api", token });
+  const { data, loading } = useMetricData({ source: "mock", token });
   console.log("Datos métricas adaptados:", data, "loading:", loading);
 
   if (!loading && (!data || data.length === 0)) {

@@ -228,6 +228,7 @@ button:hover {
   font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
+  height: 50px;
 }
 
 .auth-form form button:hover {
@@ -320,3 +321,71 @@ button:hover {
   width: auto;
   max-width: calc(100% - 80px);
 }
+
+
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #29ffd8;
+  background-color: #1a1e3f;
+  color: #e0f7fa;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: #00b2ff;
+  box-shadow: 0 0 10px #00b2ff;
+}
+
+.auth-form input::placeholder {
+  color: #b0bec5;
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 2.5rem; /* Espacio para el ícono */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  cursor: pointer;
+  color: #29FFD8;
+  display: flex;
+  align-items: center;
+}
+
+.password-requirements {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.password-requirements li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 4px;
+}
+
+.password-requirements li.valid {
+  color: #29FFD8; /* verde turquesa */
+}
+
+.password-requirements li.invalid {
+  color: #FF6B6B; /* rojo */
+}
+

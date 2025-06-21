@@ -1,61 +1,78 @@
-// frontend/src/pages/Register.jsx
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import "../App.css"; // Asegúrate que la ruta es correcta
-import { API_URL } from "../config"; // Asumiendo que config.js está en frontend/src/
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../App.css";
+import { API_URL } from "../config";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
-// Renombré la prop setAuthError a setAuthErrorOuter
 export default function RegisterPage({ onSuccess, setAuthErrorOuter }) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [showRequirements, setShowRequirements] = useState(false);
+
   const navigate = useNavigate();
+
+  const validatePassword = (pwd) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,15}$/;
+    return regex.test(pwd);
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    const isValid = validatePassword(value);
+    setPasswordValid(isValid);
+
+    // Mostrar requisitos si está tocado o vuelve a fallar
+    if (passwordTouched) {
+      setShowRequirements(!isValid);
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setMessage("");
     if (setAuthErrorOuter) setAuthErrorOuter(null);
-    console.log("Register.jsx: handleRegister iniciado"); // LOG 1 (Register)
 
     if (password !== repeatPassword) {
-      setMessage('❌ Las contraseñas no coinciden');
-      if (setAuthErrorOuter) setAuthErrorOuter('Las contraseñas no coinciden');
+      setMessage("❌ Las contraseñas no coinciden");
+      if (setAuthErrorOuter) setAuthErrorOuter("Las contraseñas no coinciden");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setMessage("❌ La contraseña no cumple con los requisitos de seguridad.");
       return;
     }
 
     try {
       const res = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
       });
-      console.log("Register.jsx: Respuesta de API fetch:", res); // LOG 1.5 (Register)
 
       const data = await res.json();
-      console.log("Register.jsx: Datos de API (después de .json()):", data); // LOG 2 (Register)
 
-      if (res.ok && data.token && data.user) { // Verifica también data.user
-        console.log("Register.jsx: Token y usuario recibidos:", data.token, data.user); // LOG 3 (Register)
-        // Asumiendo que data.user es el objeto usuario completo
-
-        if (typeof onSuccess === 'function') {
-          console.log("Register.jsx: Llamando a onSuccess (setupSession)..."); // LOG 4 (Register)
-          onSuccess(data.user, data.token); // Llama a setupSession
-          // navigate("/home"); // La navegación la maneja el cambio de estado en App.jsx
+      if (res.ok && data.token && data.user) {
+        if (typeof onSuccess === "function") {
+          onSuccess(data.user, data.token);
         } else {
-          console.error("Register.jsx: onSuccess no es una función.");
+          console.error("onSuccess no es una función.");
           setMessage("❌ Error interno al procesar el registro.");
         }
       } else {
-        const errorMsg = data.message || 'Error al registrar o respuesta inválida.';
-        console.error("Register.jsx: " + errorMsg, data); // LOG 5 (Register)
+        const errorMsg =
+          data.message || "Error al registrar o respuesta inválida.";
         setMessage(`❌ ${errorMsg}`);
         if (setAuthErrorOuter) setAuthErrorOuter(errorMsg);
       }
     } catch (err) {
-      console.error("Register.jsx: Error en fetch o .json():", err); // LOG 6 (Register)
       const errorMsg = err.message || "Error al conectar con el servidor";
       setMessage(`❌ ${errorMsg}`);
       if (setAuthErrorOuter) setAuthErrorOuter(errorMsg);
@@ -64,15 +81,106 @@ export default function RegisterPage({ onSuccess, setAuthErrorOuter }) {
 
   return (
     <div className="auth-form">
-      {/* <h2>Crear cuenta</h2> // El título ya está en AuthPage/MobileAuthPage */}
       <form onSubmit={handleRegister}>
-        <input type="text" placeholder="Nombre completo" value={name} onChange={(e) => setName(e.target.value)} required />
-        <input type="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <input type="password" placeholder="Repetir contraseña" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} required />
+        <input
+          type="text"
+          placeholder="Nombre completo"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          maxLength={20}
+          required
+        />
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          maxLength={30}
+          required
+        />
+
+        <div className="password-input-wrapper">
+          <input
+  type={showPassword ? "text" : "password"}
+  placeholder="Contraseña"
+  value={password}
+  onChange={handlePasswordChange}
+  onFocus={() => {
+    setPasswordTouched(true);
+    setShowRequirements(true);
+  }}
+  onBlur={() => {
+    setTimeout(() => {
+      if (!validatePassword(password)) {
+        setShowRequirements(true);
+      } else {
+        setShowRequirements(false);
+      }
+    }, 100);
+  }}
+  maxLength={15}
+  required
+/>
+
+          <span
+            className="toggle-password"
+            onClick={() => setShowPassword((prev) => !prev)}
+            title={showPassword ? "Ocultar" : "Mostrar"}
+          >
+            {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+          </span>
+        </div>
+
+        {showRequirements && (
+          <ul
+            className={`password-requirements ${
+              passwordValid ? "valid" : "invalid"
+            }`}
+          >
+            <li
+              className={
+                password.length >= 8 && password.length <= 15
+                  ? "valid"
+                  : "invalid"
+              }
+            >
+              {password.length >= 8 && password.length <= 15 ? "✅" : "❌"}{" "}
+              Entre 8 y 15 caracteres
+            </li>
+            <li className={/[A-Z]/.test(password) ? "valid" : "invalid"}>
+              {/[A-Z]/.test(password) ? "✅" : "❌"} Al menos una mayúscula
+            </li>
+            <li className={/[0-9]/.test(password) ? "valid" : "invalid"}>
+              {/[0-9]/.test(password) ? "✅" : "❌"} Al menos un número
+            </li>
+            <li
+              className={
+                /[!@#$%^&*(),.?":{}|<>]/.test(password) ? "valid" : "invalid"
+              }
+            >
+              {/[!@#$%^&*(),.?":{}|<>]/.test(password) ? "✅" : "❌"} Al menos
+              un símbolo
+            </li>
+          </ul>
+        )}
+
+        <input
+          type="password"
+          placeholder="Repetir contraseña"
+          value={repeatPassword}
+          onChange={(e) => setRepeatPassword(e.target.value)}
+          maxLength={15}
+          required
+        />
+
         <button type="submit">Registrarse</button>
       </form>
-      {message && <p className={`msg ${message.startsWith('❌') ? 'error' : 'success'}`}>{message}</p>}
+
+      {message && (
+        <p className={`msg ${message.startsWith("❌") ? "error" : "success"}`}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }

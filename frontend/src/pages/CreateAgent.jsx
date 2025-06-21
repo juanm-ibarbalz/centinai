@@ -123,7 +123,7 @@ const CreateAgent = () => {
       localStorage.removeItem("agentStep1");
       navigate("/home");
     } catch (error) {
-      console.error("Error al crear el agente:", error);
+      console.error("Error al añadir el agente:", error);
     }
   };
 
@@ -135,7 +135,7 @@ const CreateAgent = () => {
 
   return (
     <div className="create-agent-container">
-      <h2>Crear nuevo agente</h2>
+      <h2>Añadir nuevo agente</h2>
 
       <div className="stepper">
         <div
