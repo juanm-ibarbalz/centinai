@@ -14,6 +14,7 @@ export default function Mensajes() {
         const token = localStorage.getItem("token");
         const res = await fetch(
           `${import.meta.env.VITE_API_URL}/messages?conversationId=${id}`,
+          
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -22,7 +23,8 @@ export default function Mensajes() {
         );
 
         const result = await res.json();
-        setMensajes(result.data?.messages || []);
+        setMensajes(result.messages || []);
+              console.log(result);
       } catch (error) {
         console.error("Error al obtener mensajes:", error);
       } finally {
@@ -45,11 +47,13 @@ export default function Mensajes() {
 
   return (
     <div className="mensajes-container">
+      
       <button className="back-dashboard-btn" onClick={() => navigate(-1)}>
         Volver
       </button>
 
       <h1 className="mensajes-titulo">📩 Mensajes de la conversación</h1>
+
 
       {loading ? (
         <p>Cargando mensajes...</p>
@@ -58,6 +62,7 @@ export default function Mensajes() {
       ) : (
         <ul style={{ listStyle: "none", padding: 0 }}>
           {mensajes.map((msg) => (
+            
             <li
               key={msg._id}
               className={`mensaje-item ${

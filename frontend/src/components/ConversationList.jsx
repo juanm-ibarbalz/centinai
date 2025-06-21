@@ -68,7 +68,7 @@ export default function ConversationList({ conversations }) {
             <td style={td}>{conv.from || "-"}</td>
             <td style={td}>{conv.status || "-"}</td>
             <td style={td}>{calcularDuracion(conv.startTime, conv.endTime)}</td>
-            <td style={td}>{formatDate(conv.startTime)}</td>
+            <td style={td}>{formatDate(conv.createdAt)}</td>
             <td style={td}>{formatDate(conv.endTime)}</td>
             <td style={td}>{formatDate(conv.updatedAt)}</td>
             <td style={td}>
