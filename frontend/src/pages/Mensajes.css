@@ -1,0 +1,53 @@
+/* Mensajes.css */
+
+.mensajes-container {
+  padding: 2rem;
+  color: #E0F7FA;
+  font-family: "Roboto", sans-serif;
+}
+
+.volver-btn {
+  margin-bottom: 1rem;
+  background: #A67CFF;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 10px #A67CFF;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.volver-btn:hover {
+  background: #5B91FF;
+  transform: scale(1.05);
+}
+
+.mensajes-titulo {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.mensaje-item {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: #1B1E35;
+  border-left: 5px solid #00B2FF;
+  box-shadow: 0 0 10px rgba(0, 178, 255, 0.2);
+}
+
+.mensaje-user {
+  background-color: #2A2D44;
+  border-left-color: #29FFD8;
+}
+
+.mensaje-contenido {
+  margin: 0;
+}
+
+.mensaje-timestamp {
+  font-size: 0.8rem;
+  color: #B0BEC5;
+  margin-top: 0.5rem;
+}

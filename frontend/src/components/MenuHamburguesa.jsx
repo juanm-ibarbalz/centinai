@@ -61,11 +61,6 @@ const HamburgerMenu = ({ userName = "Usuario", onLogout }) => {
           {showLabels && <span>My Agents</span>}
         </li>
 
-        <li onClick={() => handleNavigate("/xxx3")} title="XXX 3">
-          <img src={toolIcon} alt="XXX 3" className="menu-icon" />
-          {showLabels && <span>in progress...</span>}
-        </li>
-
         <li
           onClick={() => handleNavigate("/configuracion")}
           title="Configuración"

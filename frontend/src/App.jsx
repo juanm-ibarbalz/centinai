@@ -18,6 +18,7 @@ import HamburgerMenu from "./components/MenuHamburguesa"; // Asumiendo que exist
 import DashboardsPage from "./pages/Dashboards"; // Renombrado para claridad
 import CreateAgent from "./pages/CreateAgent"; // Mantenemos CreateAgent de main
 import MyAgentsPage from "./pages/myAgents";
+import Mensajes from "./pages/Mensajes";
 
 import useIsMobile from "./hooks/useIsMobile";
 import MobileAuthPage from "./pages/MobileAuth"; // Renombrado para claridad
@@ -176,6 +177,8 @@ function AppWrapper() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/mensajes/:id" element={<Mensajes />} />
 
         <Route
           path="/"
