@@ -45,3 +45,55 @@
     flex-grow: 1; /* El panel de chat ocupa el resto del espacio */
   }
 }
+.dashboard-content h2 {
+  font-family: 'Exo 2', sans-serif;
+  color: #E0F7FA;
+  margin-bottom: 1rem;
+}
+
+
+.back-to-top-left {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background-color: #A67CFF;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 10px #A67CFF;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  z-index: 10;
+}
+
+.back-to-top-left:hover {
+  background-color: #5B91FF;
+  transform: scale(1.05);
+}
+
+
+.back-dashboard-btn {
+  position: fixed;
+  top: 1.5rem;
+  left: 10rem;
+  background-color: #A67CFF;
+  color: white;
+  font-family: 'Exo 2', sans-serif;
+  border: none;
+  border-radius: 12px;
+  padding: 0.4rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  z-index: 100;
+  max-width: 100px;
+  min-height: 45px;
+}
+
+.back-dashboard-btn:hover {
+  transform: scale(1.05);
+  background-color: #5B91FF;
+}

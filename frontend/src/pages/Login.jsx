@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css"; // Asegúrate que la ruta es correcta si Login.jsx está en pages/
 import { API_URL } from "../config"; // Asumiendo que config.js está en frontend/src/
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Renombré la prop setAuthError a setAuthErrorOuter para evitar confusión con un estado local
 export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
@@ -10,6 +11,7 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,23 +23,30 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
       const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
       console.log("Login.jsx: Respuesta de API fetch:", res); // LOG 1.5
 
       const data = await res.json();
       console.log("Login.jsx: Datos de API (después de .json()):", data); // LOG 2
 
-      if (res.ok && data.token && data.user) { // Importante: Verifica también data.user
-        console.log("Login.jsx: Token y usuario recibidos:", data.token, data.user); // LOG 3
+      if (res.ok && data.token && data.user) {
+        // Importante: Verifica también data.user
+        console.log(
+          "Login.jsx: Token y usuario recibidos:",
+          data.token,
+          data.user
+        ); // LOG 3
 
         // data.user debería ser el objeto del usuario, no solo el ID.
         // Si tu API solo devuelve ID en el login, necesitarás otra llamada para obtener el usuario completo,
         // o modificar el backend. setupSession espera el objeto usuario.
         // Por ahora, asumiré que data.user es el objeto completo.
 
-        if (typeof onSuccess === 'function') {
-          console.log("Login.jsx: Llamando a onSuccess (que es setupSession)..."); // LOG 4
+        if (typeof onSuccess === "function") {
+          console.log(
+            "Login.jsx: Llamando a onSuccess (que es setupSession)..."
+          ); // LOG 4
           onSuccess(data.user, data.token); // Llama a setupSession
           // La navegación la maneja el cambio de estado de isAuthenticated en App.jsx
           // navigate("/home"); // No es estrictamente necesario aquí si App.jsx redirige bien
@@ -46,7 +55,8 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
           setMessage("❌ Error interno al procesar el login.");
         }
       } else {
-        const errorMsg = data.message || "Error al iniciar sesión o respuesta inválida.";
+        const errorMsg =
+          data.message || "Error al iniciar sesión o respuesta inválida.";
         console.error("Login.jsx: " + errorMsg, data); // LOG 5
         setMessage(`❌ ${errorMsg}`);
         if (setAuthErrorOuter) setAuthErrorOuter(errorMsg);
@@ -63,11 +73,42 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
     <div className="auth-form">
       {/* <h2>Iniciar Sesión</h2> // El título ya está en AuthPage/MobileAuthPage */}
       <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input
+          name="email" // ✅ agregado
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          maxLength={30}
+          required
+        />
+
+        <div className="password-input-wrapper">
+          <input
+            name="password" // ✅ agregado
+            type={showPassword ? "text" : "password"}
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            maxLength={15}
+            required
+          />
+          <span
+            className="toggle-password"
+            onClick={() => setShowPassword((prev) => !prev)}
+            title={showPassword ? "Ocultar" : "Mostrar"}
+          >
+            {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+          </span>
+        </div>
+
         <button type="submit">Ingresar</button>
       </form>
-      {message && <p className={`msg ${message.startsWith('❌') ? 'error' : 'success'}`}>{message}</p>}
+      {message && (
+        <p className={`msg ${message.startsWith("❌") ? "error" : "success"}`}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }

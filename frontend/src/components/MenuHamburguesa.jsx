@@ -9,6 +9,7 @@ import toolIcon from "../assets/icons/ic_tool.svg";
 import configIcon from "../assets/icons/ic_settings.svg";
 import userIcon from "../assets/icons/ic_user.svg";
 import robotIcon from "../assets/icons/ic_robot.svg";
+import agentsIcon from "../assets/icons/ic_agents.svg";
 
 const HamburgerMenu = ({ userName = "Usuario", onLogout }) => {
   const navigate = useNavigate();
@@ -50,19 +51,14 @@ const HamburgerMenu = ({ userName = "Usuario", onLogout }) => {
           {showLabels && <span>Dashboards</span>}
         </li>
 
-        <li onClick={() => handleNavigate("/createAgent")} title="CreateAgent">
+        <li onClick={() => handleNavigate("/createAgent")} title="Add Agent">
           <img src={robotIcon} alt="CreateAgent" className="menu-icon" />
           {showLabels && <span>Add Agents</span>}
         </li>
 
-        <li onClick={() => handleNavigate("/xxx2")} title="XXX 2">
-          <img src={toolIcon} alt="XXX 2" className="menu-icon" />
-          {showLabels && <span>in progress...</span>}
-        </li>
-
-        <li onClick={() => handleNavigate("/xxx3")} title="XXX 3">
-          <img src={toolIcon} alt="XXX 3" className="menu-icon" />
-          {showLabels && <span>in progress...</span>}
+        <li onClick={() => handleNavigate("/myAgents")} title="My Agents">
+          <img src={agentsIcon} alt="My Agents" className="menu-icon" />
+          {showLabels && <span>My Agents</span>}
         </li>
 
         <li

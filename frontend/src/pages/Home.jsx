@@ -1,82 +1,131 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../App.css";
-import { API_URL } from "../config";
-import AgentList from "../components/AgentList";
-import LogoutButton from "../components/LogoutButton";
+import { motion } from "framer-motion";
+import circuitBG from "../assets/video/circuit_background.mp4";
+import "./Home.css";
+import logo from "../assets/centinai-iso.png";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [agents, setAgents] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    if (window.Android?.logoutToken) {
-      window.Android.logoutToken();
-    }
-    navigate("/login");
-  };
-
-  useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const res = await fetch(`${API_URL}/agents`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-        setAgents(data);
-      } catch (err) {
-        console.error("Error al obtener agentes:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAgents();
-  }, []);
 
   return (
-    <>
-      <div className="dashboard-container">
-        <h1>¡Hola desde la Home pública! 👋</h1>
+    <div className="home-container">
+      <video className="home-video" autoPlay loop muted playsInline>
+        <source src={circuitBG} type="video/mp4" />
+        Tu navegador no soporta video HTML5.
+      </video>
 
-        <button
-          style={{
-            marginBottom: "1rem",
-            padding: "0.7rem 1.2rem",
-            backgroundColor: "#29FFD8",
-            color: "#0B0E23",
-            border: "none",
-            fontWeight: "bold",
-            borderRadius: "8px",
-            cursor: "pointer",
-            boxShadow: "0 0 12px #29FFD8",
-          }}
-          onClick={() => navigate("/createAgent")}
+        <div className="home-overlay" />
+
+      <div className="home-content">
+        {/* 👋 Bienvenida visual */}
+        <motion.div
+          className="home-emoji"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          style={{ marginBottom: 0 }}
         >
-          AÑADIR AGENTE
-        </button>
+          <img src={logo} alt="CentinAI Logo" className="home-logo" />
+        </motion.div>
 
-        {loading ? (
-          <p>Cargando agentes...</p>
-        ) : agents.length === 0 ? (
-          <p>No tenés agentes registrados todavía.</p>
-        ) : (
-          <AgentList
-            agents={agents}
-            onViewConversations={(phoneNumberId) =>
-              navigate(`/conversationsDash/${phoneNumberId}`)
-            }
-          />
-        )}
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="home-title"
+        >
+          Bienvenido a <span className="text-highlight">CentinAI</span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+          className="home-subtitle"
+        >
+          Supervisión inteligente de tus agentes conversacionales.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.8 }}
+          className="home-actions"
+        >
+          <button
+            onClick={() => navigate("/createAgent")}
+            className="primary-btn"
+          >
+            Añadir Agente
+          </button>
+          <button
+            onClick={() => navigate("/myAgents")}
+            className="secondary-btn"
+          >
+            Ver Agentes
+          </button>
+          <button
+            onClick={() => navigate("/dashboards")}
+            className="secondary-btn"
+          >
+            Ver Métricas
+          </button>
+        </motion.div>
+
+        {/* ✅ Estado del sistema */}
+        <motion.div
+          className="home-status"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.6, duration: 0.7 }}
+        >
+          <span className="status-dot green" /> Sistema Operativo — Última sync:
+          hace 2 min
+        </motion.div>
+
+        {/* ✅ Paneles laterales */}
+        <div className="home-panels">
+          <motion.div
+            className="home-news"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+          >
+            <h3>📰 Novedades recientes</h3>
+            <ul>
+              <li>✅ Nuevo módulo de métricas semánticas ya disponible</li>
+              <li>⚙️ Mantenimiento el 23/06 de 2:00 a 4:00 AM</li>
+              <li>🧠 Entrenamiento mejorado para bots con frases reales</li>
+            </ul>
+          </motion.div>
+
+          <motion.div
+            className="home-activity"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4, duration: 0.8 }}
+          >
+            <h3>📊 Actividad reciente</h3>
+            <ul>
+              <li>🤖 Bot "Lucía" respondió 128 veces hoy</li>
+              <li>📁 Exportaste métricas el 19/06</li>
+              <li>🛠️ Se editó el agente “Soporte Técnico”</li>
+            </ul>
+          </motion.div>
+        </div>
+
+        {/* ✅ Frase del día debajo */}
+        <motion.div
+          className="home-tip"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.8, duration: 0.7 }}
+        >
+          💬 “Usá métricas semánticas para detectar desviaciones de intención.”
+        </motion.div>
       </div>
-    </>
+    </div>
   );
 };
 

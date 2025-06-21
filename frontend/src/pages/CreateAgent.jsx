@@ -136,7 +136,7 @@ const CreateAgent = () => {
       localStorage.removeItem("agentStep1");
       navigate("/home");
     } catch (error) {
-      console.error("Error al crear el agente:", error);
+      console.error("Error al añadir el agente:", error);
     }
   };
 
@@ -148,7 +148,7 @@ const CreateAgent = () => {
 
   return (
     <div className="create-agent-container">
-      <h2>Crear nuevo agente</h2>
+      <h2>Añadir nuevo agente</h2>
 
       <div className="stepper">
         <div
@@ -191,6 +191,7 @@ const CreateAgent = () => {
                 type="text"
                 className="phone-input-medium"
                 placeholder="Código área"
+                maxLength={5}
                 value={form.areaCode}
                 onChange={(e) => {
                   if (isNumeric(e.target.value)) {
@@ -203,6 +204,7 @@ const CreateAgent = () => {
                 type="text"
                 className="phone-input-large"
                 placeholder="Número"
+                maxLength={10}
                 value={form.localNumber}
                 onChange={(e) => {
                   if (isNumeric(e.target.value)) {
@@ -217,6 +219,7 @@ const CreateAgent = () => {
               id="name"
               type="text"
               name="name"
+              maxLength={20}
               value={form.name}
               onChange={handleChange}
               required
@@ -231,6 +234,7 @@ const CreateAgent = () => {
               id="description"
               type="text"
               name="description"
+              maxLength={50}
               value={form.description}
               onChange={handleChange}
               required
@@ -303,6 +307,7 @@ const CreateAgent = () => {
                 <input
                   type="text"
                   name="texto"
+                  maxLength={30}
                   value={form.texto || ""}
                   onChange={(e) => setForm({ ...form, texto: e.target.value })}
                   required
@@ -312,6 +317,7 @@ const CreateAgent = () => {
                 <input
                   type="text"
                   name="emisor"
+                  maxLength={30}
                   value={form.emisor || ""}
                   onChange={(e) => setForm({ ...form, emisor: e.target.value })}
                   required
@@ -321,6 +327,7 @@ const CreateAgent = () => {
                 <input
                   type="text"
                   name="tiempo"
+                  maxLength={10}
                   value={form.tiempo || ""}
                   onChange={(e) => setForm({ ...form, tiempo: e.target.value })}
                   required
@@ -334,6 +341,7 @@ const CreateAgent = () => {
                 <input
                   type="text"
                   name="customMapping"
+                  maxLength={30}
                   value={form.customMapping || ""}
                   onChange={(e) =>
                     setForm({ ...form, customMapping: e.target.value })
@@ -381,6 +389,7 @@ const CreateAgent = () => {
                 <input
                   type="text"
                   name="authValue"
+                  maxLength={30}
                   value={form.authValue || ""}
                   onChange={(e) =>
                     setForm({ ...form, authValue: e.target.value })
