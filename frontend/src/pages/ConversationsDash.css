@@ -1,24 +1,47 @@
-.dashboard-container {
-  padding: 2rem;
-  position: relative;
+/* frontend/src/pages/ConversationsDash.css */
+/* Estilo Base (Mobile-First) */
+.conversationsContainer {
+  display: flex;
+  flex-direction: column; /* Apilado vertical en móvil */
+  width: 100%;
+  height: calc(100vh - 80px); /* Ocupa toda la altura menos el navbar, aprox. */
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
 }
 
-.dashboard-header {
-  position: relative;
-  text-align: center;
-  margin-bottom: 2rem;
-  padding-left: 1rem;
+.conversationList {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm);
+  overflow-y: auto; /* Permite scroll si la lista es larga */
+  /* En móvil, le damos una altura fija para que no ocupe toda la pantalla */
+  flex: 0 0 200px;
 }
 
-.dashboard-header h1 {
-  font-size: 2.5rem;
-  color: #29FFD8;
-  font-family: 'Exo 2', sans-serif;
-  margin: 0;
+.chatPanel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  flex-grow: 1; /* Ocupa el resto del espacio */
+  display: flex;
+  flex-direction: column;
 }
 
-.dashboard-content h2 {
-  font-family: 'Exo 2', sans-serif;
-  color: #E0F7FA;
-  margin-bottom: 1rem;
+/* --- Mejora para Tablets y Escritorio --- */
+@media (min-width: 768px) {
+  .conversationsContainer {
+    flex-direction: row; /* Uno al lado del otro */
+    padding: var(--spacing-lg);
+  }
+
+  .conversationList {
+    flex: 0 0 300px; /* Ancho fijo para la lista de conversaciones */
+    height: auto; /* La altura se ajusta al contenedor */
+  }
+
+  .chatPanel {
+    flex-grow: 1; /* El panel de chat ocupa el resto del espacio */
+  }
 }

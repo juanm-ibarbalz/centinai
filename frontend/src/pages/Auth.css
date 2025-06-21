@@ -1,162 +1,195 @@
+/* =================================================================== */
+/*        CSS Definitivo para Auth.jsx (Mobile-First y Responsivo)       */
+/* =================================================================== */
+
+/* --- Contenedor de página completa --- */
 .auth-container {
-    height: 100vh;
-    width: 100%;
-    background-color: #0B0E23;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0B0E23;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+/* --- Contenedor principal que agrupa todo --- */
+.auth-split-container {
+  position: relative; /* ¡MUY IMPORTANTE! Para que el logo se posicione relativo a este div */
+  display: flex;
+  flex-direction: column; /* Apilado vertical para móvil por defecto */
+  width: 100%;
+  max-width: 420px; /* Un ancho máximo para que no se vea mal en móviles grandes */
+  height: auto;
+  background-color: transparent; /* El fondo lo darán los hijos */
+  border-radius: 20px;
+  margin-top: 50px; /* Dejamos espacio para que el logo no se pise con el contenido de la página */
+  transition: all 0.4s ease;
+}
+
+/* --- Logo Superpuesto --- */
+.auth-logo-wrapper {
+  position: absolute;
+  top: -50px; /* Empuja el logo hacia arriba, fuera de su contenedor padre */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #0B0E23;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #29FFD8;
+  z-index: 10;
+}
+
+.auth-logo {
+  width: 130px;
+  height: auto;
+  display: block;
+}
+
+/* --- Paneles Izquierdo y Derecho (ahora Arriba y Abajo) --- */
+.auth-left,
+.auth-right {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #0B0E23;
+  box-shadow: 0 0 25px #29FFD8; /* Sombra en ambos paneles para móvil */
+}
+
+/* --- Panel Superior (Bienvenida) --- */
+.auth-left {
+  color: #E0F7FA;
+  text-align: center;
+  gap: 1.2rem;
+  padding-top: 4rem; /* Más espacio arriba para no chocar con el logo */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom: 1px solid #29FFD8; /* Línea separadora en móvil */
+}
+
+.auth-left h2 {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 2rem;
+  color: #29FFD8;
+}
+
+.auth-left p {
+  font-size: 1rem;
+  color: #B0BEC5;
+  max-width: 90%;
+}
+
+.auth-left button {
+  padding: 0.7rem 1.4rem;
+  border: 2px solid #29FFD8;
+  background: transparent;
+  color: #29FFD8;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.auth-left button:hover {
+  background-color: #29FFD8;
+  color: #0B0E23;
+}
+
+/* --- Panel Inferior (Formulario) --- */
+.auth-right {
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+/* --- El formulario dentro del panel derecho --- */
+.auth-form { /* Esta clase viene de tu Login.jsx y Register.jsx */
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0;
+  background-color: #11142a;
+  border: 1px solid #29FFD8;
+  color: #E0F7FA;
+  border-radius: 8px;
+}
+
+.auth-form button {
+  width: 100%; /* Ocupa todo el ancho en móvil */
+  padding: 0.7rem;
+  background-color: #A67CFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-top: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.auth-form button:hover {
+  background-color: #5B91FF;
+}
+
+/* ... (resto de tus estilos como .msg, etc.) ... */
+
+/* =================================================================== */
+/*   Mejora Progresiva para Escritorio (Pantallas de 920px o más)      */
+/* =================================================================== */
+
+@media (min-width: 920px) {
+  /* Restauramos el layout de dos columnas */
+  .auth-split-container {
+      flex-direction: row; /* ¡CLAVE! Vuelve a ser horizontal */
+      width: 900px;
+      max-width: 900px; /* FIX: Permitimos que el contenedor crezca */
+      height: 520px;
+      margin-top: 3rem; /* FIX: Dejamos espacio para que el logo "respire" */
+      background-color: #0B0E23; /* FIX: Fondo uniforme para todo el contenedor */
+      box-shadow: 0 0 25px #29FFD8;
   }
 
-  .auth-logo-wrapper {
-    position: absolute;
-    top: -90px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #0B0E23;
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 0 20px #29FFD8;
-  }
-  
-  .auth-split-container {
-    display: flex;
-    width: 900px;
-    height: 520px;
-    background-color: #11142a;
-    border-radius: 20px;
-    box-shadow: 0 0 25px #29FFD8;
-    overflow: hidden;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: all 0.4s ease;
-  }
-  
+  /* Hacemos los paneles transparentes y quitamos su sombra individual */
   .auth-left,
   .auth-right {
-    flex: 1;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+      background-color: transparent; /* FIX: Los paneles ahora son transparentes */
+      box-shadow: none;
   }
-  
-  .auth-left {
-    background-color: #0B0E23;
-    color: #E0F7FA;
-    align-items: center;
-    text-align: center;
-    gap: 1.2rem;
-    border-right: 1px solid #29FFD8;
-  }
-  
-  .auth-left h2 {
-    font-family: 'Exo 2', sans-serif;
-    font-size: 2rem;
-    color: #29FFD8;
-    margin-bottom: 0.5rem;
-  }
-  
-  .auth-left p {
-    font-size: 1rem;
-    color: #B0BEC5;
-    max-width: 80%;
-  }
-  
-  .auth-left button {
-    padding: 0.7rem 1.4rem;
-    border: 2px solid #29FFD8;
-    background: transparent;
-    color: #29FFD8;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .auth-left button:hover {
-    background-color: #29FFD8;
-    color: #0B0E23;
-  }
-  
-  .auth-right {
-    background-color: #0B0E23;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .auth-form {
-    width: 100%;
-    max-width: 300px;
-  }
-  
-  .auth-form h2 {
-    text-align: center;
-    color: #E0F7FA;
-    margin-bottom: 1rem;
-    font-family: 'Exo 2', sans-serif;
-  }
-  
-  .auth-form input {
-    width: 100%;
-    padding: 0.7rem;
-    margin: 0.5rem 0;
-    background-color: #11142a;
-    border: 1px solid #29FFD8;
-    color: #E0F7FA;
-    border-radius: 8px;
-    font-size: 0.95rem;
-  }
-  
-  .auth-form button {
-    width: 80%;
-    padding: 0.7rem;
-    background-color: #A67CFF;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    margin-top: 1rem;
-    margin-left: 42.5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s;
-  }
-  
-  .auth-form button:hover {
-    background-color: #5B91FF;
-  }
-  
-  .msg {
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 0.95rem;
-  }
-  
+
+  /* RE-POSITION LOGO and ADJUST PADDING FOR DESKTOP */
   .auth-logo-wrapper {
-    position: absolute;
-    top: 0px; /* antes -90px */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #0B0E23;
-    padding: 0.8rem 1.2rem;
-    border-radius: 12px;
-    box-shadow: 0 0 20px #29FFD8;
-    z-index: 10;
+    top: -65px; /* FIX: Ajuste final para la posición del logo */
   }
-  
-  .auth-logo {
-    width: 130px;
-    height: auto;
-    animation: fadeIn 0.8s ease-in-out;
-    display: block;
+
+  /* Restauramos los estilos de los paneles */
+  .auth-left {
+      border-bottom: none;
+      border-right: 1px solid #29FFD8;
+      padding-top: 5rem; /* More padding to push content below the logo */
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+      border-top-right-radius: 0;
   }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to   { opacity: 1; transform: translateY(0); }
+
+  .auth-right {
+      padding-top: 5rem; /* Match padding to align content horizontally */
+      border-bottom-left-radius: 0;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
   }
-  
+
+  /* Restauramos el botón del formulario de Login */
+  .auth-form button {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+  }
+}

@@ -10,7 +10,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import RegisterPage from "./pages/Register"; // Renombrado para claridad
 import DashboardPage from "./pages/ConversationsDash"; // Renombrado para claridad
 import AuthPage from "./pages/Auth"; // Renombrado para claridad
 import HomePage from "./pages/Home"; // Renombrado para claridad
@@ -18,8 +17,6 @@ import HamburgerMenu from "./components/MenuHamburguesa"; // Asumiendo que exist
 import DashboardsPage from "./pages/Dashboards"; // Renombrado para claridad
 import CreateAgent from "./pages/CreateAgent"; // Mantenemos CreateAgent de main
 
-import useIsMobile from "./hooks/useIsMobile";
-import MobileAuthPage from "./pages/MobileAuth"; // Renombrado para claridad
 import { useSessionLoader } from "./hooks/useSessionLoader";
 
 // Componente para rutas que requieren autenticación
@@ -41,7 +38,6 @@ function PublicRouteOnly({ isAuthenticated, children }) {
 function AppWrapper() {
   const location = useLocation();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const {
     user,
     isAuthenticated,
@@ -77,19 +73,11 @@ function AppWrapper() {
           path="/login"
           element={
             <PublicRouteOnly isAuthenticated={isAuthenticated}>
-              {isMobile ? (
-                <MobileAuthPage
-                  onAuthSuccess={setupSession} // Usamos onAuthSuccess genérico
-                  setAuthError={setAuthError}
-                  isRegisterMode={false}
-                />
-              ) : (
-                <AuthPage
-                  onAuthSuccess={setupSession}
-                  setAuthError={setAuthError}
-                  isLoginMode={true}
-                />
-              )}
+              <AuthPage
+                onAuthSuccess={setupSession}
+                setAuthError={setAuthError}
+                isLoginMode={true}
+              />
             </PublicRouteOnly>
           }
         />
@@ -97,19 +85,11 @@ function AppWrapper() {
           path="/register"
           element={
             <PublicRouteOnly isAuthenticated={isAuthenticated}>
-              {isMobile ? (
-                <MobileAuthPage
-                  onAuthSuccess={setupSession}
-                  setAuthError={setAuthError}
-                  isRegisterMode={true}
-                />
-              ) : (
-                <AuthPage // AuthPage puede manejar también el registro
-                  onAuthSuccess={setupSession}
-                  setAuthError={setAuthError}
-                  isLoginMode={false} // Indica a AuthPage que muestre el formulario de registro
-                />
-              )}
+              <AuthPage
+                onAuthSuccess={setupSession}
+                setAuthError={setAuthError}
+                isLoginMode={false}
+              />
             </PublicRouteOnly>
           }
         />
