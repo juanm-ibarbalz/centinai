@@ -6,8 +6,21 @@ import { useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
+const modelOptions = [
+  { value: "", label: "Seleccionar modelo...", disabled: true },
+  { value: "gpt-4", label: "OpenAI - GPT-4" },
+  { value: "gpt-4o", label: "OpenAI - GPT-4o" },
+  { value: "gpt-3.5-turbo", label: "OpenAI - GPT-3.5 Turbo" },
+  { value: "gemini-1.5-pro", label: "Google - Gemini 1.5 Pro" },
+  { value: "gemini-1.5-flash", label: "Google - Gemini 1.5 Flash" },
+  { value: "claude-3-opus", label: "Anthropic - Claude 3 Opus" },
+  { value: "claude-3-sonnet", label: "Anthropic - Claude 3 Sonnet" },
+  { value: "mistral-medium", label: "Mistral - Medium" },
+];
+
 const CreateAgent = () => {
   const [step, setStep] = useState(1);
+  const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -228,37 +241,42 @@ const CreateAgent = () => {
             )}
 
             <label htmlFor="modelName">Modelo de IA:</label>
-            <select
-              id="modelName"
-              name="modelName"
-              value={form.modelName}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Seleccionar modelo...</option>
-              <option value="gpt-4">OpenAI - GPT-4</option>
-              <option value="gpt-4o">OpenAI - GPT-4o</option>
-              <option value="gpt-3.5-turbo">OpenAI - GPT-3.5 Turbo</option>
-              <option value="gemini-1.5-pro">Google - Gemini 1.5 Pro</option>
-              <option value="gemini-1.5-flash">
-                Google - Gemini 1.5 Flash
-              </option>
-              <option value="claude-3-opus">Anthropic - Claude 3 Opus</option>
-              <option value="claude-3-sonnet">
-                Anthropic - Claude 3 Sonnet
-              </option>
-              <option value="mistral-medium">Mistral - Medium</option>
-              <option value="mistral-small">Mistral - Small</option>
-              <option value="titan-text-express">
-                Amazon - Titan Text Express
-              </option>
-            </select>
+            <div className="custom-select-container">
+              <div
+                className="custom-select-trigger"
+                onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}
+                tabIndex="0"
+              >
+                {form.modelName
+                  ? modelOptions.find(m => m.value === form.modelName)?.label
+                  : "Seleccionar modelo..."}
+                <span className={`custom-arrow ${isModelDropdownOpen ? 'open' : ''}`}></span>
+              </div>
+              {isModelDropdownOpen && (
+                <div className="custom-options">
+                  {modelOptions.map((option) => (
+                    <div
+                      key={option.value}
+                      className={`custom-option ${option.disabled ? 'disabled' : ''} ${form.modelName === option.value ? 'selected' : ''}`}
+                      onClick={() => {
+                        if (!option.disabled) {
+                          setForm({ ...form, modelName: option.value });
+                          setIsModelDropdownOpen(false);
+                        }
+                      }}
+                    >
+                      {option.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             {renderValidationMessage(
-              form.modelName.trim().length >= 4,
+              form.modelName,
               "debe seleccionar un modelo válido"
             )}
 
-            <button type="button" onClick={handleNext}>
+            <button type="button" onClick={handleNext} className="next-button">
               Siguiente
             </button>
           </>

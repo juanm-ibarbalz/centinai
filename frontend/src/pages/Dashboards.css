@@ -1,95 +1,67 @@
-.dashboards-container {
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch; /* ← esto permite que los hijos se expandan */
-  width: 1600px;
-  min-height: 100vh;
-  box-sizing: border-box;
+/* frontend/src/pages/Dashboards.css */
+/* Estilo Base para Dashboard (Mobile-First) */
+.dashboardContainer {
+  width: 100%;
+  padding: var(--spacing-md);
 }
 
+.title {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-lg);
+}
 
+.agentsGrid {
+  display: grid;
+  /* La línea clave: crea columnas auto-ajustables */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.agentCard {
+  background-color: var(--color-surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.agentCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow);
+}
+
+/* --- Mejora para Escritorio --- */
+@media (min-width: 768px) {
+  .dashboardContainer {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* =================================================================== */
+/*        Estilos Definitivos para Dashboards (Mobile-First)         */
+/* =================================================================== */
+
+.dashboards-container {
+  padding: 1.5rem;
+  background-color: #0B0E23;
+  min-height: 100vh;
+  color: #E0F7FA;
+  box-sizing: border-box;
+}
 
 .dashboards-title {
-  font-size: 2.8rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.8rem;
   color: #29FFD8;
-  font-weight: bold;
   margin-bottom: 2rem;
-}
-
-
-
-/* ---- Fila superior con 5 métricas ---- */
-
-.metrics-row,
-.graphs-row {
-  display: grid;
-  gap: 2rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.metrics-row {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  margin-bottom: 2rem;
-}
-
-.metric-card {
-  background-color: #0B0E23;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 0 20px #29FFD8;
   text-align: center;
-  color: #E0F7FA;
-  font-size: 1.2rem;
-}
-
-.metric-card .placeholder {
-  margin-top: 1rem;
-  font-size: 1.1rem;
-  color: #B0BEC5;
-}
-
-/* ---- Fila inferior con 2 gráficas ---- */
-.graphs-row {
-  grid-template-columns: 1fr 1fr;
-}
-
-.graph-card {
-  background-color: #0B0E23;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 0 25px #29FFD8;
-  color: #E0F7FA;
-}
-
-.graph-placeholder {
-  margin-top: 1.5rem;
-  background: black;
-  height: 250px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 1.4rem;
-}
-
-.metric-card,
-.graph-card {
-  background-color: #0B0E23;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 0 20px #29FFD8;
-  color: #E0F7FA;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .filtro-rango {
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
+  position: relative; /* Lo hacemos relativo para que fluya en móvil */
+  margin-bottom: 1.5rem;
+  text-align: center; /* Centramos el filtro en móvil */
 }
 
 .filtro-rango select {
@@ -108,14 +80,135 @@
   background-color: #5B91FF;
 }
 
+/* --- Custom Filter Styles --- */
+.custom-filter-trigger {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  background-color: #A67CFF;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  user-select: none;
+  display: inline-block; /* Para que no ocupe todo el ancho */
+}
 
-/* Responsive */
-@media (max-width: 1200px) {
+.custom-filter-trigger:hover {
+  background-color: #5B91FF;
+}
+
+.custom-filter-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #11142a;
+  border: 1px solid #3e61ff;
+  border-radius: 8px;
+  z-index: 20;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  width: max-content;
+  margin-top: 0.5rem;
+}
+
+.custom-filter-option {
+  padding: 0.8rem 1.2rem;
+  color: #E0F7FA;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: left;
+}
+
+.custom-filter-option:hover {
+  background-color: #29FFD8;
+  color: #0B0E23;
+}
+
+.custom-filter-option.selected {
+  background-color: #3e61ff;
+  color: white;
+  font-weight: bold;
+}
+
+/* --- Filas de Métricas y Gráficos (Base para móvil) --- */
+.metrics-row,
+.graphs-row {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr; /* Una sola columna para móvil */
+  margin-bottom: 2rem;
+}
+
+/* Estilos para las tarjetas de gráficos */
+.graph-card {
+  background-color: #0B0E23;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 0 20px #29FFD8;
+  color: #E0F7FA;
+  display: flex; /* Para alinear el título y el gráfico */
+  flex-direction: column;
+}
+
+.graph-card h3 {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+/* Las tarjetas de métricas y gráficos ya tienen sus estilos en metric.css, así que no necesitamos duplicarlos aquí */
+
+
+/* =================================================================== */
+/*             Mejora Progresiva para Tablets (768px+)                 */
+/* =================================================================== */
+@media (min-width: 768px) {
+  .dashboards-container {
+    padding: 2rem;
+  }
+
+  .dashboards-title {
+    font-size: 2.2rem;
+    text-align: left;
+  }
+
+  .filtro-rango {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    margin-bottom: 0;
+  }
+
   .metrics-row {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas para tablets */
   }
 
   .graphs-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Mantenemos una columna para las gráficas */
+  }
+}
+
+/* =================================================================== */
+/*          Mejora Progresiva para Escritorio (1200px+)                */
+/* =================================================================== */
+@media (min-width: 1200px) {
+  .dashboards-container {
+    padding: 3rem;
+  }
+
+  .dashboards-title {
+    font-size: 2.8rem;
+  }
+
+  .metrics-row {
+    /* La magia: se ajusta para tener hasta 5 columnas sin apretarse */
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .graphs-row {
+    grid-template-columns: 1fr 1fr; /* Dos columnas para las gráficas */
   }
 }
