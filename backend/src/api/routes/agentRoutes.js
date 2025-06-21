@@ -11,24 +11,24 @@ import {
 
 const router = express.Router();
 
-// Rutas de agentes
+// Agent management routes (all require authentication)
 
-// POST /agents → Crea un nuevo agente
+// POST /agents → Create a new AI agent for the authenticated user
 router.post("/", authenticate, createAgentController);
 
-// DELETE /agents/:id → Elimina un agente y su contenido
+// DELETE /agents/:id → Delete an agent and all associated conversations/messages
 router.delete("/:id", authenticate, deleteAgentController);
 
-// GET /agents → Lista todos los agentes del usuario autenticado
+// GET /agents → List all agents belonging to the authenticated user
 router.get("/", authenticate, getAgentsController);
 
-// PATCH /agents/:id/mapping → Actualiza el fieldMapping del agente
+// PATCH /agents/:id/mapping → Update the field mapping configuration for an agent
 router.patch("/:id/mapping", authenticate, updateAgentMappingController);
 
-// POST /agents/:id/rotate-secret → Regenera el secretToken del agente
+// POST /agents/:id/rotate-secret → Regenerate the secret token for webhook authentication
 router.post("/:id/rotate-secret", authenticate, rotateSecretTokenController);
 
-// PATCH /agents/:id → Actualiza los datos generales del agente
+// PATCH /agents/:id → Update general agent information (name, description, model, etc.)
 router.patch("/:id", authenticate, updateAgentController);
 
 export default router;

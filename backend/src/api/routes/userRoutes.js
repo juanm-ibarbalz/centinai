@@ -7,11 +7,11 @@ import {
 
 const router = express.Router();
 
-// Rutas de usuarios
-// PATCH /users/me → Actualiza datos del usuario autenticado
+// User management routes (all require authentication)
+// PATCH /users/me → Update authenticated user's profile information
 router.patch("/me", authenticate, updateUserController);
 
-// PATCH /users/me/password → Cambia la contraseña del usuario
+// PATCH /users/me/password → Change authenticated user's password
 router.patch("/me/password", authenticate, changePasswordController);
 
 export default router;

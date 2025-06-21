@@ -45,7 +45,9 @@ describe("POST /auth/register", () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
-    expect(res.body).toHaveProperty("description", { email: "Email inválido" });
+    expect(res.body).toHaveProperty("description", {
+      email: "Invalid email format",
+    });
   });
 
   it("should fail on too-short password (400)", async () => {
@@ -58,13 +60,13 @@ describe("POST /auth/register", () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body).toHaveProperty("description", {
-      password: "La contraseña debe tener al menos 8 caracteres",
+      password: "Password must be at least 8 characters long",
     });
   });
 
   it("should fail when email already exists (409)", async () => {
     const res = await request(app).post(endpoint).send({
-      email: "juanmartin@test.com", // coincide con el seed de setup.js
+      email: "juanmartin@test.com", // matches the seed from setup.js
       password: "AnotherPass1!",
       name: "Duplicate",
     });

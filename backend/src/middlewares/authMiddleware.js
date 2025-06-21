@@ -3,12 +3,18 @@ import { authConfig } from "../config/config.js";
 import { sendError } from "../utils/responseUtils.js";
 
 /**
- * Middleware que autentica al usuario usando JWT.
- * Si el token es válido, agrega los datos decodificados en `req.user`.
- * Si no, responde con 401 o 403 según el caso.
- * @param {Request} req - Objeto de solicitud HTTP
- * @param {Response} res - Objeto de respuesta HTTP
- * @param {Function} next - Función para continuar con el siguiente middleware
+ * Middleware that authenticates users using JWT tokens.
+ * Extracts the Bearer token from the Authorization header, verifies it,
+ * and adds the decoded user data to req.user for use in subsequent middleware/routes.
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} req.headers - Request headers
+ * @param {string} req.headers.authorization - Authorization header with Bearer token
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function to continue to next middleware
+ * @returns {void} Calls next() if authentication succeeds, or sends error response
+ * @throws {401} When Authorization header is missing or doesn't start with "Bearer "
+ * @throws {403} When JWT token is invalid, expired, or cannot be verified
  */
 export const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;

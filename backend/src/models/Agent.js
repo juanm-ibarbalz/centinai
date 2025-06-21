@@ -1,6 +1,24 @@
 import mongoose from "mongoose";
 import crypto from "crypto";
 
+/**
+ * Agent model schema for AI agent configuration and management.
+ * Represents an AI agent that can process incoming webhook messages
+ * and manage conversations through WhatsApp integration.
+ *
+ * @typedef {Object} Agent
+ * @property {string} _id - Unique agent identifier (custom string ID)
+ * @property {string} phoneNumberId - WhatsApp phone number identifier (unique, required)
+ * @property {string} userId - Reference to the User who owns this agent (required)
+ * @property {string} name - Display name for the agent (required)
+ * @property {string} [description] - Optional description of the agent's purpose
+ * @property {Date} createdAt - Timestamp when the agent was created
+ * @property {string} secretToken - Unique secret token for webhook authentication (auto-generated)
+ * @property {'structured'|'custom'} payloadFormat - Format for incoming webhook payloads
+ * @property {'query'|'header'|'body'} authMode - Authentication method for webhook requests
+ * @property {Object} fieldMapping - Configuration for mapping incoming fields to system fields
+ * @property {string} [modelName] - AI model name to be used by this agent
+ */
 const agentSchema = new mongoose.Schema(
   {
     _id: { type: String },
@@ -38,6 +56,6 @@ const agentSchema = new mongoose.Schema(
 
 agentSchema.index({ secretToken: 1, authMode: 1 });
 agentSchema.index({ userId: 1 });
-agentSchema.index({ _id: 1, userId: 1 }); // opcional
+agentSchema.index({ _id: 1, userId: 1 }); // optional
 
 export default mongoose.model("Agent", agentSchema);

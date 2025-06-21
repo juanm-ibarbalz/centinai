@@ -63,7 +63,7 @@ describe("POST /agents/:id/rotate-secret", () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty(
       "message",
-      "Secret token regenerado correctamente"
+      "Secret token regenerated successfully"
     );
     expect(res.body).toHaveProperty("secretToken");
     expect(typeof res.body.secretToken).toBe("string");

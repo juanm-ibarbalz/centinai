@@ -62,10 +62,7 @@ describe("PATCH /agents/:id", () => {
       .send(update);
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty(
-      "message",
-      "Agente actualizado correctamente"
-    );
+    expect(res.body).toHaveProperty("message", "Agent updated successfully");
     expect(res.body.agent).toMatchObject({
       id: agentId,
       name: update.name,

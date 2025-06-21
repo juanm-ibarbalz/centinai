@@ -2,52 +2,64 @@ import { v4 as uuidv4 } from "uuid";
 import { idConfig } from "../config/config.js";
 
 /**
- * Genera un ID único para una conversación combinando prefijo, origen, agente y UUID.
- * @param {string} from - Número del usuario
- * @param {string} agentId - ID del agente o phoneNumberId
- * @returns {string} - ID único de conversación
+ * Generates a unique conversation ID by combining prefix, user number, agent ID, and UUID.
+ * Creates a human-readable identifier that includes context about the conversation participants.
+ *
+ * @param {string} from - User's phone number or identifier
+ * @param {string} agentId - Agent's phone number ID or identifier
+ * @returns {string} Unique conversation identifier
  */
 export const generateConversationId = (from, agentId) => {
   return `${idConfig.conversationPrefix}-${from}-${agentId}-${uuidv4()}`;
 };
 
 /**
- * Genera un ID único para un agente combinando prefijo, userId y UUID.
- * @param {string} userId - ID del usuario dueño del agente
- * @returns {string} - ID único del agente
+ * Generates a unique agent ID by combining prefix, user ID, and UUID.
+ * Creates an identifier that links the agent to its owner user.
+ *
+ * @param {string} userId - ID of the user who owns the agent
+ * @returns {string} Unique agent identifier
  */
 export const generateAgentId = (userId) => {
   return `${idConfig.agentPrefix}-${userId}-${uuidv4()}`;
 };
 
 /**
- * Genera un ID único para un usuario usando solo UUID.
- * @returns {string} - ID único del usuario
+ * Generates a unique user ID using prefix and UUID.
+ * Creates a simple but unique identifier for user accounts.
+ *
+ * @returns {string} Unique user identifier
  */
 export const generateUserId = () => {
   return `${idConfig.userPrefix}-${uuidv4()}`;
 };
 
 /**
- * Genera un ID único para un mensaje en base al ID de la conversación.
- * @param {string} conversationId - ID de la conversación asociada
- * @returns {string} - ID único del mensaje
+ * Generates a unique message ID based on the associated conversation ID.
+ * Creates an identifier that links the message to its conversation context.
+ *
+ * @param {string} conversationId - ID of the conversation this message belongs to
+ * @returns {string} Unique message identifier
  */
 export const generateMessageId = (conversationId) => {
   return `${idConfig.messagePrefix}-${conversationId}-${uuidv4()}`;
 };
 
 /**
- * Genera un ID único de sesión
- * @returns {string} - ID de sesión
+ * Generates a unique session ID for temporary data or processing sessions.
+ * Used for batch operations and temporary data storage.
+ *
+ * @returns {string} Unique session identifier
  */
 export const generateSessionId = () => {
   return `${idConfig.sessionPrefix}-${uuidv4()}`;
 };
 
 /**
- * Genera un ID único de batch
- * @returns {string} - ID de batch
+ * Generates a unique batch ID for grouping related operations.
+ * Used for bulk operations like conversation exports and analysis jobs.
+ *
+ * @returns {string} Unique batch identifier
  */
 export const generateBatchId = () => {
   return `${idConfig.batchPrefix}-${uuidv4()}`;

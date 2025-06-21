@@ -56,7 +56,7 @@ describe("PATCH /users/me/password", () => {
       .send({ currentPassword: "wrongPass", newPassword: "newPass123" });
 
     expect(res.status).toBe(401);
-    expect(res.body).toHaveProperty("error", "Contraseña actual incorrecta");
+    expect(res.body).toHaveProperty("error", "Current password is incorrect");
   });
 
   it("should update password successfully (200)", async () => {
@@ -65,10 +65,7 @@ describe("PATCH /users/me/password", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({ currentPassword: TEST_USER.password, newPassword: "newPass123" });
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty(
-      "message",
-      "Contraseña actualizada correctamente"
-    );
+    expect(res.body).toHaveProperty("message", "Password updated successfully");
 
     const updatedUser = await User.findById(userId);
     const isMatch = await bcrypt.compare("newPass123", updatedUser.password);

@@ -5,10 +5,12 @@ import { generateConversationId } from "../../utils/idGenerator.js";
 const TIMEOUT = conversationConfig.timeoutMs;
 
 /**
- * Busca una conversación abierta por número del cliente y agente.
- * @param {string} from - Número de teléfono del cliente
- * @param {string} agentPhoneNumberId - Número de teléfono del agente
- * @returns {Promise<Conversation|null>}
+ * Finds an open conversation by customer phone number and agent.
+ * Returns the most recently updated conversation if multiple exist.
+ *
+ * @param {string} from - Customer's phone number
+ * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
+ * @returns {Promise<Object|null>} Open conversation object or null if not found
  */
 export const findOpenConversation = async (from, agentPhoneNumberId) => {
   return Conversation.findOne({
@@ -19,10 +21,13 @@ export const findOpenConversation = async (from, agentPhoneNumberId) => {
 };
 
 /**
- * Determina si una conversación ha expirado por inactividad.
- * @param {Object} conv - La conversación a evaluar.
- * @param {Date} [now=new Date()] - Fecha actual para comparar, por defecto ahora.
- * @returns {boolean} - true si la conversación está expirada, false en caso contrario.
+ * Determines if a conversation has expired due to inactivity.
+ * Compares the conversation's last update time against the configured timeout.
+ *
+ * @param {Object} conversation - Conversation object to evaluate
+ * @param {Date} conversation.updatedAt - Last update timestamp of the conversation
+ * @param {Date} [now=new Date()] - Current date for comparison (defaults to now)
+ * @returns {boolean} True if conversation has expired, false otherwise
  */
 export function isExpired(conversation, now = new Date()) {
   if (!conversation) return false;
@@ -30,10 +35,11 @@ export function isExpired(conversation, now = new Date()) {
 }
 
 /**
- * Cierra una conversación activa, marcando endTime.
- * @param {Conversation} conversation
- * @param {Date} [endTime=new Date()] - Fecha de cierre, por defecto ahora.
- * @returns {Promise<void>}
+ * Closes an active conversation by setting status to "closed" and recording end time.
+ *
+ * @param {Object} conversation - Conversation object to close
+ * @param {Date} [now=new Date()] - End time for the conversation (defaults to now)
+ * @returns {Promise<void>} Resolves when conversation is successfully closed
  */
 export const closeConversation = async (conversation, now = new Date()) => {
   conversation.status = "closed";
@@ -42,10 +48,12 @@ export const closeConversation = async (conversation, now = new Date()) => {
 };
 
 /**
- * Actualiza el timestamp de una conversación existente.
- * @param {Conversation} conversation
- * @param {Date} [endTime=new Date()] - Fecha de cierre, por defecto ahora.
- * @returns {Promise<void>}
+ * Updates the timestamp of an existing conversation.
+ * Refreshes the updatedAt field to extend the conversation's active period.
+ *
+ * @param {Object} conversation - Conversation object to update
+ * @param {Date} [now=new Date()] - New timestamp for the conversation (defaults to now)
+ * @returns {Promise<void>} Resolves when timestamp is successfully updated
  */
 export const updateTimestamp = async (conversation, now = new Date()) => {
   conversation.updatedAt = now;
@@ -53,12 +61,14 @@ export const updateTimestamp = async (conversation, now = new Date()) => {
 };
 
 /**
- * Crea una nueva conversación con los datos proporcionados.
- * @param {string} userId
- * @param {string} agentPhoneNumberId
- * @param {string} userName
- * @param {string} from
- * @returns {Promise<Conversation>} - La nueva conversación creada
+ * Creates a new conversation with the provided data.
+ * Generates a unique conversation ID and sets initial status to "open".
+ *
+ * @param {string} userId - ID of the user who owns the conversation
+ * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
+ * @param {string} userName - Display name of the user in the conversation
+ * @param {string} from - Phone number of the customer starting the conversation
+ * @returns {Promise<Object>} Newly created conversation object
  */
 export const createNewConversation = async (
   userId,
@@ -85,19 +95,21 @@ export const createNewConversation = async (
 };
 
 /**
- * Construye el stage $match para filtrar conversaciones.
+ * Builds the $match stage for filtering conversations in MongoDB aggregation.
+ * Creates a match filter based on user ID, agent phone number, and optional date range.
  *
+ * SQL equivalent:
  * FROM conversations c
  * WHERE c.userId = userId
  *   AND c.agentPhoneNumberId = agentPN
  *   [AND c.createdAt >= dateFrom]
  *   [AND c.createdAt <= dateTo]
  *
- * @param {string} userId             - ID del usuario autenticado
- * @param {string} agentPN           - Número de teléfono del agente
- * @param {Date}   [dateFrom]        - Fecha mínima (inclusive)
- * @param {Date}   [dateTo]          - Fecha máxima (inclusive)
- * @returns {{ $match: Record<string, any> }}  - Stage de agregación MongoDB
+ * @param {string} userId - ID of the authenticated user
+ * @param {string} agentPN - WhatsApp phone number identifier of the agent
+ * @param {Date} [dateFrom] - Minimum date (inclusive) for filtering
+ * @param {Date} [dateTo] - Maximum date (inclusive) for filtering
+ * @returns {Object} MongoDB aggregation $match stage
  */
 export function buildConversationMatchStage(userId, agentPN, dateFrom, dateTo) {
   const match = { userId, agentPhoneNumberId: agentPN };
@@ -112,11 +124,12 @@ export function buildConversationMatchStage(userId, agentPN, dateFrom, dateTo) {
 }
 
 /**
- * Construye el stage $sort para ordenar resultados de conversaciones.
+ * Builds the $sort stage for ordering conversation results.
+ * Supports sorting by duration, cost, or date with ascending or descending order.
  *
- * @param {"duration"|"cost"|"date"} [sortBy="date"]   - Campo para ordenar: duración, costo o fecha.
- * @param {"asc"|"desc"}            [sortOrder="desc"] - Orden ascendente o descendente.
- * @returns {{ $sort: Record<string, number> }}              Stage de agregación MongoDB
+ * @param {'duration'|'cost'|'date'} [sortBy='date'] - Field to sort by: duration, cost, or date
+ * @param {'asc'|'desc'} [sortOrder='desc'] - Sort order: ascending or descending
+ * @returns {Object} MongoDB aggregation $sort stage
  */
 export function buildConversationSortStage(sortBy, sortOrder = "desc") {
   const dir = sortOrder === "asc" ? 1 : -1;
@@ -131,10 +144,13 @@ export function buildConversationSortStage(sortBy, sortOrder = "desc") {
 }
 
 /**
- * Construye el stage $project
+ * Builds the $project stage for selecting specific fields in aggregation results.
+ * Returns only essential conversation and metrics fields for performance optimization.
+ *
+ * SQL equivalent:
  * SELECT c.id, c.created_at, m.duration_seconds, m.token_usage_cost
  *
- * @returns {{ $project: Record<string, any> }}  Stage de agregación MongoDB
+ * @returns {Object} MongoDB aggregation $project stage
  */
 export function buildConversationProjectStage() {
   return {

@@ -8,7 +8,10 @@ import {
 import { dispatchToAnalyzer } from "./analyzerDispatcher.js";
 
 /**
- * Obtiene las conversaciones vencidas por timeout.
+ * Retrieves conversations that have expired due to timeout.
+ * Finds all open conversations that haven't been updated within the configured timeout period.
+ *
+ * @returns {Promise<Array>} Array of expired conversation objects
  */
 export const getExpiredConversations = async () => {
   const now = new Date();
@@ -28,7 +31,12 @@ export const getExpiredConversations = async () => {
 };
 
 /**
- * Cierra las conversaciones por sus IDs.
+ * Closes conversations by their IDs in bulk.
+ * Updates multiple conversations to "closed" status and sets their end time.
+ *
+ * @param {string[]} convIds - Array of conversation IDs to close
+ * @param {Date} [now=new Date()] - End time for the conversations (defaults to current time)
+ * @returns {Promise<void>} Resolves when all conversations are closed
  */
 export const closeConversationsById = async (convIds, now = new Date()) => {
   if (!convIds || convIds.length === 0) return;
@@ -40,8 +48,18 @@ export const closeConversationsById = async (convIds, now = new Date()) => {
 };
 
 /**
- * Inicia el job periódico que ejecuta el cierre de conversaciones,
- * las prepara para análisis y despacha al analyzer.
+ * Starts the periodic cleanup job that closes expired conversations,
+ * prepares them for analysis, and dispatches to the analyzer system.
+ * Runs on a configurable interval defined in conversationConfig.cleanupIntervalMinutes.
+ *
+ * Job workflow:
+ * 1. Find expired conversations
+ * 2. Build export payloads for analysis
+ * 3. Export conversations to JSON file
+ * 4. Dispatch to analyzer system
+ * 5. Close the expired conversations
+ *
+ * @returns {void} Sets up the cron job for automatic conversation cleanup
  */
 export const startConversationCleanupJob = () => {
   const intervalMinutes = conversationConfig.cleanupIntervalMinutes;

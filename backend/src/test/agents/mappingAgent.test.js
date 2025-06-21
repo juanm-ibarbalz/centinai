@@ -66,10 +66,7 @@ describe("PATCH /agents/:id/mapping", () => {
       .send(newMapping);
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty(
-      "message",
-      "Mapping actualizado correctamente"
-    );
+    expect(res.body).toHaveProperty("message", "Mapping updated successfully");
     expect(res.body.fieldMapping).toMatchObject(newMapping.fieldMapping);
   });
 
@@ -86,7 +83,7 @@ describe("PATCH /agents/:id/mapping", () => {
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body).toHaveProperty(
       "description",
-      "El fieldMapping debe incluir como mínimo: text, from, timestamp y to"
+      "fieldMapping must include at minimum: text, from, timestamp and to"
     );
   });
 
@@ -101,7 +98,7 @@ describe("PATCH /agents/:id/mapping", () => {
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body).toHaveProperty(
       "description",
-      "No se permite definir fieldMapping con formato 'structured'"
+      "fieldMapping is not allowed with 'structured' format"
     );
   });
 

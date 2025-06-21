@@ -1,33 +1,39 @@
 import { z } from "zod";
 
 /**
- * Esquema para validar los datos del registro de un nuevo usuario.
- * Exige email válido, contraseña mínima de 8 caracteres y nombre no vacío.
+ * Schema for validating user registration data.
+ * Requires valid email format, minimum 8-character password, and non-empty name.
+ * Email is automatically transformed to lowercase and trimmed.
+ *
+ * @type {import('zod').ZodObject}
  */
 export const registerSchema = z
   .object({
     email: z
       .string()
-      .email({ message: "Email inválido" })
+      .email({ message: "Invalid email format" })
       .transform((str) => str.toLowerCase().trim()),
 
     password: z
       .string()
-      .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
-    name: z.string().min(1, { message: "El nombre no puede estar vacío" }),
+      .min(8, { message: "Password must be at least 8 characters long" }),
+    name: z.string().min(1, { message: "Name cannot be empty" }),
   })
   .strict();
 
 /**
- * Esquema para validar las credenciales de inicio de sesión.
- * Exige email válido y contraseña con al menos 8 caracteres.
+ * Schema for validating user login credentials.
+ * Requires valid email format and minimum 8-character password.
+ * Email is automatically transformed to lowercase and trimmed.
+ *
+ * @type {import('zod').ZodObject}
  */
 export const loginSchema = z
   .object({
     email: z
       .string()
-      .email({ message: "Email inválido" })
+      .email({ message: "Invalid email format" })
       .transform((str) => str.toLowerCase().trim()),
-    password: z.string().min(8, { message: "Contraseña inválida" }),
+    password: z.string().min(8, { message: "Invalid password" }),
   })
   .strict();

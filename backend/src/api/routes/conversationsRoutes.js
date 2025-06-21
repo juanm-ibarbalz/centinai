@@ -4,8 +4,8 @@ import { getConversationsByAgent } from "../controllers/conversationsController.
 
 const router = express.Router();
 
-// Rutas de conversaciones
-// GET /conversations?agentPhoneNumberId=xxx → Lista conversaciones de un agente
+// Conversation management routes (all require authentication)
+// GET /conversations?agentPhoneNumberId=xxx → List conversations for a specific agent with pagination and filtering
 router.get("/", authenticate, getConversationsByAgent);
 
 export default router;

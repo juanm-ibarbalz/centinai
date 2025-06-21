@@ -9,14 +9,15 @@ const STRUCTURED_MAPPING = {
 };
 
 /**
- * Aplica el mapeo del agente al payload entrante.
- * Si el formato es structured, usa el mapping por defecto.
- * Si es custom, usa el fieldMapping del agente.
- * @param {Object} payload - El body recibido
- * @param {Object} mapping - El fieldMapping del agente (si aplica)
- * @param {string} format - payloadFormat ("structured" | "custom")
- * @param {string} agentPhoneNumberId - ID del número de teléfono del agente
- * @returns {Object|null} - Mensaje parseado o null si es inválido
+ * Applies agent mapping to incoming webhook payload.
+ * Uses default structured mapping for "structured" format or custom field mapping
+ * for "custom" format to extract message data from various webhook payload structures.
+ *
+ * @param {Object} payload - Raw webhook request body
+ * @param {Object} mapping - Agent's field mapping configuration (for custom format)
+ * @param {'structured'|'custom'} format - Payload format type
+ * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
+ * @returns {Object|null} Parsed message object or null if payload is invalid
  */
 export const applyMapping = (payload, mapping, format, agentPhoneNumberId) => {
   if (!["structured", "custom"].includes(format)) return null;
@@ -49,16 +50,15 @@ export const applyMapping = (payload, mapping, format, agentPhoneNumberId) => {
 };
 
 /**
- * Mapea los participantes (from, to) y determina la dirección del mensaje.
- * Devuelve un objeto con los campos from, to y direction ("agent" o "user"),
- * o null si los datos no son válidos o no se puede determinar la dirección.
+ * Maps participants (from, to) and determines message direction.
+ * Analyzes the from/to fields to determine if the message is from user to agent
+ * or from agent to user, handling various edge cases and invalid scenarios.
  *
- * @param {string} rawFrom - Valor crudo del campo "from" extraído del payload.
- * @param {string} rawTo - Valor crudo del campo "to" extraído del payload.
- * @param {string} agentPhone - Número de teléfono del agente.
- * @returns {{from: string, to: string, direction: "agent"|"user"} | null} Objeto con participantes y dirección, o null si inválido.
+ * @param {string} rawFrom - Raw "from" field value extracted from payload
+ * @param {string} rawTo - Raw "to" field value extracted from payload
+ * @param {string} agentPhone - Agent's phone number for comparison
+ * @returns {Object|null} Object with from, to, and direction ("agent"|"user"), or null if invalid
  */
-
 function mapParticipants(rawFrom, rawTo, agentPhone) {
   const hasFrom = !!rawFrom;
   const hasTo = !!rawTo;
@@ -93,16 +93,16 @@ function mapParticipants(rawFrom, rawTo, agentPhone) {
 
 /* 
 | Cases for applyMapping function
-/
-| from        | to          |
-| ----------- | ----------- |
-| agentNumber | agentNumber |  null
-| agentNumber | userNumber  |  direction = "agent"
-| agentNumber | no          |  null      
-| userNumber  | agentNumber |  direction = "user"
-| userNumber  | userNumber  |  null       
-| userNumber  | no          |  direction = "user"     
-| no          | agentNumber |  null
-| no          | userNumber  |  direction = "agent"
-| no          | no          |  null
+| 
+| from        | to          | result
+| ----------- | ----------- | -------
+| agentNumber | agentNumber | null (invalid)
+| agentNumber | userNumber  | direction = "agent"
+| agentNumber | undefined   | null (invalid)
+| userNumber  | agentNumber | direction = "user"
+| userNumber  | userNumber  | null (invalid)
+| userNumber  | undefined   | direction = "user"
+| undefined   | agentNumber | null (invalid)
+| undefined   | userNumber  | direction = "agent"
+| undefined   | undefined   | null (invalid)
 */

@@ -8,15 +8,15 @@ import {
 
 const router = express.Router();
 
-// Rutas del webhook
+// Metrics and analytics routes (all require authentication)
 
-// GET /metrics → Lista métricas de un agente
+// GET /metrics → List metrics for a specific agent (with optional agentPhoneNumberId filter)
 router.get("/", authenticate, getMetricsByAgentController);
 
-// GET /metrics/all → Lista todas las métricas de un usuario
+// GET /metrics/all → List all metrics across all agents for the authenticated user
 router.get("/all", authenticate, getMetricsByUserController);
 
-// GET /metrics/:conversationId → Obtiene métricas de una conversación específica
+// GET /metrics/:conversationId → Get detailed metrics for a specific conversation
 router.get("/:conversationId", authenticate, getMetricByConversationController);
 
 export default router;

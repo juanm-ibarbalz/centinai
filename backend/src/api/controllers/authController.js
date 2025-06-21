@@ -7,11 +7,21 @@ import { sendError, sendSuccess } from "../../utils/responseUtils.js";
 import User from "../../models/User.js";
 
 /**
- * Controlador para registrar un nuevo usuario.
- * Valida el cuerpo de la solicitud, que el usuario no exista y crea el usuario en la base de datos.
+ * Controller for user registration.
+ * Validates the request body using Zod schema, checks if user already exists,
+ * and creates a new user in the database.
+ *
  * @route POST /auth/register
- * @param {Request} req
- * @param {Response} res
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body containing user registration data
+ * @param {string} req.body.email - User's email address
+ * @param {string} req.body.password - User's password
+ * @param {string} req.body.name - User's full name
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with success status and user data or error
+ * @throws {400} When request body validation fails
+ * @throws {409} When user with provided email already exists
+ * @throws {500} When server error occurs during user creation
  */
 export const register = async (req, res) => {
   const result = registerSchema.safeParse(req.body);
@@ -40,11 +50,20 @@ export const register = async (req, res) => {
 };
 
 /**
- * Controlador para iniciar sesión de un usuario.
- * Valida las credenciales y devuelve un token JWT.
+ * Controller for user authentication and login.
+ * Validates login credentials using Zod schema, verifies user exists,
+ * authenticates password, and returns JWT token for session management.
+ *
  * @route POST /auth/login
- * @param {Request} req
- * @param {Response} res
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body containing login credentials
+ * @param {string} req.body.email - User's email address
+ * @param {string} req.body.password - User's password
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with JWT token and user data or error
+ * @throws {400} When request body validation fails
+ * @throws {401} When invalid credentials are provided
+ * @throws {500} When server error occurs during authentication
  */
 export const login = async (req, res) => {
   const result = loginSchema.safeParse(req.body);
