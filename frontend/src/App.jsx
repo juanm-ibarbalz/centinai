@@ -87,92 +87,94 @@ function AppWrapper() {
           user={user}
         />
       )}
-      {/* Puedes mostrar authError aquí si quieres un mensaje de error global */}
-      {/* {authError && <p style={{color: 'red', textAlign: 'center'}}>{authError}</p>} */}
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <PublicRouteOnly isAuthenticated={isAuthenticated}>
-              <AuthPage
-                onAuthSuccess={setupSession}
-                setAuthError={setAuthError}
-                isLoginMode={true}
-              />
-            </PublicRouteOnly>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRouteOnly isAuthenticated={isAuthenticated}>
-              <AuthPage
-                onAuthSuccess={setupSession}
-                setAuthError={setAuthError}
-                isLoginMode={false}
-              />
-            </PublicRouteOnly>
-          }
-        />
+      <div className={`main-content ${showMenu ? 'with-sidebar' : ''}`}>
+        {/* Puedes mostrar authError aquí si quieres un mensaje de error global */}
+        {/* {authError && <p style={{color: 'red', textAlign: 'center'}}>{authError}</p>} */}
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <PublicRouteOnly isAuthenticated={isAuthenticated}>
+                <AuthPage
+                  onAuthSuccess={setupSession}
+                  setAuthError={setAuthError}
+                  isLoginMode={true}
+                />
+              </PublicRouteOnly>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRouteOnly isAuthenticated={isAuthenticated}>
+                <AuthPage
+                  onAuthSuccess={setupSession}
+                  setAuthError={setAuthError}
+                  isLoginMode={false}
+                />
+              </PublicRouteOnly>
+            }
+          />
 
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <HomePage user={user} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboards"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <DashboardsPage user={user} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/conversationsDash/:phoneNumberId"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <DashboardPage user={user} />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <HomePage user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboards"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <DashboardsPage user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/conversationsDash/:phoneNumberId"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <DashboardPage user={user} />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/createAgent"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <CreateAgent />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/createAgent"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <CreateAgent />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/myAgents"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <MyAgentsPage user={user} />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/myAgents"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <MyAgentsPage user={user} />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/mensajes/:id" element={<Mensajes />} />
+          <Route path="/mensajes/:id" element={<Mensajes />} />
 
-        <Route
-          path="/"
-          element={
-            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
-          }
-        />
-      </Routes>
+          <Route
+            path="/"
+            element={
+              <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+            }
+          />
+        </Routes>
+      </div>
     </>
   );
 }

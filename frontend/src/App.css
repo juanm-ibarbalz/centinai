@@ -389,3 +389,26 @@ button:hover {
   color: #FF6B6B; /* rojo */
 }
 
+/* --- Main content wrapper --- */
+.main-content {
+  width: 100%;
+  transition: padding-left 0.3s ease; /* Transición suave */
+  padding-left: 0; /* Por defecto no hay padding */
+  box-sizing: border-box;
+}
+
+/* Cuando el sidebar está presente, aplicamos el padding */
+.main-content.with-sidebar {
+  /* Ancho del sidebar colapsado */
+  padding-left: 50px;
+}
+
+/* Media query para cuando el menú está abierto en pantallas más grandes.
+   Asumimos que en móvil siempre está colapsado por defecto. */
+@media (min-width: 768px) {
+  .main-content.with-sidebar {
+    /* Ancho del sidebar abierto */
+    padding-left: 220px;
+  }
+}
+
