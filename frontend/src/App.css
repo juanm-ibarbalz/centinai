@@ -393,20 +393,14 @@ button:hover {
 .main-content {
   width: 100%;
   transition: padding-left 0.3s ease;
-  padding-left: var(--sidebar-width); /* Usamos la variable CSS */
+  padding-left: var(--sidebar-width); /* Aplicamos el padding a TODAS las páginas */
   box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
   .main-content {
-    padding-left: var(--sidebar-width-desktop); /* Variable para desktop */
+    padding-left: var(--sidebar-width-desktop); /* Hacemos lo mismo para desktop */
   }
-}
-
-/* Cuando el sidebar está presente, aplicamos el padding */
-.main-content.with-sidebar {
-  /* Ancho del sidebar abierto */
-  padding-left: 220px;
 }
 
 /* Solo en la Home, hacemos el contenedor principal transparente */

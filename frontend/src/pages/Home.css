@@ -23,16 +23,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem var(--sidebar-width) 2rem 1.5rem; /* Padding dinámico */
-  padding-left: calc(var(--sidebar-width) + 1.5rem);
+  padding: 2rem 1.5rem; /* Revertimos al padding simple */
   box-sizing: border-box;
   transition: padding-left 0.3s ease;
-}
-
-@media (min-width: 768px) {
-  .home-container {
-    padding-left: calc(var(--sidebar-width-desktop) + 1.5rem);
-  }
 }
 
 /* Contenedor del fondo, fijo y detrás de todo */
