@@ -52,6 +52,10 @@ body {
   line-height: 1.6;
 }
 
+/* Fondo transparente solo para la Home */
+body.home-background {
+  background-color: transparent;
+}
 
 /*
 :root {

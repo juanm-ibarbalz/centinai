@@ -20,6 +20,7 @@ import MyAgentsPage from "./pages/myAgents";
 import Mensajes from "./pages/Mensajes";
 
 import { useSessionLoader } from "./hooks/useSessionLoader";
+import { useEffect } from "react";
 
 // Componente para rutas que requieren autenticación
 function ProtectedRoute({ isAuthenticated, children }) {
@@ -50,9 +51,26 @@ function AppWrapper() {
     error: authError, // Para leer el error de autenticación si quieres mostrarlo globalmente
   } = useSessionLoader();
 
+  // Efecto para gestionar la clase del body para el fondo de la home
+  useEffect(() => {
+    if (location.pathname === '/home') {
+      document.body.classList.add('home-background');
+    } else {
+      document.body.classList.remove('home-background');
+    }
+    // Cleanup function para cuando el componente se desmonte
+    return () => {
+      document.body.classList.remove('home-background');
+    };
+  }, [location.pathname]); // Se ejecuta cada vez que cambia la ruta
+
   const hiddenMenuRoutes = ["/login", "/register"];
   const showMenu =
     !hiddenMenuRoutes.includes(location.pathname) && isAuthenticated;
+
+  // Lógica para determinar el ancho del sidebar
+  const sidebarWidth = showMenu ? "50px" : "0px"; // Ancho por defecto (colapsado) o 0
+  const sidebarWidthDesktop = showMenu ? "220px" : "0px"; // Ancho para desktop (abierto)
 
   const handleLogout = () => {
     console.log("App.jsx: handleLogout llamado");
@@ -79,7 +97,12 @@ function AppWrapper() {
   }
 
   return (
-    <>
+    <div
+      style={{
+        '--sidebar-width': sidebarWidth,
+        '--sidebar-width-desktop': sidebarWidthDesktop,
+      }}
+    >
       {showMenu && (
         <HamburgerMenu
           onLogout={handleLogout}
@@ -175,7 +198,7 @@ function AppWrapper() {
           />
         </Routes>
       </div>
-    </>
+    </div>
   );
 }
 
