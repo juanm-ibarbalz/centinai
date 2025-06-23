@@ -3,15 +3,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 /**
- * General application configuration settings.
- * Controls development mode, logging behavior, and other app-wide settings.
- */
-export const appConfig = {
-  isDev: process.env.NODE_ENV !== "production",
-  logVerbose: true,
-};
-
-/**
  * JWT authentication configuration.
  * Defines secret key and token expiration settings for user authentication.
  */

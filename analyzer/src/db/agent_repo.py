@@ -12,20 +12,20 @@ load_dotenv()
 class AgentRepo:
     """
     Clase responsable de todas las operaciones CRUD / consultas
-    sobre la colección 'agents' en la base de datos indicada por MONGO_DB_TEST.
+    sobre la colección 'agents' en la base de datos indicada por MONGO_DB.
     """
 
     def __init__(self):
-        # 2) Ahora os.getenv(...) podrá leer MONGO_URI y MONGO_DB_TEST desde el .env
+        # 2) Ahora os.getenv(...) podrá leer MONGO_URI y MONGO_DB desde el .env
         mongo_uri = os.getenv("MONGO_URI", "")
-        mongo_db = os.getenv("MONGO_DB_TEST", "")
+        mongo_db = os.getenv("MONGO_DB", "")
         if not mongo_uri:
             raise ValueError(
                 "Debe definir la variable de entorno MONGO_URI con el URI de MongoDB Atlas"
             )
         if not mongo_db:
             raise ValueError(
-                "Debe definir la variable de entorno MONGO_DB_TEST con el nombre de la BD de prueba"
+                "Debe definir la variable de entorno MONGO_DB con el nombre de la BD de prueba"
             )
 
         # 3) Inicializamos el cliente y seleccionamos BD/colección
