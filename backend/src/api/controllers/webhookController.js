@@ -31,7 +31,6 @@ export const handleIncomingMessage = async (req, res) => {
     agentSecret: req.body.agentSecret,
   });
   if (!auth.success) {
-    console.log(auth.error);
     return sendError(res, 400, "invalid_webhook_auth", auth.error);
   }
 
@@ -47,7 +46,6 @@ export const handleIncomingMessage = async (req, res) => {
       agent.phoneNumberId
     );
   } catch (err) {
-    console.log(err);
     return sendError(res, 400, err.message || "invalid_mapping");
   }
 
@@ -55,7 +53,6 @@ export const handleIncomingMessage = async (req, res) => {
     await saveIncomingMessage({ ...mapped, userId: agent.userId });
     return sendSuccess(res, 200, { message: "[WEBHOOK OK]" });
   } catch (err) {
-    console.log(err);
     sendError(res, err.status || 500, err.message || "server_error");
   }
 };
