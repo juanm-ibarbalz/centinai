@@ -117,7 +117,7 @@ const MetricSchema = new mongoose.Schema(
   }
 );
 
-MetricSchema.index({ userId: 1, "agentData.agentId": 1 });
+MetricSchema.index({ userId: 1, "agentData.agentId": 1, endTime: -1 });
 MetricSchema.index({ conversationId: 1, userId: 1 });
 
 export default mongoose.model("Metric", MetricSchema);

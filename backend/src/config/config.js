@@ -29,7 +29,7 @@ export const idConfig = {
  * Controls timeout settings, cleanup intervals, and default conversation states.
  */
 export const conversationConfig = {
-  timeoutMs: 5 * 60 * 1000, // 5 minutes of inactivity before timeout
+  timeoutMs: 1 * 60 * 1000, // 1 minute of inactivity before timeout
   cleanupIntervalMinutes: 1, // Cleanup job runs every minute
   defaultConversationStatus: "open",
 };

@@ -24,11 +24,7 @@ export const dispatchToAnalyzer = async (filePath) => {
   try {
     const payload = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
-    const response = await axios.post(`${analyzerUrl}/analyze`, payload, {
-      timeout: 120000,
-    });
-
-    console.log(`Resultado del analyzer para ${filePath}:`, response.data);
+    await axios.post(`${analyzerUrl}/analyze`, payload, { timeout: 120000 });
   } catch (err) {
     console.error("Error en dispatchToAnalyzer:", err.message || err);
     throw err;

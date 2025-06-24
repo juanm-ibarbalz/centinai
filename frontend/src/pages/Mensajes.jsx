@@ -13,7 +13,7 @@ export default function Mensajes() {
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/messages?conversationId=${id}`,
+          `${import.meta.env.VITE_API_URL}/messages?conversationId=${encodeURIComponent(id)}`,
           
           {
             headers: {

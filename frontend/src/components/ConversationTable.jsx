@@ -10,7 +10,7 @@ const ConversationTable = ({ phoneNumberId }) => {
     const token = localStorage.getItem("token");
     const API_URL = import.meta.env.VITE_API_URL;
 
-    fetch(`${API_URL}/conversations?agentPhoneNumberId=${phoneNumberId}`, {
+    fetch(`${API_URL}/conversations?agentPhoneNumberId=${encodeURIComponent(phoneNumberId)}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

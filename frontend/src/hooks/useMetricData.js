@@ -32,11 +32,13 @@ export function useMetricData({
 
       let url;
       if (conversationId) {
-        url = `${import.meta.env.VITE_API_URL}/metrics/${conversationId}`;
+        url = `${import.meta.env.VITE_API_URL}/metrics/${encodeURIComponent(
+          conversationId
+        )}`;
       } else if (agentPhoneNumberId) {
         url = `${
           import.meta.env.VITE_API_URL
-        }/metrics?agentPhoneNumberId=${agentPhoneNumberId}`;
+        }/metrics?agentPhoneNumberId=${encodeURIComponent(agentPhoneNumberId)}`;
       } else {
         url = `${import.meta.env.VITE_API_URL}/metrics/all`;
       }

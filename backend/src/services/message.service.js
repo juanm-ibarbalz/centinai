@@ -5,19 +5,21 @@ import { buildMessage } from "./helpers/message.helpers.js";
 
 /**
  * Processes and saves an incoming message from webhook.
- * Routes the message to appropriate handler based on direction (user or agent).
+ * Routes the message to the appropriate handler based on direction (user or agent).
+ * Assumes the message is already mapped and timestamp is normalized.
  *
- * @param {Object} parsed - Parsed message object adapted from webhook data
- * @param {string} parsed.direction - Message direction ('user' or 'agent')
- * @param {string} parsed.agentPhoneNumberId - WhatsApp phone number identifier of the agent
- * @param {string} parsed.from - Phone number of the message sender
- * @param {string} parsed.to - Phone number of the message recipient
- * @param {string} parsed.userName - Display name of the user
- * @param {string} parsed.userId - ID of the user who owns the conversation
- * @returns {Promise<void>} Resolves when message is successfully processed and saved
- * @throws {Error} When agent message has no active conversation (status: 400)
+ * @param {Object} parsed - Parsed and normalized message object from webhook.
+ * @param {string} parsed.direction - Message direction ('user' or 'agent').
+ * @param {string} parsed.agentPhoneNumberId - WhatsApp phone number identifier of the agent.
+ * @param {string} parsed.from - Phone number of the message sender.
+ * @param {string} parsed.to - Phone number of the message recipient.
+ * @param {string} parsed.userName - Display name of the user.
+ * @param {string} parsed.userId - ID of the user who owns the conversation.
+ * @returns {Promise<void>} Resolves when message is successfully processed and saved.
+ * @throws {Error} When agent message has no active conversation (status: 400).
  */
 export const saveIncomingMessage = async (parsed) => {
+  console.log("saveIncomingMessage called with:", parsed);
   if (parsed.direction === "agent") {
     await processAgentMessage(parsed);
   } else {

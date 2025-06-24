@@ -43,6 +43,6 @@ const messageSchema = new mongoose.Schema(
   }
 );
 
-messageSchema.index({ conversationId: 1, timestamp: 1 });
+messageSchema.index({ conversationId: 1, userId: 1, timestamp: 1 });
 
 export default mongoose.model("Message", messageSchema);

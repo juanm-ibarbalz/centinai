@@ -63,6 +63,7 @@ export const closeConversationsById = async (convIds, now = new Date()) => {
  */
 export const startConversationCleanupJob = () => {
   const intervalMinutes = conversationConfig.cleanupIntervalMinutes;
+  const now = new Date();
 
   cron.schedule(`*/${intervalMinutes} * * * *`, async () => {
     try {
@@ -74,7 +75,7 @@ export const startConversationCleanupJob = () => {
       await dispatchToAnalyzer(jsonPath);
 
       const convIds = conversations.map((c) => c._id);
-      await closeConversationsById(convIds);
+      await closeConversationsById(convIds, now);
     } catch (error) {
       console.error("Error en limpieza automática de conversaciones:", error);
     }

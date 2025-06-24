@@ -18,7 +18,7 @@ import {
  * @route GET /metrics?agentPhoneNumberId=xxx
  * @param {Object} req - Express request object
  * @param {Object} req.query - Query parameters
- * @param {string} [req.query.agentPhoneNumberId] - WhatsApp phone number identifier for filtering (optional)
+ * @param {string} [req.query.agentPhoneNumberId] - Phone number identifier for filtering
  * @param {number} [req.query.limit=20] - Maximum number of metrics to return
  * @param {number} [req.query.offset=0] - Number of metrics to skip for pagination
  * @param {Object} req.user - Authenticated user object from middleware
