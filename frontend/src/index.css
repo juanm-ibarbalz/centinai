@@ -1,3 +1,63 @@
+/* frontend/src/index.css */
+
+/* 1. Definición de Variables Globales de Diseño (Design Tokens) */
+:root {
+  /* Paleta de Colores Principal */
+  --color-primary: #9b59b6; /* Morado de tus botones */
+  --color-primary-hover: #8e44ad; /* Morado más oscuro para hover */
+  --color-accent: #3498db; /* Un azul para acentos secundarios si lo necesitas */
+
+  /* Paleta de Fondos y Superficies */
+  --color-background: #0d1117; /* Fondo principal muy oscuro (como GitHub) */
+  --color-surface: #161b22;   /* Color para contenedores, formularios, tarjetas */
+  --color-border: #30363d;   /* Borde sutil para inputs y contenedores */
+
+  /* Paleta de Texto */
+  --color-text: #c9d1d9;       /* Texto principal claro */
+  --color-text-secondary: #8b949e; /* Texto secundario para etiquetas y placeholders */
+
+  /* Colores de Estado */
+  --color-error: #f85149;
+  --color-success: #28a745;
+
+  /* Tipografía */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-md: 1rem;     /* 16px */
+  --font-size-lg: 1.25rem;  /* 20px */
+  --font-size-xl: 1.75rem;  /* 28px */
+
+  /* Espaciado Consistente */
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Bordes y Sombras */
+  --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* 2. Reseteo y Estilos Base Globales (Mobile-First) */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* Fondo transparente solo para la Home */
+body.home-background {
+  background-color: transparent;
+}
+
+/*
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -66,3 +126,4 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+  */

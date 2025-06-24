@@ -1,9 +1,16 @@
+/* =================================================================== */
+/*             Estilos para CreateAgent (Mobile-First)                 */
+/* =================================================================== */
+
 .create-agent-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
   color: #E0F7FA;
+  padding: 1.5rem;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0B0E23;
 }
 
 .create-agent-form {
@@ -11,51 +18,43 @@
   flex-direction: column;
   gap: 1rem;
   background: #0B0E23;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 20px #29FFD8;
-  width: 420px;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 0 25px #29FFD8;
+  width: 100%;
+  max-width: 500px; /* Ancho máximo para el formulario */
+  margin-top: 1rem;
 }
 
-.create-agent-form input {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 6px;
-  background-color: #2a2a2a;
-  color: #fff;
+/* Stepper y títulos (se mantienen pero con ajustes) */
+.create-agent-container h2 {
+  font-family: 'Exo 2', sans-serif;
+  color: #E0F7FA;
+  margin-bottom: 1.5rem;
 }
 
-.create-agent-form button {
-  background-color: #A67CFF;
-  border: none;
-  padding: 0.7rem;
-  color: white;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* Stepper visual */
 .stepper {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .step {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: #222;
+  background-color: #1a1e38;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
   color: #fff;
   transition: all 0.3s ease;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 8px rgba(41, 255, 216, 0.2);
   cursor: pointer;
+  position: relative;
+  border: 2px solid #29FFD8;
 }
 
 .step.active {
@@ -66,10 +65,10 @@
 
 .line-progress {
   position: relative;
-  width: 60px;
+  width: 80px;
   height: 4px;
-  background-color: #444;
-  margin: 0 12px;
+  background-color: #1a1e38;
+  margin: 0 1rem;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -89,185 +88,210 @@
   width: 100%;
 }
 
-/* Tooltips */
-.step {
-  position: relative;
-}
-
+/* Tooltips del Stepper */
 .step::after {
   content: attr(title);
   position: absolute;
-  bottom: -38px;
+  bottom: -40px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #0B0E23;
   color: #E0F7FA;
-  padding: 4px 8px;
+  padding: 6px 10px;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  box-shadow: 0 0 10px rgba(41, 255, 216, 0.4);
-  z-index: 5;
+  box-shadow: 0 0 10px rgba(41, 255, 216, 0.5);
+  z-index: 10;
 }
 
 .step:hover::after {
   opacity: 1;
 }
 
-/* Animación de aparición de campos */
-.fade-slide-enter {
-  opacity: 0;
-  transform: translateY(10px);
+/* --- Formulario --- */
+label {
+  margin-bottom: 0.2rem;
+  font-weight: 500;
+  color: #B0BEC5;
+  font-size: 0.9rem;
 }
 
-.fade-slide-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+.create-agent-form input,
+.create-agent-form select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #29FFD8;
+  border-radius: 8px;
+  background-color: #11142a;
+  color: #E0F7FA;
+  transition: all 0.3s;
 }
 
-.phone-input-group {
+.create-agent-form input::placeholder,
+.create-agent-form select {
+  color: #8395a7;
+}
+
+.create-agent-form input:focus,
+.create-agent-form select:focus {
+  outline: none;
+  border-color: #A67CFF;
+  box-shadow: 0 0 10px #A67CFF;
+}
+
+/* --- Custom Select Component --- */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #29FFD8;
+  border-radius: 8px;
+  background-color: #11142a;
+  color: #E0F7FA;
+  cursor: pointer;
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
 }
 
+.custom-select-trigger .custom-arrow {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #E0F7FA;
+  transition: transform 0.3s;
+}
+
+.custom-select-trigger .custom-arrow.open {
+  transform: rotate(180deg);
+}
+
+.custom-options {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  right: 0;
+  background-color: #11142a;
+  border: 1px solid #29FFD8;
+  border-radius: 8px;
+  z-index: 20;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.custom-option {
+  padding: 0.8rem 1rem;
+  color: #E0F7FA;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-option:hover {
+  background-color: #29FFD8;
+  color: #0B0E23;
+}
+
+.custom-option.selected {
+  background-color: #3e61ff; /* Un azul para el seleccionado */
+  color: white;
+  font-weight: bold;
+}
+
+.custom-option.disabled {
+  color: #8395a7;
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+/* Fila del Teléfono */
 .phone-row {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
-
-.phone-input-small {
-  max-width: 90px;
+/* Estilos para react-phone-number-input */
+.PhoneInput {
+  display: flex;
+  align-items: center;
 }
 
-.phone-input-medium {
-  flex: 1;
-  padding: 0.5rem;
-  background-color: #2a2a2a;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  max-width: 90px;
+.PhoneInputCountry {
+  margin-right: 0.5rem;
 }
 
-.phone-input-large {
-  flex: 1;
-  padding: 0.5rem;
-  background-color: #2a2a2a;
-  border: none;
-  border-radius: 6px;
-  color: white;
+.PhoneInputInput {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #29FFD8;
+  border-radius: 8px;
+  background-color: #11142a;
+  color: #E0F7FA;
 }
 
-.phone-input-group input[type="text"] {
-  background-color: #2a2a2a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem;
+.phone-row .phone-input-medium,
+.phone-row .phone-input-large {
+  background-color: #11142a;
+  border: 1px solid #29FFD8;
+  color: #E0F7FA;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
 }
 
-.phone-input-group input[name="areaCode"] {
-  width: 100px;
-}
+.phone-input-small { flex: 0 1 120px; }
+.phone-input-medium { flex: 1 1 100px; }
+.phone-input-large { flex: 2 1 150px; }
 
-.phone-input-group input[name="localNumber"] {
-  flex: 1;
-}
-
-.phone-prefix {
-  width: 60px;
-  background-color: #2a2a2a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem;
-  text-align: center;
-}
-
+/* Mensajes de Validación */
 .error-text {
-  color: #ff6b6b;
+  color: #ff4d4d;
   font-size: 0.85rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.8rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .valid-text {
-  color: #4caf50;
-  font-size: 0.85rem;
-  margin-top: -0.3rem;
-  margin-bottom: 0.8rem;
+  display: none; /* Ocultamos los mensajes de éxito */
 }
 
-.estructurado-extra {
-  margin: 1rem 0;
-  padding: 1rem;
-  border: 1px solid #555;
-  border-radius: 8px;
-  background-color: #181a2a;
-}
-.estructurado-extra label {
-  display: block;
-  margin-top: 0.5rem;
-}
 
-/* Aumenta altura y padding de los selects */
-select {
-  height: 3rem;
-  padding: 0 1rem;
-  font-size: 1rem;
-  border-radius: 8px;
-}
-
-/* Campos de texto más largos y altos */
-input[type="text"] {
-  width: 90%;
-  height: 2.8rem;
-  font-size: 1rem;
-  padding: 0 0.8rem;
-  border-radius: 8px;
-}
-
-/* Que no se vean tan apretados entre sí */
-label {
+/* Botón de Siguiente */
+button[type="button"], button[type="submit"] {
   margin-top: 1rem;
-  display: block;
-  font-weight: 500;
+  padding: 0.9rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(90deg, #A67CFF, #5B91FF);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-.estructurado-extra input[type="text"] {
-  margin-top: 0.3rem;
-  margin-bottom: 1rem;
+button[type="button"]:hover, button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(166, 124, 255, 0.4);
 }
 
-/* Que el botón quede un poco separado también */
-button[type="submit"] {
-  margin-top: 1.5rem;
-}
+/* Adaptación a Escritorio */
+@media (min-width: 768px) {
+  .create-agent-container h2 {
+    font-size: 2rem;
+  }
 
-.warning-text {
-  color: #ff4c4c;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  background-color: rgba(255, 76, 76, 0.1);
-  padding: 0.5rem;
-  border-left: 4px solid #ff4c4c;
-  border-radius: 4px;
-}
-
-.success-text {
-  color: #4caf50;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  background-color: rgba(76, 175, 80, 0.1);
-  padding: 0.5rem;
-  border-left: 4px solid #4caf50;
-  border-radius: 4px;
+  .create-agent-form {
+    padding: 3rem 2.5rem;
+  }
 }

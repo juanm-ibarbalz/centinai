@@ -4,10 +4,22 @@ import { createOrUpdateConversation } from "./conversation.service.js";
 import { buildMessage } from "./helpers/message.helpers.js";
 
 /**
- * Procesa y guarda un mensaje entrante desde el webhook.
- * @param {Object} parsed - Objeto de mensaje adaptado desde webhook
+ * Processes and saves an incoming message from webhook.
+ * Routes the message to the appropriate handler based on direction (user or agent).
+ * Assumes the message is already mapped and timestamp is normalized.
+ *
+ * @param {Object} parsed - Parsed and normalized message object from webhook.
+ * @param {string} parsed.direction - Message direction ('user' or 'agent').
+ * @param {string} parsed.agentPhoneNumberId - WhatsApp phone number identifier of the agent.
+ * @param {string} parsed.from - Phone number of the message sender.
+ * @param {string} parsed.to - Phone number of the message recipient.
+ * @param {string} parsed.userName - Display name of the user.
+ * @param {string} parsed.userId - ID of the user who owns the conversation.
+ * @returns {Promise<void>} Resolves when message is successfully processed and saved.
+ * @throws {Error} When agent message has no active conversation (status: 400).
  */
 export const saveIncomingMessage = async (parsed) => {
+  console.log("saveIncomingMessage called with:", parsed);
   if (parsed.direction === "agent") {
     await processAgentMessage(parsed);
   } else {
@@ -16,10 +28,14 @@ export const saveIncomingMessage = async (parsed) => {
 };
 
 /**
- * Procesa un mensaje enviado por un agente (message_echo).
- * Lo guarda solo si hay una conversación abierta.
- * @param {Object} parsed - Mensaje mapeado
- * @throws {Error} Si no hay una conversación activa para el mensaje del agente
+ * Processes a message sent by an agent (message_echo).
+ * Only saves the message if there's an active conversation for the recipient.
+ *
+ * @param {Object} parsed - Parsed message object with agent message data
+ * @param {string} parsed.agentPhoneNumberId - WhatsApp phone number identifier of the agent
+ * @param {string} parsed.to - Phone number of the message recipient
+ * @returns {Promise<void>} Resolves when agent message is saved
+ * @throws {Error} When there's no active conversation for the agent message (status: 400)
  */
 const processAgentMessage = async (parsed) => {
   const existingConversation = await Conversation.findOne({
@@ -41,9 +57,15 @@ const processAgentMessage = async (parsed) => {
 };
 
 /**
- * Procesa un mensaje entrante desde un usuario externo.
- * Crea o actualiza una conversación y guarda el mensaje.
- * @param {Object} parsed - Mensaje mapeado
+ * Processes an incoming message from an external user.
+ * Creates or updates a conversation and saves the user message.
+ *
+ * @param {Object} parsed - Parsed message object with user message data
+ * @param {string} parsed.userId - ID of the user who owns the conversation
+ * @param {string} parsed.agentPhoneNumberId - WhatsApp phone number identifier of the agent
+ * @param {string} parsed.userName - Display name of the user
+ * @param {string} parsed.from - Phone number of the message sender
+ * @returns {Promise<void>} Resolves when user message is processed and saved
  */
 const processUserMessage = async (parsed) => {
   const conversationId = await createOrUpdateConversation(
@@ -58,12 +80,15 @@ const processUserMessage = async (parsed) => {
 };
 
 /**
- * Obtiene mensajes de una conversación perteneciente al usuario, con paginación.
- * Lanza error si la conversación no existe o no pertenece al usuario autenticado.
- * @param {string} conversationId
- * @param {number} limit
- * @param {number} offset
- * @returns {Promise<Array>}
+ * Retrieves messages for a conversation belonging to the authenticated user.
+ * Includes pagination support and validates conversation ownership.
+ *
+ * @param {string} conversationId - ID of the conversation to retrieve messages from
+ * @param {string} userId - ID of the user requesting the messages (for ownership validation)
+ * @param {number} limit - Maximum number of messages to return
+ * @param {number} offset - Number of messages to skip for pagination
+ * @returns {Promise<Array>} Array of message objects sorted by timestamp
+ * @throws {Error} When conversation doesn't exist or doesn't belong to the user
  */
 export const getMessagesByConversationId = async (
   conversationId,

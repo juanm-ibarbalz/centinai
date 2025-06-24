@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ConversationList from "./ConversationList";
+import { API_URL } from "../config";
 
 const ConversationTable = ({ phoneNumberId }) => {
   const [data, setData] = useState([]);
@@ -8,9 +9,8 @@ const ConversationTable = ({ phoneNumberId }) => {
     if (!phoneNumberId) return;
 
     const token = localStorage.getItem("token");
-    const API_URL = import.meta.env.VITE_API_URL;
 
-    fetch(`${API_URL}/conversations?agentPhoneNumberId=${phoneNumberId}`, {
+    fetch(`${API_URL}/conversations?agentPhoneNumberId=${encodeURIComponent(phoneNumberId)}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

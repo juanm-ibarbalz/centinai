@@ -29,34 +29,53 @@ These instructions will help you get a copy of the project up and running on you
 
    MONGO_HOST_PORT=<your-mongo-host-port>
    MONGO_CONTAINER_PORT=<your-mongo-container-port>
-
    ```
 
 2. **Module environment files**
 
+   Each module requires its own `.env` file for independent deployment and configuration:
+
    - frontend/.env:
 
    ```bash
-      VITE_API_URL=http://<your-localhost>:${BACKEND_HOST_PORT}
+   # API connection
+   VITE_API_URL=http://your-localhost:${BACKEND_HOST_PORT}
    ```
 
    - backend/.env:
 
    ```bash
-      MONGO_URI=<your-mongo-uri>
-      PORT=${BACKEND_CONTAINER_PORT}
-      JWT_SECRET=<your-jwt-secret>
-      JWT_EXPIRES_IN=<token-expiration>
-      ANALYZER_URL=http://<your-localhost>:${APIFLASK_HOST_PORT}
+   # Database configuration
+   MONGO_URI=<your-mongo-uri>
+
+   # Server configuration
+   PORT=${BACKEND_CONTAINER_PORT}
+
+   # Authentication
+   JWT_SECRET=<your-jwt-secret>
+   JWT_EXPIRES_IN=<token-expiration> # e.g., "1d" for one day
+
+   # Services
+   ANALYZER_URL=http://your-localhost:${APIFLASK_HOST_PORT}
    ```
 
    - analyzer/.env:
 
    ```bash
-      MONGO_URI=<your-mongo-uri>
-      MONGO_DB_TEST=<your-test-db-name>
-      PORT=${APIFLASK_CONTAINER_PORT}
+   # Database configuration
+   MONGO_URI=<your-mongo-uri>
+   MONGO_DB=<your-test-db-name>
+
+   # Server configuration
+   PORT=${APIFLASK_CONTAINER_PORT}
    ```
+
+   **Important Notes:**
+
+   - Never commit `.env` files to version control
+   - Use strong, unique values for secrets in production
+   - Ensure all used ports are available on your system
+   - The `${VARIABLE}` syntax refers to variables from the root `.env` file _when using docker-compose_
 
 ### Installing
 

@@ -6,9 +6,9 @@ import {
 
 const router = express.Router();
 
-// Rutas del webhook
+// Webhook routes for external service integration
 
-// POST /webhook → Recepción de mensajes entrantes (usuario o agente)
+// POST /webhook → Process incoming messages from external services (e.g., WhatsApp)
 router.post("/", handleIncomingMessage);
 
 export default router;

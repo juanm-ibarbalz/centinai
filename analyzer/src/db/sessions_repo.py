@@ -11,17 +11,17 @@ load_dotenv()
 class SessionRepo:
     """
     Clase responsable de insertar documentos de sesión en la colección 'metrics'
-    dentro de la base de datos indicada por MONGO_DB_TEST.
+    dentro de la base de datos indicada por MONGO_DB.
     """
 
     def __init__(self):
         # Tomar URI y nombre de la base de datos de variables de entorno
         mongo_uri = os.getenv("MONGO_URI", "")
-        mongo_db = os.getenv("MONGO_DB_TEST", "")
+        mongo_db = os.getenv("MONGO_DB", "")
         if not mongo_uri:
             raise ValueError("Debe definir la variable de entorno MONGO_URI con el URI de MongoDB Atlas")
         if not mongo_db:
-            raise ValueError("Debe definir la variable de entorno MONGO_DB_TEST con el nombre de la BD de prueba")
+            raise ValueError("Debe definir la variable de entorno MONGO_DB con el nombre de la BD de prueba")
 
         # Inicializar cliente y seleccionar BD/colección 'metrics'
         self.client = MongoClient(mongo_uri)

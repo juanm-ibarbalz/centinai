@@ -5,17 +5,17 @@ import { loginLimiter } from "../../middlewares/rateLimiters.js";
 
 const router = express.Router();
 
-// Rutas de autenticación
-// POST /auth/register → Registra un nuevo usuario
+// Authentication routes
+// POST /auth/register → Register a new user account
 router.post("/register", register);
 
-// POST /auth/login → Inicia sesión y devuelve token
+// POST /auth/login → Authenticate user and return JWT token (rate limited)
 router.post("/login", loginLimiter, login);
 
-// GET /auth/protected → Ruta protegida con JWT (solo para prueba)
+// GET /auth/protected → Protected route with JWT authentication (for testing purposes)
 router.get("/protected", authenticate, (req, res) => {
   res.json({
-    message: "Ruta protegida accedida correctamente",
+    message: "Protected route accessed successfully",
     user: req.user,
   });
 });

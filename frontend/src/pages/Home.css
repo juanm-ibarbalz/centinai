@@ -18,11 +18,25 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  overflow: auto; /* Permite scroll si el contenido es muy grande */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 2rem 1.5rem; /* Revertimos al padding simple */
+  box-sizing: border-box;
+  transition: padding-left 0.3s ease;
+}
+
+/* Contenedor del fondo, fijo y detrás de todo */
+.home-video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1; /* ¡CLAVE! Lo ponemos detrás de todo */
 }
 
 /* Video de fondo */
@@ -45,15 +59,15 @@
 
 /* Contenido */
 .home-content {
-  position: absolute;
-  inset: 0;
+  position: relative;
   z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 0 1.5rem;
+  width: 100%;
+  max-width: 1200px; /* Ancho máximo para el contenido */
 }
 
 /* Título */

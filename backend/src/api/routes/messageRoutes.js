@@ -4,8 +4,8 @@ import { authenticate } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-// Rutas de mensajes
-// GET /messages → Lista mensajes paginados de una conversación.
+// Message management routes (all require authentication)
+// GET /messages?conversationId=xxx → List paginated messages for a specific conversation
 router.get("/", authenticate, listMessages);
 
 export default router;

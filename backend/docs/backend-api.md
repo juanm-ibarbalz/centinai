@@ -71,7 +71,8 @@ Authenticates a user and returns a JWT token.
     "token": "jwt-token-here",
     "user": {
       "id": "usr-123",
-      "email": "user@example.com"
+      "email": "user@example.com",
+      "username": "name"
     }
   }
   ```
@@ -125,7 +126,8 @@ Returns all conversations for the authenticated user filtered by agent, with pag
 
 **Query parameters:**
 
-- `agentPhoneNumberId` (required): the identifier of the agent.
+- `agentPhoneNumberId` (required): the identifier of the agent.  
+  **See [Phone Number Query Parameter Normalization](#phone-number-query-parameter-normalization) for accepted formats.**
 - `limit` (optional): maximum number of results to return. Default: 20.
 - `offset` (optional): number of results to skip. Default: 0.
 - `sortBy` (optional): one of `duration`, `cost`, or `date`. Default: `date`.
@@ -193,7 +195,7 @@ Creates a new agent for the authenticated user.
   "phoneNumberId": "123456",
   "name": "Agent 1",
   "modelName": "gpt-4",
-  "payloadFormat": "structured",
+  "payloadFormat": "custom",
   "authMode": "header",
   "description": "optional",
   "fieldMapping": {
@@ -483,6 +485,27 @@ Can be done via `secretToken` in:
 - `to` (when sending "agent echo's")
 - `userName` (optional)
 
+**Timestamp Format and Normalization:**
+
+- The `timestamp` field must be provided in one of the following formats:
+  - **String:** ISO 8601 format (e.g., `"2025-06-23T10:34:00Z"`, `"2025-06-23T10:34:00-06:00"`).
+    - If the string does **not** include a timezone (e.g., `"2025-06-23T10:34:00"`), it will be interpreted as UTC.
+  - **Number:** Must be in **milliseconds** since the Unix epoch (e.g., `1720000000000`).
+    - Numeric values in seconds (e.g., `1720000000`) will be rejected.
+- Any other format will be rejected with an error.
+- All timestamps are normalized and stored in UTC in the database.
+
+**Phone Number Query Parameter Normalization:**
+
+- All endpoints that accept phone numbers via query parameters (e.g., `agentPhoneNumberId`) will:
+  - Accept numbers in E.164 format (with `+`).
+  - Accept numbers with a leading space, which will be interpreted as `+` (e.g., `" 5491123456789"` becomes `+5491123456789`).
+  - Recommend URL-encoding the `+` as `%2B` when sending via query string.
+  - If sent without a `+` or space, the number will be used as-is.
+  - **Example:**
+    - `/conversations?agentPhoneNumberId=%2B5491123456789`
+    - `/conversations?agentPhoneNumberId= 5491123456789` (will be interpreted as `+5491123456789`)
+
 **Responses:**
 
 - 200 OK – Message processed.
@@ -499,7 +522,8 @@ Returns all metrics for conversations associated with a specific agent belonging
 
 **Query parameters:**
 
-- `agentPhoneNumberId` (required): the agent's identifier.
+- `agentPhoneNumberId` (required): the agent's identifier.  
+  **See [Phone Number Query Parameter Normalization](#phone-number-query-parameter-normalization) for accepted formats.**
 - `limit` (optional): maximum number of results to return. Default: 20.
 - `offset` (optional): number of results to skip. Default: 0.
 

@@ -13,7 +13,7 @@ def check_env_vars():
     """
     Verifica que las variables de entorno necesarias estén definidas:
       - MONGO_URI
-      - MONGO_DB_TEST
+      - MONGO_DB
     Si faltan, saltea los tests, porque en este caso queremos que el código
     se ejecute contra una base de datos real.
     """

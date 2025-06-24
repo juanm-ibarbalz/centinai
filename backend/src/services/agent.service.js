@@ -5,20 +5,21 @@ import Message from "../models/Message.js";
 import { generateAgentId } from "../utils/idGenerator.js";
 
 /**
- * Crea un nuevo agente para un usuario dado si el número de teléfono no está ya registrado
- * y el usuario no superó el límite de agentes permitidos.
+ * Creates a new AI agent for a given user if the phone number is not already registered
+ * and the user hasn't exceeded the allowed agent limit.
+ * Generates a unique secret token for webhook authentication.
  *
- * @param {Object} data - Datos necesarios para crear el agente
- * @param {string} data.userId - ID del usuario dueño del agente
- * @param {string} data.phoneNumberId - ID del número de teléfono asociado
- * @param {string} data.name - Nombre del agente
- * @param {string} [data.description] - Descripción opcional
- * @param {string} data.payloadFormat - Formato del payload ("structured" | "custom")
- * @param {string} data.authMode - Método de autenticación ("query" | "header" | "body")
- * @param {Object} [data.fieldMapping] - Mapping requerido si `payloadFormat` es "custom"
- * @param {string} [data.modelName] - Nombre del modelo asociado al agente
- * @returns {Promise<Agent>} - Agente recién creado
- * @throws {Error} - Si ya existe un agente o se supera el límite
+ * @param {Object} data - Data required to create the agent
+ * @param {string} data.userId - ID of the user who owns the agent
+ * @param {string} data.phoneNumberId - WhatsApp phone number identifier
+ * @param {string} data.name - Display name for the agent
+ * @param {string} [data.description] - Optional description of the agent's purpose
+ * @param {'structured'|'custom'} data.payloadFormat - Format for incoming webhook payloads
+ * @param {'query'|'header'|'body'} data.authMode - Authentication method for webhook requests
+ * @param {Object} [data.fieldMapping] - Field mapping configuration (required if payloadFormat is "custom")
+ * @param {string} [data.modelName] - AI model name to be used by the agent
+ * @returns {Promise<Object>} Newly created agent object
+ * @throws {Error} When agent already exists or user exceeds agent limit
  */
 export const createAgentService = async ({
   userId,
@@ -51,10 +52,12 @@ export const createAgentService = async ({
 };
 
 /**
- * Elimina un agente por ID y todos sus datos relacionados, validando propiedad.
- * @param {string} phoneNumberId - ID del número de teléfono del agente a eliminar
- * @returns {Promise<void>}
- * @throws {Error} - Si el agente no existe o no pertenece al usuario
+ * Deletes an agent by phone number ID and all related data (cascade deletion).
+ * Removes all conversations and messages associated with the agent.
+ *
+ * @param {string} phoneNumberId - WhatsApp phone number identifier of the agent to delete
+ * @returns {Promise<void>} Resolves when agent and all related data are deleted
+ * @throws {Error} When agent doesn't exist or doesn't belong to the user
  */
 export const deleteAgentWithCascade = async (phoneNumberId) => {
   const conversations = await Conversation.find({
@@ -68,9 +71,11 @@ export const deleteAgentWithCascade = async (phoneNumberId) => {
 };
 
 /**
- * Devuelve todos los agentes pertenecientes a un usuario.
- * @param {string} userId
- * @returns {Promise<Agent[]>}
+ * Retrieves all agents belonging to a specific user.
+ * Returns a simplified view with essential agent information.
+ *
+ * @param {string} userId - ID of the user whose agents to retrieve
+ * @returns {Promise<Array>} Array of agent objects with selected fields
  */
 export const getAgentsByUser = async (userId) => {
   return Agent.find({ userId })
@@ -79,13 +84,14 @@ export const getAgentsByUser = async (userId) => {
 };
 
 /**
- * Actualiza el fieldMapping de un agente.
+ * Updates the field mapping configuration for a specific agent.
+ * Field mapping is used to map incoming webhook fields to system fields.
  *
- * @param {string} agentId - ID del agente a modificar
- * @param {Object} fieldMapping - Nuevo objeto de mapeo
- * @returns {Promise<Object>} - FieldMapping actualizado
+ * @param {string} agentId - ID of the agent to modify
+ * @param {Object} fieldMapping - New field mapping configuration object
+ * @returns {Promise<Object>} Updated field mapping configuration
+ * @throws {Error} When agent is not found (status: 404)
  */
-
 export const updateAgentMapping = async (agentId, fieldMapping) => {
   const agent = await Agent.findByIdAndUpdate(
     agentId,
@@ -102,11 +108,12 @@ export const updateAgentMapping = async (agentId, fieldMapping) => {
 };
 
 /**
- * Regenera el secretToken de un agente y lo devuelve.
+ * Regenerates the secret token for a specific agent.
+ * This invalidates the previous token and generates a new one for security purposes.
  *
- * @param {string} agentId - ID del agente a actualizar
- * @returns {Promise<string>} - Nuevo token generado
- * @throws {Error} - Si el agente no existe o no pertenece al usuario
+ * @param {string} agentId - ID of the agent to update
+ * @returns {Promise<string>} Newly generated secret token
+ * @throws {Error} When agent doesn't exist or doesn't belong to the user (status: 404)
  */
 export const rotateSecretToken = async (agentId) => {
   const agent = await Agent.findByIdAndUpdate(
@@ -124,12 +131,19 @@ export const rotateSecretToken = async (agentId) => {
 };
 
 /**
- * Actualiza los datos de un agente.
+ * Updates general agent information while maintaining data integrity.
+ * Only allows updating specific fields and handles field mapping cleanup
+ * when switching to structured payload format.
  *
- * @param {string} agentId - ID del agente a actualizar
- * @param {Object} data - Datos de actualización
- * @returns {Promise<Agent>} - Agente actualizado
- * @throws {Error} - Si no se encuentra o la lógica es inválida
+ * @param {string} agentId - ID of the agent to update
+ * @param {Object} data - Update data containing allowed fields
+ * @param {string} [data.name] - New agent name
+ * @param {string} [data.description] - New agent description
+ * @param {string} [data.modelName] - New AI model name
+ * @param {'structured'|'custom'} [data.payloadFormat] - New payload format
+ * @param {'query'|'header'|'body'} [data.authMode] - New authentication mode
+ * @returns {Promise<Object>} Updated agent object
+ * @throws {Error} When agent is not found or update logic is invalid (status: 404)
  */
 export const updateAgentService = async (agentId, data) => {
   const allowedFields = [

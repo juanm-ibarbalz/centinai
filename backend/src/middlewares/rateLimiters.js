@@ -5,13 +5,21 @@ const { windowMinutes, maxAttempts, errorMessage } =
   securityConfig.loginRateLimit;
 
 /**
- * Middleware de rate limit para el endpoint de login.
- * Limita la cantidad de intentos permitidos en un período de tiempo.
+ * Rate limiting middleware for the login endpoint.
+ * Prevents brute force attacks by limiting the number of login attempts
+ * within a specified time window. Uses express-rate-limit for implementation.
+ *
+ * Configuration:
+ * - Time window: 2 minutes (from securityConfig)
+ * - Max attempts: 10 (from securityConfig)
+ * - Error message: Custom message from securityConfig
+ *
+ * @type {import('express-rate-limit').RateLimitRequestHandler}
  */
 export const loginLimiter = rateLimit({
-  windowMs: windowMinutes * 60 * 1000, // Ventana de tiempo en milisegundos
-  max: maxAttempts, // Máximo de intentos permitidos
-  message: { error: errorMessage }, // Mensaje devuelto al alcanzar el límite
-  standardHeaders: true, // Usa headers estándar
-  legacyHeaders: false, // Desactiva headers antiguos
+  windowMs: windowMinutes * 60 * 1000, // Time window in milliseconds
+  max: maxAttempts, // Maximum number of attempts allowed
+  message: { error: errorMessage }, // Error message returned when limit is reached
+  standardHeaders: true, // Use standard rate limit headers
+  legacyHeaders: false, // Disable legacy headers
 });

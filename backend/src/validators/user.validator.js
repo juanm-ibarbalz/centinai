@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 /**
- * Valida actualizaciones de perfil (nombre, email).
+ * Schema for validating user profile updates (name, email).
+ * Both fields are optional, allowing partial updates.
+ * Email is validated for proper format if provided.
+ *
+ * @type {import('zod').ZodObject}
  */
 export const updateUserSchema = z
   .object({
@@ -11,11 +15,14 @@ export const updateUserSchema = z
   .strict();
 
 /**
- * Valida el cambio de contraseña del usuario.
+ * Schema for validating user password change requests.
+ * Requires current password for verification and new password with minimum length.
+ *
+ * @type {import('zod').ZodObject}
  */
 export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(6, "La contraseña actual es requerida"),
+  currentPassword: z.string().min(6, "Current password is required"),
   newPassword: z
     .string()
-    .min(6, "La nueva contraseña debe tener al menos 6 caracteres"),
+    .min(6, "New password must be at least 6 characters long"),
 });

@@ -2,11 +2,20 @@ import Message from "../../models/Message.js";
 import { generateMessageId } from "../../utils/idGenerator.js";
 
 /**
- * Construye un documento Message listo para guardar.
- * @param {Object} parsed - Objeto mapeado del mensaje
- * @param {string} conversationId - ID de la conversación asociada
- * @throws {Error} Si hay un error al generar el ID del mensaje
- * @returns {Message} - Documento listo para guardar
+ * Builds a Message document ready for database storage.
+ * Assumes the timestamp is already a valid Date object.
+ *
+ * @param {Object} parsed - Parsed and normalized message object from webhook.
+ * @param {string} parsed.from - Phone number or identifier of the message sender.
+ * @param {Date} parsed.timestamp - JavaScript Date object representing the message timestamp.
+ * @param {string} parsed.userName - Display name of the message sender.
+ * @param {'user'|'agent'} parsed.direction - Direction of the message.
+ * @param {string} parsed.type - Type of message.
+ * @param {string} parsed.text - Text content of the message.
+ * @param {string} parsed.userId - ID of the user who owns the conversation.
+ * @param {string} conversationId - ID of the conversation this message belongs to.
+ * @returns {Object} Message document instance ready for database save.
+ * @throws {Error} When message ID generation fails (status: 500).
  */
 export const buildMessage = (parsed, conversationId) => {
   const { from, timestamp, userName, direction, type, text, userId } = parsed;
@@ -21,12 +30,11 @@ export const buildMessage = (parsed, conversationId) => {
   return new Message({
     _id: generatedMessageId,
     from,
-    timestamp: new Date(Number(timestamp) * 1000),
+    timestamp,
     userName,
     direction,
     type,
     text,
-    status: "active",
     userId,
     conversationId,
   });

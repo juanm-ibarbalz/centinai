@@ -12,14 +12,14 @@ def check_env_vars():
     """
     Verifica que estén definidas las variables de entorno necesarias:
       - MONGO_URI
-      - MONGO_DB_TEST
+      - MONGO_DB
     Si faltan, saltea el test.
     """
     missing = []
     if not os.getenv("MONGO_URI"):
         missing.append("MONGO_URI")
-    if not os.getenv("MONGO_DB_TEST"):
-        missing.append("MONGO_DB_TEST")
+    if not os.getenv("MONGO_DB"):
+        missing.append("MONGO_DB")
     if missing:
         pytest.skip(f"Variables de entorno faltantes: {', '.join(missing)}")
 

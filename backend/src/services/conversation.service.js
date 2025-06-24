@@ -11,14 +11,16 @@ import {
 import Conversation from "../models/Conversation.js";
 
 /**
- * Crea una nueva conversación o actualiza una existente,
- * cerrando la anterior si ya venció el timeout.
- * @param {string} userId - ID del usuario que envía el mensaje
- * @param {string} agentPhoneNumberId - Número de teléfono del agente
- * @param {string} userName - Nombre del usuario
- * @param {string} from - Identificador del remitente (número de teléfono del cliente)
- * @throws {Error} - Si hay un error al crear o actualizar la conversación
- * @returns {Promise<string>} - ID de la conversación activa
+ * Creates a new conversation or updates an existing one,
+ * closing the previous conversation if it has expired due to timeout.
+ * Handles conversation lifecycle management for incoming messages.
+ *
+ * @param {string} userId - ID of the user who owns the conversation
+ * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
+ * @param {string} userName - Display name of the user in the conversation
+ * @param {string} from - Phone number or identifier of the message sender
+ * @returns {Promise<string>} ID of the active conversation
+ * @throws {Error} When there's an error creating or updating the conversation (status: 500)
  */
 export const createOrUpdateConversation = async (
   userId,
@@ -67,19 +69,20 @@ export const createOrUpdateConversation = async (
 };
 
 /**
- * Busca las conversaciones del usuario para un agente específico,
- * aplica paginación, ordenamiento y filtro por fecha, y une con métricas.
- * @param {string} userId
- * @param {string} agentPhoneNumberId
- * @param {Object} options
- * @param {number} options.limit
- * @param {number} options.offset
- * @param {"duration"|"cost"|"date"} [options.sortBy]
- * @param {"asc"|"desc"} [options.sortOrder]
- * @param {Date} [options.dateFrom]
- * @param {Date} [options.dateTo]
+ * Retrieves conversations for a specific user and agent with advanced filtering,
+ * pagination, sorting, and date range filtering. Includes metrics data through
+ * MongoDB aggregation pipeline for performance optimization.
  *
- * @returns {Promise<Array>} - Lista de objetos con { conversation, metrics }
+ * @param {string} userId - ID of the user whose conversations to retrieve
+ * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
+ * @param {Object} options - Query options for filtering and pagination
+ * @param {number} options.limit - Maximum number of conversations to return
+ * @param {number} options.offset - Number of conversations to skip for pagination
+ * @param {'duration'|'cost'|'date'} [options.sortBy='date'] - Field to sort by
+ * @param {'asc'|'desc'} [options.sortOrder='desc'] - Sort order (ascending or descending)
+ * @param {Date} [options.dateFrom] - Start date for filtering conversations
+ * @param {Date} [options.dateTo] - End date for filtering conversations
+ * @returns {Promise<Array>} Array of conversation objects with embedded metrics data
  */
 export const findConversationsByAgent = async (
   userId,

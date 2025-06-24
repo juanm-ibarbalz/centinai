@@ -10,7 +10,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import RegisterPage from "./pages/Register"; // Renombrado para claridad
 import DashboardPage from "./pages/ConversationsDash"; // Renombrado para claridad
 import AuthPage from "./pages/Auth"; // Renombrado para claridad
 import HomePage from "./pages/Home"; // Renombrado para claridad
@@ -20,9 +19,8 @@ import CreateAgent from "./pages/CreateAgent"; // Mantenemos CreateAgent de main
 import MyAgentsPage from "./pages/myAgents";
 import Mensajes from "./pages/Mensajes";
 
-import useIsMobile from "./hooks/useIsMobile";
-import MobileAuthPage from "./pages/MobileAuth"; // Renombrado para claridad
 import { useSessionLoader } from "./hooks/useSessionLoader";
+import { useEffect } from "react";
 
 // Componente para rutas que requieren autenticación
 function ProtectedRoute({ isAuthenticated, children }) {
@@ -43,7 +41,6 @@ function PublicRouteOnly({ isAuthenticated, children }) {
 function AppWrapper() {
   const location = useLocation();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const {
     user,
     isAuthenticated,
@@ -54,9 +51,26 @@ function AppWrapper() {
     error: authError, // Para leer el error de autenticación si quieres mostrarlo globalmente
   } = useSessionLoader();
 
+  // Efecto para gestionar la clase del body para el fondo de la home
+  useEffect(() => {
+    if (location.pathname === '/home') {
+      document.body.classList.add('home-background');
+    } else {
+      document.body.classList.remove('home-background');
+    }
+    // Cleanup function para cuando el componente se desmonte
+    return () => {
+      document.body.classList.remove('home-background');
+    };
+  }, [location.pathname]); // Se ejecuta cada vez que cambia la ruta
+
   const hiddenMenuRoutes = ["/login", "/register"];
   const showMenu =
     !hiddenMenuRoutes.includes(location.pathname) && isAuthenticated;
+
+  // Lógica para determinar el ancho del sidebar
+  const sidebarWidth = showMenu ? "50px" : "0px"; // Ancho por defecto (colapsado) o 0
+  const sidebarWidthDesktop = showMenu ? "220px" : "0px"; // Ancho para desktop (abierto)
 
   const handleLogout = () => {
     console.log("App.jsx: handleLogout llamado");
@@ -83,7 +97,12 @@ function AppWrapper() {
   }
 
   return (
-    <>
+    <div
+      style={{
+        '--sidebar-width': sidebarWidth,
+        '--sidebar-width-desktop': sidebarWidthDesktop,
+      }}
+    >
       {showMenu && (
         <HamburgerMenu
           onLogout={handleLogout}
@@ -91,109 +110,95 @@ function AppWrapper() {
           user={user}
         />
       )}
-      {/* Puedes mostrar authError aquí si quieres un mensaje de error global */}
-      {/* {authError && <p style={{color: 'red', textAlign: 'center'}}>{authError}</p>} */}
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <PublicRouteOnly isAuthenticated={isAuthenticated}>
-              {isMobile ? (
-                <MobileAuthPage
-                  onAuthSuccess={setupSession} // Usamos onAuthSuccess genérico
-                  setAuthError={setAuthError}
-                  isRegisterMode={false}
-                />
-              ) : (
+      <div className={`main-content ${showMenu ? 'with-sidebar' : ''}`}>
+        {/* Puedes mostrar authError aquí si quieres un mensaje de error global */}
+        {/* {authError && <p style={{color: 'red', textAlign: 'center'}}>{authError}</p>} */}
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <PublicRouteOnly isAuthenticated={isAuthenticated}>
                 <AuthPage
                   onAuthSuccess={setupSession}
                   setAuthError={setAuthError}
                   isLoginMode={true}
                 />
-              )}
-            </PublicRouteOnly>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRouteOnly isAuthenticated={isAuthenticated}>
-              {isMobile ? (
-                <MobileAuthPage
+              </PublicRouteOnly>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRouteOnly isAuthenticated={isAuthenticated}>
+                <AuthPage
                   onAuthSuccess={setupSession}
                   setAuthError={setAuthError}
-                  isRegisterMode={true}
+                  isLoginMode={false}
                 />
-              ) : (
-                <AuthPage // AuthPage puede manejar también el registro
-                  onAuthSuccess={setupSession}
-                  setAuthError={setAuthError}
-                  isLoginMode={false} // Indica a AuthPage que muestre el formulario de registro
-                />
-              )}
-            </PublicRouteOnly>
-          }
-        />
+              </PublicRouteOnly>
+            }
+          />
 
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <HomePage user={user} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboards"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <DashboardsPage user={user} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/conversationsDash/:phoneNumberId"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <DashboardPage user={user} />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <HomePage user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboards"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <DashboardsPage user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/conversationsDash/:phoneNumberId"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <DashboardPage user={user} />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/createAgent"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <CreateAgent />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/createAgent"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <CreateAgent />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/myAgents"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <MyAgentsPage user={user} />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/myAgents"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <MyAgentsPage user={user} />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/mensajes/:id" element={<Mensajes />} />
+          <Route path="/mensajes/:id" element={<Mensajes />} />
 
-        <Route
-          path="/"
-          element={
-            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
-          }
-        />
-      </Routes>
-    </>
+          <Route
+            path="/"
+            element={
+              <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+            }
+          />
+        </Routes>
+      </div>
+    </div>
   );
 }
 

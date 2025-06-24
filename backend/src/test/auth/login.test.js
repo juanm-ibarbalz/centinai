@@ -36,7 +36,9 @@ describe("POST /auth/login", () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
-    expect(res.body).toHaveProperty("description", { email: "Email inválido" });
+    expect(res.body).toHaveProperty("description", {
+      email: "Invalid email format",
+    });
   });
 
   it("should fail on invalid password format (400)", async () => {
@@ -47,7 +49,7 @@ describe("POST /auth/login", () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body).toHaveProperty("description", {
-      password: "Contraseña inválida",
+      password: "Invalid password",
     });
   });
 

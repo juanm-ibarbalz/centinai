@@ -1,14 +1,17 @@
 pymongo
 pandas
-python-dotenv
-flask
-gunicorn
-pytest
+python-dotenv 
+gunicorn #PACKAGE UTILIZADO POR DOCKER
+#pytest UNICAMENTE UTILIZADO PARA HACER TESTEOS, solo se requiere para testeos locales
+#Para dockerizar es opcional
 tiktoken
 tokonomics
-typing_extensions
+flask #NOS PERMITE CARGARLE LAS SESSIONS A EL ANALYZER, que se reciben mediante api
 flask_cors
 pyyaml
-pysentimiento
-transformers
-torch
+
+#pysentimiento ESTE SDK NOS PERMITE MEJORAR EL SISTEMA DE SCORING, AUMENTAR LA PRESCION
+#LO RETIRO COMO MEDIDA RAPIDA PARA FACILITAR LA DOKCERIZACION
+#transformers PACKETE USADO INTERNAMIENTO POR PYSENTIMIENTO
+#torch PACKETE USADO INTERNAMIENTO POR PYSENTIMIENTO
+#typing_extensions PACKETE USADO INTERNAMIENTO POR PYSENTIMIENTO

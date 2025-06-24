@@ -389,3 +389,22 @@ button:hover {
   color: #FF6B6B; /* rojo */
 }
 
+/* --- Main content wrapper --- */
+.main-content {
+  width: 100%;
+  transition: padding-left 0.3s ease;
+  padding-left: var(--sidebar-width); /* Aplicamos el padding a TODAS las páginas */
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    padding-left: var(--sidebar-width-desktop); /* Hacemos lo mismo para desktop */
+  }
+}
+
+/* Solo en la Home, hacemos el contenedor principal transparente */
+.main-content.home-background {
+  background-color: transparent;
+}
+

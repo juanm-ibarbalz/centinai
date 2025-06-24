@@ -3,15 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 /**
- * Configuración general de la aplicación.
- */
-export const appConfig = {
-  isDev: process.env.NODE_ENV !== "production",
-  logVerbose: true,
-};
-
-/**
- * Configuración de autenticación JWT.
+ * JWT authentication configuration.
+ * Defines secret key and token expiration settings for user authentication.
  */
 export const authConfig = {
   jwtSecret: process.env.JWT_SECRET,
@@ -19,7 +12,8 @@ export const authConfig = {
 };
 
 /**
- * Prefijos para IDs únicos generados por el sistema.
+ * Unique ID prefixes for system-generated identifiers.
+ * Ensures consistent and recognizable ID formats across different entities.
  */
 export const idConfig = {
   userPrefix: "usr",
@@ -31,34 +25,38 @@ export const idConfig = {
 };
 
 /**
- * Configuración relacionada a la duración y limpieza de conversaciones.
+ * Conversation management configuration.
+ * Controls timeout settings, cleanup intervals, and default conversation states.
  */
 export const conversationConfig = {
-  timeoutMs: 5 * 60 * 1000, // 2 horas de inactividad
-  cleanupIntervalMinutes: 1, // limpieza cada 5 minutos
+  timeoutMs: 1 * 60 * 1000, // 1 minute of inactivity before timeout
+  cleanupIntervalMinutes: 1, // Cleanup job runs every minute
   defaultConversationStatus: "open",
 };
 
 /**
- * Configuración de seguridad para limitar intentos de login.
+ * Security configuration for rate limiting and protection.
+ * Prevents brute force attacks and abuse of authentication endpoints.
  */
 export const securityConfig = {
   loginRateLimit: {
     windowMinutes: 2,
     maxAttempts: 10,
-    errorMessage: "Demasiados intentos. Intente nuevamente en un minuto.",
+    errorMessage: "Too many login attempts. Please try again in a minute.",
   },
 };
 
 /**
- * Configuración de límites del sistema.
+ * System limits configuration.
+ * Defines maximum allowed resources per user to prevent abuse.
  */
 export const limitsConfig = {
   maxAgentsPerUser: 3,
 };
 
 /**
- * Configuración relacionada al sistema de análisis.
+ * Analyzer system configuration.
+ * Defines paths and settings for the conversation analysis system.
  */
 export const analyzerConfig = {
   exportDir: "tmp/analyzer_jobs",

@@ -16,10 +16,27 @@ import { limitsConfig } from "../../config/config.js";
 import Agent from "../../models/Agent.js";
 
 /**
- * Controlador para registrar un nuevo agente.
- * Valida el cuerpo de la solicitud y asocia el agente al usuario autenticado.
- * Devuelve el secretToken generado para identificar al agente en las solicitudes entrantes.
+ * Controller for creating a new agent.
+ * Validates the request body using Zod schema, checks for duplicate phone numbers,
+ * validates user agent limits, and creates the agent in the database.
+ * Returns the generated secretToken for agent identification in incoming requests.
+ *
  * @route POST /agents
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body containing agent creation data
+ * @param {string} req.body.name - Agent's display name
+ * @param {string} req.body.phoneNumberId - WhatsApp phone number identifier
+ * @param {string} req.body.payloadFormat - Format for incoming webhook payloads
+ * @param {string} req.body.authMode - Authentication mode for webhook requests
+ * @param {Object} req.body.fieldMapping - Field mapping configuration
+ * @param {string} req.body.modelName - AI model name for the agent
+ * @param {string} [req.body.description] - Optional agent description
+ * @param {Object} req.user - Authenticated user object from middleware
+ * @param {string} req.user.id - User's ID
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with created agent data including secretToken
+ * @throws {400} When validation fails, agent already exists, or limit exceeded
+ * @throws {500} When server error occurs during agent creation
  */
 export const createAgentController = async (req, res) => {
   const result = agentValidationSchema.safeParse(req.body);
@@ -60,14 +77,25 @@ export const createAgentController = async (req, res) => {
       modelName: agent.modelName,
     });
   } catch (err) {
-    console.error("Error al registrar agente:", err);
+    console.error("Error registering agent:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
 /**
- * Elimina un agente del usuario autenticado y borra en cascada sus conversaciones y mensajes.
+ * Deletes an agent belonging to the authenticated user and cascades deletion
+ * to all associated conversations and messages.
+ *
  * @route DELETE /agents/:id
+ * @param {Object} req - Express request object
+ * @param {Object} req.params - URL parameters
+ * @param {string} req.params.id - Agent's unique identifier
+ * @param {Object} req.user - Authenticated user object from middleware
+ * @param {string} req.user.id - User's ID
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with success status
+ * @throws {404} When agent is not found or doesn't belong to user
+ * @throws {500} When server error occurs during deletion
  */
 export const deleteAgentController = async (req, res) => {
   const { id } = req.params;
@@ -80,14 +108,21 @@ export const deleteAgentController = async (req, res) => {
     await deleteAgentWithCascade(agent.phoneNumberId);
     return sendSuccess(res, 204);
   } catch (err) {
-    console.error("Error eliminando agente:", err);
+    console.error("Error deleting agent:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
 /**
- * Devuelve los agentes del usuario autenticado.
+ * Retrieves all agents belonging to the authenticated user.
+ *
  * @route GET /agents
+ * @param {Object} req - Express request object
+ * @param {Object} req.user - Authenticated user object from middleware
+ * @param {string} req.user.id - User's ID
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with array of user's agents
+ * @throws {500} When server error occurs during retrieval
  */
 export const getAgentsController = async (req, res) => {
   const userId = req.user.id;
@@ -96,14 +131,28 @@ export const getAgentsController = async (req, res) => {
     const agents = await getAgentsByUser(userId);
     return sendSuccess(res, 200, agents);
   } catch (err) {
-    console.error("Error obteniendo agentes:", err);
+    console.error("Error getting agents:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
 /**
- * Actualiza el fieldMapping de un agente.
+ * Updates the field mapping configuration for a specific agent.
+ * Validates the new field mapping against the agent's payload format.
+ *
  * @route PATCH /agents/:id/mapping
+ * @param {Object} req - Express request object
+ * @param {Object} req.params - URL parameters
+ * @param {string} req.params.id - Agent's unique identifier
+ * @param {Object} req.body - Request body containing new field mapping
+ * @param {Object} req.body.fieldMapping - New field mapping configuration
+ * @param {Object} req.user - Authenticated user object from middleware
+ * @param {string} req.user.id - User's ID
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with updated field mapping
+ * @throws {400} When field mapping validation fails
+ * @throws {404} When agent is not found or doesn't belong to user
+ * @throws {500} When server error occurs during update
  */
 export const updateAgentMappingController = async (req, res) => {
   const { id } = req.params;
@@ -123,18 +172,29 @@ export const updateAgentMappingController = async (req, res) => {
     const updatedFieldMapping = await updateAgentMapping(id, fieldMapping);
 
     return sendSuccess(res, 200, {
-      message: "Mapping actualizado correctamente",
+      message: "Mapping updated successfully",
       fieldMapping: updatedFieldMapping,
     });
   } catch (err) {
-    console.error("Error actualizando mapping:", err);
+    console.error("Error updating mapping:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
 /**
- * Regenera el secretToken de un agente del usuario autenticado.
+ * Regenerates the secret token for a specific agent.
+ * This invalidates the previous token and generates a new one for security.
+ *
  * @route POST /agents/:id/rotate-secret
+ * @param {Object} req - Express request object
+ * @param {Object} req.params - URL parameters
+ * @param {string} req.params.id - Agent's unique identifier
+ * @param {Object} req.user - Authenticated user object from middleware
+ * @param {string} req.user.id - User's ID
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with new secret token
+ * @throws {404} When agent is not found or doesn't belong to user
+ * @throws {500} When server error occurs during token regeneration
  */
 export const rotateSecretTokenController = async (req, res) => {
   const { id } = req.params;
@@ -146,19 +206,34 @@ export const rotateSecretTokenController = async (req, res) => {
   try {
     const newToken = await rotateSecretToken(id);
     return sendSuccess(res, 200, {
-      message: "Secret token regenerado correctamente",
+      message: "Secret token regenerated successfully",
       secretToken: newToken,
     });
   } catch (err) {
-    console.error("Error al regenerar token:", err);
+    console.error("Error regenerating token:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
 
 /**
- * Actualiza los datos de un agente.
- * Valida el cuerpo de la solicitud y delega la lógica al servicio.
+ * Updates agent information for a specific agent.
+ * Validates the request body using Zod schema and updates the agent in the database.
+ *
  * @route PATCH /agents/:id
+ * @param {Object} req - Express request object
+ * @param {Object} req.params - URL parameters
+ * @param {string} req.params.id - Agent's unique identifier
+ * @param {Object} req.body - Request body containing agent update data
+ * @param {string} [req.body.name] - New agent name (optional)
+ * @param {string} [req.body.description] - New agent description (optional)
+ * @param {string} [req.body.modelName] - New AI model name (optional)
+ * @param {Object} req.user - Authenticated user object from middleware
+ * @param {string} req.user.id - User's ID
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with updated agent data
+ * @throws {400} When request body validation fails
+ * @throws {404} When agent is not found or doesn't belong to user
+ * @throws {500} When server error occurs during update
  */
 export const updateAgentController = async (req, res) => {
   const { id } = req.params;
@@ -179,7 +254,7 @@ export const updateAgentController = async (req, res) => {
     const updatedAgent = await updateAgentService(id, update);
 
     return sendSuccess(res, 200, {
-      message: "Agente actualizado correctamente",
+      message: "Agent updated successfully",
       agent: {
         id: updatedAgent._id,
         name: updatedAgent.name,
@@ -192,7 +267,7 @@ export const updateAgentController = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Error actualizando agente:", err);
+    console.error("Error updating agent:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };

@@ -42,7 +42,7 @@ describe("PATCH /users/me", () => {
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body.description).toHaveProperty(
       "message",
-      "El email no ha cambiado"
+      "Email has not changed"
     );
   });
 
@@ -56,7 +56,7 @@ describe("PATCH /users/me", () => {
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body.description).toHaveProperty(
       "message",
-      "El name no ha cambiado"
+      "Name has not changed"
     );
   });
 
@@ -77,7 +77,7 @@ describe("PATCH /users/me", () => {
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body.description).toHaveProperty(
       "message",
-      "El email ya está en uso"
+      "Email is already in use"
     );
   });
 
@@ -108,10 +108,7 @@ describe("PATCH /users/me", () => {
       .send({ name: newName });
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty(
-      "message",
-      "Usuario actualizado correctamente"
-    );
+    expect(res.body).toHaveProperty("message", "User updated successfully");
     expect(res.body.user).toMatchObject({
       id: userId,
       email: expect.any(String),
@@ -128,10 +125,7 @@ describe("PATCH /users/me", () => {
       .send({ email: newEmail });
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty(
-      "message",
-      "Usuario actualizado correctamente"
-    );
+    expect(res.body).toHaveProperty("message", "User updated successfully");
     expect(res.body.user).toMatchObject({
       id: userId,
       email: newEmail,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./Mensajes.css";
+import { API_URL } from "../config";
 
 export default function Mensajes() {
   const { id } = useParams(); // ID de la conversación
@@ -13,7 +14,7 @@ export default function Mensajes() {
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/messages?conversationId=${id}`,
+          `${API_URL}/messages?conversationId=${encodeURIComponent(id)}`,
           
           {
             headers: {

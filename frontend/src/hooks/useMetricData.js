@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DATAPRUEBA from "../data/DATAPRUEBA";
+import { API_URL } from "../config";
 
 /**
  * Hook to fetch metrics data, either from mock data or from the backend API.
@@ -32,13 +33,13 @@ export function useMetricData({
 
       let url;
       if (conversationId) {
-        url = `${import.meta.env.VITE_API_URL}/metrics/${conversationId}`;
+        url = `${API_URL}/metrics/${encodeURIComponent(conversationId)}`;
       } else if (agentPhoneNumberId) {
-        url = `${
-          import.meta.env.VITE_API_URL
-        }/metrics?agentPhoneNumberId=${agentPhoneNumberId}`;
+        url = `${API_URL}/metrics?agentPhoneNumberId=${encodeURIComponent(
+          agentPhoneNumberId
+        )}`;
       } else {
-        url = `${import.meta.env.VITE_API_URL}/metrics/all`;
+        url = `${API_URL}/metrics/all`;
       }
 
       fetch(url, {

@@ -2,11 +2,15 @@ import { errorMessages } from "./errorMessages.js";
 import { ZodError } from "zod";
 
 /**
- * Envía una respuesta de error estandarizada.
- * @param {Response} res
- * @param {number} statusCode
- * @param {string} keyOrMessage - Clave de error definida o mensaje personalizado
- * @param {string|ZodError} [description] - Descripción adicional o ZodError
+ * Sends a standardized error response with consistent format.
+ * Handles both predefined error keys and custom error messages.
+ * Automatically formats ZodError instances for better error reporting.
+ *
+ * @param {Object} res - Express response object
+ * @param {number} statusCode - HTTP status code for the error response
+ * @param {string} keyOrMessage - Predefined error key from errorMessages or custom error message
+ * @param {string|ZodError} [description] - Additional error description or ZodError instance
+ * @returns {Object} Express response with error payload
  */
 export const sendError = (res, statusCode, keyOrMessage, description) => {
   const message = errorMessages[keyOrMessage] || keyOrMessage;
@@ -18,7 +22,7 @@ export const sendError = (res, statusCode, keyOrMessage, description) => {
     details = Object.fromEntries(
       Object.entries(fieldErrors)
         .filter(([, msgs]) => msgs.length > 0)
-        .map(([field, msgs]) => [field, msgs.join(", ")]),
+        .map(([field, msgs]) => [field, msgs.join(", ")])
     );
   }
 
@@ -29,10 +33,13 @@ export const sendError = (res, statusCode, keyOrMessage, description) => {
 };
 
 /**
- * Envía una respuesta exitosa con formato uniforme.
- * @param {Response} res
- * @param {number} statusCode
- * @param {object} data
+ * Sends a standardized success response with uniform format.
+ * Provides consistent response structure for successful API calls.
+ *
+ * @param {Object} res - Express response object
+ * @param {number} [statusCode=200] - HTTP status code for the success response
+ * @param {Object} [data={}] - Data payload to include in the response
+ * @returns {Object} Express response with success payload
  */
 export const sendSuccess = (res, statusCode = 200, data = {}) => {
   return res.status(statusCode).json(data);
