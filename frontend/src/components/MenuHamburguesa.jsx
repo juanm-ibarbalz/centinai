@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./MenuHamburguesa.css";
 import { useNavigate } from "react-router-dom";
-import LogoutButton from "./LogoutButton"; // ✅ IMPORTACIÓN
+import LogoutButton from "./LogoutButton";
 
 import homeIcon from "../assets/icons/ic_house.svg";
 import dashboardIcon from "../assets/icons/ic_dashboard.svg";
@@ -11,10 +11,21 @@ import userIcon from "../assets/icons/ic_user.svg";
 import robotIcon from "../assets/icons/ic_robot.svg";
 import agentsIcon from "../assets/icons/ic_agents.svg";
 
-const HamburgerMenu = ({ userName = "Usuario", onLogout }) => {
+import { API_URL } from "../config"; // Asegurate de tener la URL base
+
+const HamburgerMenu = ({ onLogout }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showLabels, setShowLabels] = useState(false);
+  const [userName, setUserName] = useState("Usuario");
+
+  // 🟢 Al montar, traemos el name desde la API usando el id del localStorage
+useEffect(() => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  if (storedUser?.username) {
+    setUserName(storedUser.username);
+  }
+}, []);
 
   const handleNavigate = (path) => {
     setShowLabels(false);
@@ -70,7 +81,6 @@ const HamburgerMenu = ({ userName = "Usuario", onLogout }) => {
         </li>
       </ul>
 
-      {/* 🔽 Botón de logout antes del footer */}
       {isOpen && (
         <div className="logout-button-container">
           <LogoutButton onClick={onLogout} />

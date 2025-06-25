@@ -37,9 +37,8 @@ export default function ConversationList({ conversations }) {
             <p><strong>Usuario:</strong> {conv.from || "-"}</p>
             <p><strong>Estado:</strong> {conv.status || "-"}</p>
             <p><strong>Inicio:</strong> {formatDate(conv.startTime)}</p>
-            <p><strong>Fin:</strong> {formatDate(conv.endTime)}</p>
             <p><strong>Actualizado:</strong> {formatDate(conv.updatedAt)}</p>
-            <p><strong>Duración:</strong> {calcularDuracion(conv.startTime, conv.endTime)} min</p>
+            <p><strong>Duración:</strong> {calcularDuracion(conv.startTime, conv.updatedAt)} min</p>
             <button onClick={() => handleVerMensajes(conv._id)}>Ver mensajes</button>
           </div>
         ))}
@@ -52,11 +51,10 @@ export default function ConversationList({ conversations }) {
       <thead>
         <tr style={{ background: "#222", color: "#fff" }}>
           <th style={th}>ID</th>
-          <th style={th}>Usuario</th>
+          <th style={th}>Nombre Usuario</th>
           <th style={th}>Estado</th>
           <th style={th}>Duración (min)</th>
           <th style={th}>Inicio</th>
-          <th style={th}>Fin</th>
           <th style={th}>Actualizado</th>
           <th style={th}>Mensajes</th>
         </tr>
@@ -64,12 +62,11 @@ export default function ConversationList({ conversations }) {
       <tbody>
         {conversations.map((conv) => (
           <tr key={conv._id} style={{ background: "#f0f0f0" }}>
-            <td style={td}>{conv._id || "-"}</td>
+            <td style={td}>{conv.from || "-"}</td>
             <td style={td}>{conv.userName || "-"}</td>
             <td style={td}>{conv.status || "-"}</td>
-            <td style={td}>{calcularDuracion(conv.createdAt, conv.endTime)}</td>
+            <td style={td}>{calcularDuracion(conv.createdAt, conv.updatedAt)}</td>
             <td style={td}>{formatDate(conv.createdAt)}</td>
-            <td style={td}>{formatDate(conv.endTime)}</td>
             <td style={td}>{formatDate(conv.updatedAt)}</td>
             <td style={td}>
               <button onClick={() => navigate(`/mensajes/${conv._id}`)}>Ver mensajes</button>
