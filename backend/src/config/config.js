@@ -8,7 +8,7 @@ dotenv.config();
  */
 export const authConfig = {
   jwtSecret: process.env.JWT_SECRET,
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "1d",
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN,
 };
 
 /**
@@ -52,12 +52,4 @@ export const securityConfig = {
  */
 export const limitsConfig = {
   maxAgentsPerUser: 3,
-};
-
-/**
- * Analyzer system configuration.
- * Defines paths and settings for the conversation analysis system.
- */
-export const analyzerConfig = {
-  exportDir: "tmp/analyzer_jobs",
 };

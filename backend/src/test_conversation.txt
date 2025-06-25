@@ -1,0 +1,54 @@
+{
+  "_id": "agt-usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c-0a0b2ed4-a186-48c9-9937-e043f1d15831",
+  "phoneNumberId": "+5411152269556",
+  "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
+  "name": "Notefran Frannote",
+  "description": "SDSDSDSDSDSADAS",
+  "createdAt": {
+    "$date": "2025-06-25T01:04:07.997Z"
+  },
+  "secretToken": "5f4b3e16-511b-47ff-95e2-dd096196ea6f",
+  "payloadFormat": "structured",
+  "authMode": "body",
+  "modelName": "gpt-4o"
+}
+
+---
+
+# Ejemplos de requests al webhook para simular conversación
+
+POST /webhook
+Content-Type: application/json
+
+{
+  "agentSecret": "5f4b3e16-511b-47ff-95e2-dd096196ea6f",
+  "text": "¡Hola, bot!",
+  "from": "+5491112345678",
+  "timestamp": "2025-06-25T01:05:00.000Z",
+  "to": "+5411152269556",
+  "userName": "Usuario Test"
+}
+
+POST /webhook
+Content-Type: application/json
+
+{
+  "agentSecret": "5f4b3e16-511b-47ff-95e2-dd096196ea6f",
+  "text": "¿Cómo estás?",
+  "from": "+5491112345678",
+  "timestamp": "2025-06-25T01:05:10.000Z",
+  "to": "+5411152269556",
+  "userName": "Usuario Test"
+}
+
+POST /webhook
+Content-Type: application/json
+
+{
+  "agentSecret": "5f4b3e16-511b-47ff-95e2-dd096196ea6f",
+  "text": "Contame un chiste.",
+  "from": "+5491112345678",
+  "timestamp": "2025-06-25T01:05:20.000Z",
+  "to": "+5411152269556",
+  "userName": "Usuario Test"
+} 

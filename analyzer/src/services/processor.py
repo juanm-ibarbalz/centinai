@@ -56,6 +56,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
         "userCellphone": conv["from"],
         "agentData": agent_data,
         "createdAt": conv["createdAt"],
+        "endTime": conv.get("updatedAt"),
         "durationSeconds": duration,
         "tokenUsage": token_usage,
         "successful": successful,

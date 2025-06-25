@@ -12,7 +12,6 @@ import mongoose from "mongoose";
  * @property {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
  * @property {string} userId - Reference to the User who owns this conversation (required)
  * @property {'open'|'closed'} status - Current status of the conversation (default: 'open')
- * @property {Date} [endTime] - Timestamp when the conversation was closed (optional)
  * @property {Date} createdAt - Timestamp when the conversation was created (auto-generated)
  * @property {Date} updatedAt - Timestamp when the conversation was last updated (auto-generated)
  */
@@ -30,7 +29,6 @@ const conversationSchema = new mongoose.Schema(
       type: String,
       default: "open",
     },
-    endTime: Date,
   },
   {
     timestamps: true,

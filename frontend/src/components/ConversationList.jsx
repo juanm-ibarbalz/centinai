@@ -37,9 +37,8 @@ export default function ConversationList({ conversations }) {
             <p><strong>Usuario:</strong> {conv.from || "-"}</p>
             <p><strong>Estado:</strong> {conv.status || "-"}</p>
             <p><strong>Inicio:</strong> {formatDate(conv.startTime)}</p>
-            <p><strong>Fin:</strong> {formatDate(conv.endTime)}</p>
             <p><strong>Actualizado:</strong> {formatDate(conv.updatedAt)}</p>
-            <p><strong>Duración:</strong> {calcularDuracion(conv.startTime, conv.endTime)} min</p>
+            <p><strong>Duración:</strong> {calcularDuracion(conv.startTime, conv.updatedAt)} min</p>
             <button onClick={() => handleVerMensajes(conv._id)}>Ver mensajes</button>
           </div>
         ))}
@@ -67,9 +66,8 @@ export default function ConversationList({ conversations }) {
             <td style={td}>{conv._id || "-"}</td>
             <td style={td}>{conv.userName || "-"}</td>
             <td style={td}>{conv.status || "-"}</td>
-            <td style={td}>{calcularDuracion(conv.createdAt, conv.endTime)}</td>
+            <td style={td}>{calcularDuracion(conv.createdAt, conv.updatedAt)}</td>
             <td style={td}>{formatDate(conv.createdAt)}</td>
-            <td style={td}>{formatDate(conv.endTime)}</td>
             <td style={td}>{formatDate(conv.updatedAt)}</td>
             <td style={td}>
               <button onClick={() => navigate(`/mensajes/${conv._id}`)}>Ver mensajes</button>

@@ -1,4 +1,3 @@
-import fs from "fs";
 import axios from "axios";
 
 const analyzerUrl = process.env.ANALYZER_URL;
@@ -7,26 +6,16 @@ if (!analyzerUrl) {
 }
 
 /**
- * Executes analysis of a JSON file by sending it to the Python analyzer service.
- * Reads the JSON file and sends it via HTTP POST to the analyzer endpoint
- * for conversation analysis and metrics generation.
+ * Envía el payload de conversaciones directamente al analyzer vía HTTP POST.
  *
- * @param {string} filePath - Absolute path to the JSON file to be analyzed
+ * @param {Array<Object>} payload - Conversaciones y mensajes para analizar
  * @returns {Promise<void>} Resolves when analysis is successfully dispatched
- * @throws {Error} When file reading fails, network error occurs, or analyzer returns error
+ * @throws {Error} When there is no payload, or analyzer returns error
  */
-export const dispatchToAnalyzer = async (filePath) => {
-  if (!filePath) {
-    console.warn("dispatchToAnalyzer: no se recibió filePath");
-    return;
+export const dispatchToAnalyzer = async (payload) => {
+  if (!payload) {
+    throw new Error("dispatchToAnalyzer: no se recibió payload");
   }
 
-  try {
-    const payload = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-
-    await axios.post(`${analyzerUrl}/analyze`, payload, { timeout: 120000 });
-  } catch (err) {
-    console.error("Error en dispatchToAnalyzer:", err.message || err);
-    throw err;
-  }
+  await axios.post(`${analyzerUrl}/analyze`, payload, { timeout: 120000 });
 };
