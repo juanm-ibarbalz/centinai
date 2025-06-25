@@ -9,7 +9,9 @@ const MyAgents = () => {
   const navigate = useNavigate();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [successMessage, setSuccessMessage] = useState("");
+  const [agentToDelete, setAgentToDelete] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     const fetchAgents = async () => {
@@ -31,6 +33,35 @@ const MyAgents = () => {
 
     fetchAgents();
   }, []);
+
+  const handleDelete = async () => {
+    if (!agentToDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/agents/${agentToDelete._id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        setAgents((prev) =>
+          prev.filter((a) => a._id !== agentToDelete._id)
+        );
+        setSuccessMessage("✅ Agente eliminado con éxito.");
+        setTimeout(() => setSuccessMessage(""), 2000);
+      } else {
+        console.error("❌ Error al eliminar el agente.");
+      }
+    } catch (error) {
+      console.error("❌ Error:", error);
+    } finally {
+      setAgentToDelete(null);
+      setShowDeleteModal(false);
+    }
+  };
 
   return (
     <div className="agents-container">
@@ -99,34 +130,9 @@ const MyAgents = () => {
 
                   <button
                     className="secondary-button danger"
-                    onClick={async () => {
-                      const confirmed = window.confirm(
-                        `¿Eliminar agente "${agent.name}"?`
-                      );
-                      if (!confirmed) return;
-
-                      try {
-                        const token = localStorage.getItem("token");
-                        const res = await fetch(
-                          `${API_URL}/agents/${agent._id}`,
-                          {
-                            method: "DELETE",
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                            },
-                          }
-                        );
-
-                        if (res.ok) {
-                          setAgents((prev) =>
-                            prev.filter((a) => a._id !== agent._id)
-                          );
-                        } else {
-                          console.error("Error al eliminar el agente.");
-                        }
-                      } catch (error) {
-                        console.error("Error:", error);
-                      }
+                    onClick={() => {
+                      setAgentToDelete(agent);
+                      setShowDeleteModal(true);
                     }}
                   >
                     Eliminar
@@ -135,6 +141,38 @@ const MyAgents = () => {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Modal de confirmación de eliminación */}
+      {showDeleteModal && agentToDelete && (
+        <div className="success-overlay">
+          <div className="success-box">
+            <p>¿Eliminar agente <strong>{agentToDelete.name}</strong>?</p>
+            <div style={{ marginTop: "1.2rem", display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <button onClick={handleDelete} className="modal-delete-btn">
+                Sí, eliminar
+              </button>
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setAgentToDelete(null);
+                }}
+                className="secondary-button"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mensaje de éxito */}
+      {successMessage && (
+        <div className="success-overlay">
+          <div className="success-box">
+            <p>{successMessage}</p>
+          </div>
         </div>
       )}
     </div>

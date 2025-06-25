@@ -65,9 +65,9 @@ export default function ConversationList({ conversations }) {
         {conversations.map((conv) => (
           <tr key={conv._id} style={{ background: "#f0f0f0" }}>
             <td style={td}>{conv._id || "-"}</td>
-            <td style={td}>{conv.from || "-"}</td>
+            <td style={td}>{conv.userName || "-"}</td>
             <td style={td}>{conv.status || "-"}</td>
-            <td style={td}>{calcularDuracion(conv.startTime, conv.endTime)}</td>
+            <td style={td}>{calcularDuracion(conv.createdAt, conv.endTime)}</td>
             <td style={td}>{formatDate(conv.createdAt)}</td>
             <td style={td}>{formatDate(conv.endTime)}</td>
             <td style={td}>{formatDate(conv.updatedAt)}</td>

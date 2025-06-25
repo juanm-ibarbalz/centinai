@@ -16,9 +16,8 @@ import HomePage from "./pages/Home"; // Renombrado para claridad
 import HamburgerMenu from "./components/MenuHamburguesa"; // Asumiendo que existe
 import DashboardsPage from "./pages/Dashboards"; // Renombrado para claridad
 import CreateAgent from "./pages/CreateAgent"; // Mantenemos CreateAgent de main
-import MyAgentsPage from "./pages/myAgents";
 import Mensajes from "./pages/Mensajes";
-
+import MyAgentsPage from "./pages/MyAgent";
 import { useSessionLoader } from "./hooks/useSessionLoader";
 import { useEffect } from "react";
 

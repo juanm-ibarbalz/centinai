@@ -161,6 +161,22 @@ html, body {
   color: #FF5252;
 }
 
+.modal-delete-btn {
+  background-color: transparent;
+  color: #FF5252; /* 🔴 Rojo siempre visible */
+  border: 1px solid #FF5252;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-delete-btn:hover {
+  background-color: #ff525210;
+}
+
 /* ✨ Animación de entrada */
 @keyframes fadeInUp {
   from {
@@ -171,4 +187,46 @@ html, body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+
+
+.overlay-success-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #29FFD8;
+  color: #0B0E23;
+  padding: 1.5rem 2.5rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 9999;
+  box-shadow: 0 0 25px #29FFD8;
+  text-align: center;
+}
+
+.success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(11, 14, 35, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.success-box {
+  background-color: #0b0e23;
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 0 20px #29FFD8;
+  color: #E0F7FA;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.2rem;
+  text-align: center;
 }
