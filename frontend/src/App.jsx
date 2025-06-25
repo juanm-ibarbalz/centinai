@@ -18,6 +18,7 @@ import DashboardsPage from "./pages/Dashboards"; // Renombrado para claridad
 import CreateAgent from "./pages/CreateAgent"; // Mantenemos CreateAgent de main
 import Mensajes from "./pages/Mensajes";
 import MyAgentsPage from "./pages/MyAgent";
+import Configuracion from "./pages/configuracion";
 import { useSessionLoader } from "./hooks/useSessionLoader";
 import { useEffect } from "react";
 
@@ -52,14 +53,14 @@ function AppWrapper() {
 
   // Efecto para gestionar la clase del body para el fondo de la home
   useEffect(() => {
-    if (location.pathname === '/home') {
-      document.body.classList.add('home-background');
+    if (location.pathname === "/home") {
+      document.body.classList.add("home-background");
     } else {
-      document.body.classList.remove('home-background');
+      document.body.classList.remove("home-background");
     }
     // Cleanup function para cuando el componente se desmonte
     return () => {
-      document.body.classList.remove('home-background');
+      document.body.classList.remove("home-background");
     };
   }, [location.pathname]); // Se ejecuta cada vez que cambia la ruta
 
@@ -98,8 +99,8 @@ function AppWrapper() {
   return (
     <div
       style={{
-        '--sidebar-width': sidebarWidth,
-        '--sidebar-width-desktop': sidebarWidthDesktop,
+        "--sidebar-width": sidebarWidth,
+        "--sidebar-width-desktop": sidebarWidthDesktop,
       }}
     >
       {showMenu && (
@@ -109,7 +110,7 @@ function AppWrapper() {
           user={user}
         />
       )}
-      <div className={`main-content ${showMenu ? 'with-sidebar' : ''}`}>
+      <div className={`main-content ${showMenu ? "with-sidebar" : ""}`}>
         {/* Puedes mostrar authError aquí si quieres un mensaje de error global */}
         {/* {authError && <p style={{color: 'red', textAlign: 'center'}}>{authError}</p>} */}
         <Routes>
@@ -182,6 +183,15 @@ function AppWrapper() {
           />
 
           <Route path="/mensajes/:id" element={<Mensajes />} />
+
+          <Route
+            path="/configuracion"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Configuracion />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/"

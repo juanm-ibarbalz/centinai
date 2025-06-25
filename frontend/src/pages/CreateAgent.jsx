@@ -21,7 +21,9 @@ const modelOptions = [
 const CreateAgent = () => {
   const [step, setStep] = useState(1);
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(15);
+
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -132,19 +134,24 @@ const CreateAgent = () => {
         body: JSON.stringify(finalForm),
       });
 
+      const responseData = await res.json();
+
       if (!res.ok) {
         const errorData = await res.json();
         console.error("❌ Error del backend:", errorData);
         return;
       }
 
-      console.log("✅ Respuesta OK del backend");
+      console.log("✅ Respuesta del backend:");
 
       localStorage.removeItem("agentStep1");
-      setSuccessMessage("✅ Su agente fue creado con éxito.");
+      setSuccessMessage({
+        token: responseData.secretToken,
+        timeLeft: 15,
+      });
       setTimeout(() => {
         navigate("/myAgents");
-      }, 1500);
+      }, 15000);
     } catch (error) {
       console.error("Error al añadir el agente:", error);
     }
@@ -155,6 +162,22 @@ const CreateAgent = () => {
       {condition ? "✅" : "❌"} {text}
     </p>
   );
+
+  useEffect(() => {
+    if (successMessage && successMessage.token) {
+      const interval = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [successMessage]);
 
   return (
     <div className="create-agent-container">
@@ -407,10 +430,26 @@ const CreateAgent = () => {
           </>
         )}
       </form>
-      {successMessage && (
+      {successMessage && successMessage.token && (
         <div className="success-overlay">
           <div className="success-box">
-            <p>{successMessage}</p>
+            <p>✅ Agente creado con éxito.</p>
+            <p>
+              🔐 Token secreto:{" "}
+              <code className="token-badge">{successMessage.token}</code>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(successMessage.token);
+                }}
+                className="copy-button"
+              >
+                📋 Copiar
+              </button>
+            </p>
+            <p className="countdown-text">
+              Redirigiendo a Mis Agentes en {timeLeft} segundo
+              {timeLeft !== 1 && "s"}...
+            </p>
           </div>
         </div>
       )}
