@@ -32,14 +32,29 @@ export default function GraficoDonaSessionStatus({ data, days }) {
     Fail: 1.5,
   };
 
+  if (totals.success === 0 && totals.fail === 0 && totals.indeterminate === 0) {
+    return (
+      <div style={{ width: "100%", textAlign: "center", padding: "2rem 0" }}>
+        <span style={{ color: "#888" }}>Sin datos para mostrar</span>
+      </div>
+    );
+  }
+
   return (
     <div
       className="metric-card-plain"
-      style={{ height: 300, padding: "1rem 2rem", overflow: "visible" }}
+      style={{
+        minHeight: 260,
+        padding: "1rem 0.5rem",
+        overflow: "visible",
+        display: "flex",
+        flexDirection: window.innerWidth < 600 ? "column" : "row",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
     >
-      <h3 style={{ marginBottom: "1rem" }}>Session End States</h3>
-      <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-        <div style={{ flex: 1 }}>
+      <div className="donut-graph-flex">
+        <div className="donut-graph-chart">
           <motion.div
             key={days}
             initial={{ scale: 0.8, opacity: 0 }}
@@ -48,7 +63,7 @@ export default function GraficoDonaSessionStatus({ data, days }) {
             whileHover={{ scale: 1.05, transition: { duration: 0.5 } }}
             style={{ width: "100%", height: "100%" }}
           >
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   key={days}

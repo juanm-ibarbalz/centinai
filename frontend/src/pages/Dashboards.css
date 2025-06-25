@@ -212,3 +212,21 @@
     grid-template-columns: 1fr 1fr; /* Dos columnas para las gráficas */
   }
 }
+
+@media (max-width: 600px) {
+  .graph-card {
+    min-width: 260px;      /* Ajusta según el tamaño mínimo que soporte tu gráfico */
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    box-sizing: border-box;
+    overflow-x: auto;      /* Permite hacer scroll horizontal si es necesario */
+  }
+}
+
+.donut-graph-wrapper {
+  width: 100%;
+  min-width: 220px;   /* Ajusta según el tamaño mínimo del gráfico */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

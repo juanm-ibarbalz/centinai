@@ -83,7 +83,9 @@ const Dashboards = () => {
       <div className="graphs-row">
         <div className="graph-card">
           <h3>Session End States</h3>
-          <GraficoDonaSessionStatus data={data} days={selectedDays} />
+          <div className="donut-graph-wrapper">
+            <GraficoDonaSessionStatus data={data} days={selectedDays} />
+          </div>
         </div>
         <div className="graph-card">
           <h3>Average Session Duration</h3>
