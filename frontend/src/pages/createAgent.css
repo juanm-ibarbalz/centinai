@@ -335,3 +335,34 @@ button[type="button"]:hover, button[type="submit"]:hover {
   font-size: 1.2rem;
   text-align: center;
 }
+
+.token-badge {
+  background: #1c1f33;
+  color: #29ffd8;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  font-family: monospace;
+  margin-right: 0.5rem;
+}
+
+.copy-button {
+  background: #29ffd8;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.copy-button:hover {
+  background: #00b2ff;
+}
+
+.countdown-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #b0bec5;
+  font-style: italic;
+}

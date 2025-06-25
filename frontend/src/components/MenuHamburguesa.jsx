@@ -20,12 +20,12 @@ const HamburgerMenu = ({ onLogout }) => {
   const [userName, setUserName] = useState("Usuario");
 
   // 🟢 Al montar, traemos el name desde la API usando el id del localStorage
-useEffect(() => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  if (storedUser?.username) {
-    setUserName(storedUser.username);
-  }
-}, []);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser?.name) {
+      setUserName(storedUser.name);
+    }
+  }, []);
 
   const handleNavigate = (path) => {
     setShowLabels(false);
@@ -44,6 +44,22 @@ useEffect(() => {
       setTimeout(() => setIsOpen(false), 0);
     }
   };
+
+  useEffect(() => {
+    const updateUserName = () => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser?.name) {
+        setUserName(storedUser.name);
+      }
+    };
+
+    updateUserName(); // ✅ ya lo carga al inicio
+    window.addEventListener("user-updated", updateUserName);
+
+    return () => {
+      window.removeEventListener("user-updated", updateUserName);
+    };
+  }, []);
 
   return (
     <div className={`sidebar-menu left ${!isOpen ? "collapsed" : "open"}`}>
