@@ -143,8 +143,9 @@ Returns all conversations for the authenticated user filtered by agent, with pag
     "conversations": [
       {
         "_id": "conv-AAA1",
-        "userId": "usr-123",
-        "agentPhoneNumberId": "5491111000000",
+        "userName": "ordinaryUser",
+        "from": "+5491111000000",
+        "status": "open",
         "createdAt": "2025-05-03T14:22:00.000Z",
         "updatedAt": "2025-05-03T14:30:00.000Z",
         "metrics": {
@@ -154,10 +155,12 @@ Returns all conversations for the authenticated user filtered by agent, with pag
       },
       {
         "_id": "conv-BBB2",
-        "userId": "usr-123",
-        "agentPhoneNumberId": "5491111000000",
+        "userName": "extraordinaryUser",
+        "from": "+5491111000000",
+        "status": "closed",
         "createdAt": "2025-05-05T10:15:00.000Z",
         "updatedAt": "2025-05-05T10:25:00.000Z",
+        "endTime": "2025-05-05T10:25:00.000Z",
         "metrics": {
           "durationSeconds": 95,
           "tokenUsage": { "cost": 0.009 }
