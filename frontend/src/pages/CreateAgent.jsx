@@ -21,6 +21,7 @@ const modelOptions = [
 const CreateAgent = () => {
   const [step, setStep] = useState(1);
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -90,12 +91,16 @@ const CreateAgent = () => {
     const token = localStorage.getItem("token");
     const phoneNumberId = `${form.phonePrefix}${form.areaCode}${form.localNumber}`;
     const isStructured = form.mapping === "estructurado";
+    const isCustomizado = form.mapping === "customizado";
 
-    const customMappingParts = (form.customMapping || "").split(".");
-    const isValidCustom =
-      customMappingParts.length === 2 &&
-      customMappingParts[0] &&
-      customMappingParts[1];
+    // Validación mínima para customizado (opcional pero recomendado)
+    if (
+      isCustomizado &&
+      (!form.textKey || !form.fromKey || !form.toKey || !form.timestampKey)
+    ) {
+      alert("Todos los campos de mapeo personalizados son obligatorios.");
+      return;
+    }
 
     const finalForm = {
       phoneNumberId,
@@ -104,15 +109,14 @@ const CreateAgent = () => {
       modelName: form.modelName.trim(),
       payloadFormat: isStructured ? "structured" : "custom",
       authMode: form.authMethod,
-      ...(isStructured
-        ? {}
-        : isValidCustom && {
-            fieldMapping: {
-              text: customMappingParts[0],
-              from: customMappingParts[1],
-              timestamp: "timestamp",
-            },
-          }),
+      ...(isCustomizado && {
+        fieldMapping: {
+          text: form.textKey,
+          from: form.fromKey,
+          to: form.toKey,
+          timestamp: form.timestampKey,
+        },
+      }),
     };
 
     try {
@@ -133,8 +137,13 @@ const CreateAgent = () => {
         return;
       }
 
+      console.log("✅ Respuesta OK del backend");
+
       localStorage.removeItem("agentStep1");
-      navigate("/home");
+      setSuccessMessage("✅ Su agente fue creado con éxito.");
+      setTimeout(() => {
+        navigate("/myAgents");
+      }, 1500);
     } catch (error) {
       console.error("Error al añadir el agente:", error);
     }
@@ -252,16 +261,22 @@ const CreateAgent = () => {
                 tabIndex="0"
               >
                 {form.modelName
-                  ? modelOptions.find(m => m.value === form.modelName)?.label
+                  ? modelOptions.find((m) => m.value === form.modelName)?.label
                   : "Seleccionar modelo..."}
-                <span className={`custom-arrow ${isModelDropdownOpen ? 'open' : ''}`}></span>
+                <span
+                  className={`custom-arrow ${
+                    isModelDropdownOpen ? "open" : ""
+                  }`}
+                ></span>
               </div>
               {isModelDropdownOpen && (
                 <div className="custom-options">
                   {modelOptions.map((option) => (
                     <div
                       key={option.value}
-                      className={`custom-option ${option.disabled ? 'disabled' : ''} ${form.modelName === option.value ? 'selected' : ''}`}
+                      className={`custom-option ${
+                        option.disabled ? "disabled" : ""
+                      } ${form.modelName === option.value ? "selected" : ""}`}
                       onClick={() => {
                         if (!option.disabled) {
                           setForm({ ...form, modelName: option.value });
@@ -301,60 +316,53 @@ const CreateAgent = () => {
               <option value="customizado">Customizado</option>
             </select>
 
-            {form.mapping === "estructurado" && (
-              <div className="estructurado-extra">
-                <label>Texto:</label>
-                <input
-                  type="text"
-                  name="texto"
-                  maxLength={30}
-                  value={form.texto || ""}
-                  onChange={(e) => setForm({ ...form, texto: e.target.value })}
-                  required
-                />
-
-                <label>Emisor:</label>
-                <input
-                  type="text"
-                  name="emisor"
-                  maxLength={30}
-                  value={form.emisor || ""}
-                  onChange={(e) => setForm({ ...form, emisor: e.target.value })}
-                  required
-                />
-
-                <label>Tiempo:</label>
-                <input
-                  type="text"
-                  name="tiempo"
-                  maxLength={10}
-                  value={form.tiempo || ""}
-                  onChange={(e) => setForm({ ...form, tiempo: e.target.value })}
-                  required
-                />
-              </div>
-            )}
-
             {form.mapping === "customizado" && (
               <div className="estructurado-extra">
-                <label>Clave JSON (formato palabra.palabra):</label>
+                <label>Campo para Texto:</label>
                 <input
                   type="text"
-                  name="customMapping"
+                  name="textKey"
                   maxLength={30}
-                  value={form.customMapping || ""}
+                  value={form.textKey || ""}
                   onChange={(e) =>
-                    setForm({ ...form, customMapping: e.target.value })
+                    setForm({ ...form, textKey: e.target.value })
                   }
                   required
                 />
-                {!/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)$/.test(
-                  form.customMapping || ""
-                ) && (
-                  <p className="error-text">
-                    ❌ Debe ser formato palabra.palabra
-                  </p>
-                )}
+
+                <label>Campo para Emisor:</label>
+                <input
+                  type="text"
+                  name="fromKey"
+                  maxLength={30}
+                  value={form.fromKey || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, fromKey: e.target.value })
+                  }
+                  required
+                />
+
+                <label>Campo para Receptor:</label>
+                <input
+                  type="text"
+                  name="toKey"
+                  maxLength={30}
+                  value={form.toKey || ""}
+                  onChange={(e) => setForm({ ...form, toKey: e.target.value })}
+                  required
+                />
+
+                <label>Campo para Timestamp:</label>
+                <input
+                  type="text"
+                  name="timestampKey"
+                  maxLength={30}
+                  value={form.timestampKey || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, timestampKey: e.target.value })
+                  }
+                  required
+                />
               </div>
             )}
 
@@ -403,6 +411,13 @@ const CreateAgent = () => {
           </>
         )}
       </form>
+      {successMessage && (
+        <div className="success-overlay">
+          <div className="success-box">
+            <p>{successMessage}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

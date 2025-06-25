@@ -15,7 +15,7 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(""); // Limpiar mensaje previo
+    setMessage("Iniciando sesión..."); // Limpiar mensaje previo
     if (setAuthErrorOuter) setAuthErrorOuter(null); // Limpiar error global previo
     console.log("Login.jsx: handleSubmit iniciado con datos:", { email }); // LOG 1
 

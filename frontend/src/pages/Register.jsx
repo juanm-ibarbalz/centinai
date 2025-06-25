@@ -58,19 +58,12 @@ export default function RegisterPage({ onSuccess, setAuthErrorOuter }) {
       });
 
       const data = await res.json();
-
-      if (res.ok && data.token && data.user) {
-        if (typeof onSuccess === "function") {
-          onSuccess(data.user, data.token);
-        } else {
-          console.error("onSuccess no es una función.");
-          setMessage("❌ Error interno al procesar el registro.");
-        }
-      } else {
-        const errorMsg =
-          data.message || "Error al registrar o respuesta inválida.";
-        setMessage(`❌ ${errorMsg}`);
-        if (setAuthErrorOuter) setAuthErrorOuter(errorMsg);
+      if (res.ok && data.user) {
+        console.log("✅ Usuario creado, redirigiendo al login...");
+        setMessage("✔️ Usuario creado con éxito. Redirigiendo...");
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
       }
     } catch (err) {
       const errorMsg = err.message || "Error al conectar con el servidor";
@@ -101,26 +94,26 @@ export default function RegisterPage({ onSuccess, setAuthErrorOuter }) {
 
         <div className="password-input-wrapper">
           <input
-  type={showPassword ? "text" : "password"}
-  placeholder="Contraseña"
-  value={password}
-  onChange={handlePasswordChange}
-  onFocus={() => {
-    setPasswordTouched(true);
-    setShowRequirements(true);
-  }}
-  onBlur={() => {
-    setTimeout(() => {
-      if (!validatePassword(password)) {
-        setShowRequirements(true);
-      } else {
-        setShowRequirements(false);
-      }
-    }, 100);
-  }}
-  maxLength={15}
-  required
-/>
+            type={showPassword ? "text" : "password"}
+            placeholder="Contraseña"
+            value={password}
+            onChange={handlePasswordChange}
+            onFocus={() => {
+              setPasswordTouched(true);
+              setShowRequirements(true);
+            }}
+            onBlur={() => {
+              setTimeout(() => {
+                if (!validatePassword(password)) {
+                  setShowRequirements(true);
+                } else {
+                  setShowRequirements(false);
+                }
+              }, 100);
+            }}
+            maxLength={15}
+            required
+          />
 
           <span
             className="toggle-password"
@@ -177,7 +170,7 @@ export default function RegisterPage({ onSuccess, setAuthErrorOuter }) {
       </form>
 
       {message && (
-        <p className={`msg ${message.startsWith("❌") ? "error" : "success"}`}>
+        <p className={`msg ${message.startsWith("❌") ? "error" : ""}`}>
           {message}
         </p>
       )}
