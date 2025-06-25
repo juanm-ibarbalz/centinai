@@ -4,13 +4,13 @@ from typing import Any, Dict, List
 from datetime import datetime
 import os
 import json
-
 from storage.session_writter import save_session
 from behavior_analysis.success_evaluator import SuccessEvaluator
 from utils.util_get_messages_by_direction import get_messages_by_direction
 from db.agent_repo import AgentRepo
 from services.token_utils import tokenize_texts, calculate_cost_with_tokonomics
 from db.sessions_repo import SessionRepo
+from services.latency_calculator import LatencyCalculator
 
 
 def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
@@ -40,12 +40,13 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
 
     token_usage = _calc_tokens(normalized_msgs, conv, agent_data)
 
+    latency_info = LatencyCalculator(normalized_msgs).calculate_average_latency()
+
+
     tags = ["consulta", "queja"]
     metadata = {
         "language": "es",
-        "channel": "webchat",
-        "sentimentTrend": "negative"
-    }
+    }   
 
     successful = _determinate_successful(conv, msgs, message_stats)
 
@@ -55,7 +56,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
         "userCellphone": conv["from"],
         "agentData": agent_data,
         "createdAt": conv["createdAt"],
-        "endTime": conv.get("endTime"),
+        "endTime": conv.get("updatedAt"),
         "durationSeconds": duration,
         "tokenUsage": token_usage,
         "successful": successful,
@@ -65,6 +66,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
             "agent": agent_count,
             "total": total_count
         },
+        "latency": latency_info,
         "metadata": metadata,
         "conversationId": conv["_id"]
     }

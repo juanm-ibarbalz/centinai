@@ -115,6 +115,7 @@ const CreateAgent = () => {
           from: form.fromKey,
           to: form.toKey,
           timestamp: form.timestampKey,
+          ...(form.userNameKey ? { userName: form.userNameKey } : {}),
         },
       }),
     };
@@ -363,6 +364,18 @@ const CreateAgent = () => {
                   }
                   required
                 />
+
+                <label>Campo para userName (opcional):</label>
+                <input
+                  type="text"
+                  name="userNameKey"
+                  maxLength={30}
+                  value={form.userNameKey || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, userNameKey: e.target.value })
+                  }
+                  placeholder="Opcional"
+                />
               </div>
             )}
 
@@ -388,23 +401,6 @@ const CreateAgent = () => {
               <p className="success-text">
                 ✅ {form.authMethod} es un método seguro.
               </p>
-            )}
-
-            {/* authValue queda visible solo para ingresar, pero no se manda en el payload */}
-            {["body", "header", "query"].includes(form.authMethod) && (
-              <div className="estructurado-extra">
-                <label>Valor de Autenticación:</label>
-                <input
-                  type="text"
-                  name="authValue"
-                  maxLength={30}
-                  value={form.authValue || ""}
-                  onChange={(e) =>
-                    setForm({ ...form, authValue: e.target.value })
-                  }
-                  required
-                />
-              </div>
             )}
 
             <button type="submit">Guardar Agente</button>

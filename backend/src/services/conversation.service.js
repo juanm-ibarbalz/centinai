@@ -33,7 +33,7 @@ export const createOrUpdateConversation = async (
 
   if (isExpired(conversation, now)) {
     try {
-      await closeConversation(conversation, now);
+      await closeConversation(conversation);
     } catch {
       const err = new Error("Error closing conversation");
       err.status = 500;

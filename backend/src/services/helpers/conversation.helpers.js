@@ -35,15 +35,13 @@ export function isExpired(conversation, now = new Date()) {
 }
 
 /**
- * Closes an active conversation by setting status to "closed" and recording end time.
+ * Closes an active conversation by setting status to "closed".
  *
  * @param {Object} conversation - Conversation object to close
- * @param {Date} [now=new Date()] - End time for the conversation (defaults to now)
  * @returns {Promise<void>} Resolves when conversation is successfully closed
  */
-export const closeConversation = async (conversation, now = new Date()) => {
+export const closeConversation = async (conversation) => {
   conversation.status = "closed";
-  conversation.endTime = now;
   await conversation.save();
 };
 
@@ -157,10 +155,10 @@ export function buildConversationProjectStage() {
     $project: {
       _id: 1,
       userName: 1,
+      from: 1,
       status: 1,
       createdAt: 1,
       updatedAt: 1,
-      endTime: 1,
       "metrics.durationSeconds": 1,
       "metrics.tokenUsage.cost": 1,
     },

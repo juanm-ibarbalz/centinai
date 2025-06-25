@@ -33,12 +33,12 @@ export default function ConversationList({ conversations }) {
       <div className="mobile-conv-list">
         {conversations.map((conv) => (
           <div className="conv-card" key={conv._id}>
-            <p><strong>ID:</strong> {conv._id || "-"}</p>
-            <p><strong>Usuario:</strong> {conv.from || "-"}</p>
+            <p><strong>Número del remitente:</strong> {conv.from || "-"}</p>
+            <p><strong>Nombre del Remitente:</strong> {conv.userName || "-"}</p>
             <p><strong>Estado:</strong> {conv.status || "-"}</p>
-            <p><strong>Inicio:</strong> {formatDate(conv.startTime)}</p>
+            <p><strong>Inicio:</strong> {formatDate(conv.createdAt)}</p>
             <p><strong>Actualizado:</strong> {formatDate(conv.updatedAt)}</p>
-            <p><strong>Duración:</strong> {calcularDuracion(conv.startTime, conv.updatedAt)} min</p>
+            <p><strong>Duración:</strong> {calcularDuracion(conv.createdAt, conv.updatedAt)} min</p>
             <button onClick={() => handleVerMensajes(conv._id)}>Ver mensajes</button>
           </div>
         ))}
@@ -50,8 +50,8 @@ export default function ConversationList({ conversations }) {
     <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "1rem" }}>
       <thead>
         <tr style={{ background: "#222", color: "#fff" }}>
-          <th style={th}>ID</th>
-          <th style={th}>Nombre Usuario</th>
+          <th style={th}>Número del Remitente</th>
+          <th style={th}>Nombre del Remitente</th>
           <th style={th}>Estado</th>
           <th style={th}>Duración (min)</th>
           <th style={th}>Inicio</th>

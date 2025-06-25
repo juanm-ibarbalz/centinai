@@ -1,10 +1,7 @@
 import cron from "node-cron";
 import Conversation from "../../models/Conversation.js";
 import { conversationConfig } from "../../config/config.js";
-import {
-  buildExportPayloads,
-  exportConversationsToJson,
-} from "./exportConversations.js";
+import { buildExportPayloads } from "./exportConversations.js";
 import { dispatchToAnalyzer } from "./analyzerDispatcher.js";
 
 /**
@@ -13,7 +10,7 @@ import { dispatchToAnalyzer } from "./analyzerDispatcher.js";
  *
  * @returns {Promise<Array>} Array of expired conversation objects
  */
-export const getExpiredConversations = async () => {
+const getExpiredConversations = async () => {
   const now = new Date();
   const timeoutLimit = new Date(now.getTime() - conversationConfig.timeoutMs);
 
@@ -22,27 +19,27 @@ export const getExpiredConversations = async () => {
     updatedAt: { $lt: timeoutLimit },
   }).lean();
 
-  if (conversationsToClose.length === 0) {
-    console.warn("No hay conversaciones para cerrar por timeout.");
-    return [];
-  }
+  if (conversationsToClose.length === 0) return [];
 
   return conversationsToClose;
 };
 
 /**
  * Closes conversations by their IDs in bulk.
- * Updates multiple conversations to "closed" status and sets their end time.
+ * Updates multiple conversations to "closed" status.
  *
  * @param {string[]} convIds - Array of conversation IDs to close
- * @param {Date} [now=new Date()] - End time for the conversations (defaults to current time)
  * @returns {Promise<void>} Resolves when all conversations are closed
+ * @throws {Error} When no conversation IDs are provided or if an error occurs during update
  */
-export const closeConversationsById = async (convIds, now = new Date()) => {
-  if (!convIds || convIds.length === 0) return;
+const closeConversationsById = async (convIds) => {
+  if (!convIds || convIds.length === 0) {
+    throw new Error("No hay conversaciones para cerrar.");
+  }
+
   await Conversation.updateMany(
     { _id: { $in: convIds } },
-    { $set: { status: "closed", endTime: now } }
+    { $set: { status: "closed" } }
   );
   console.log(`${convIds.length} conversaciones cerradas por timeout.`);
 };
@@ -55,29 +52,30 @@ export const closeConversationsById = async (convIds, now = new Date()) => {
  * Job workflow:
  * 1. Find expired conversations
  * 2. Build export payloads for analysis
- * 3. Export conversations to JSON file
- * 4. Dispatch to analyzer system
- * 5. Close the expired conversations
+ * 3. Dispatch payloads directly to analyzer system
+ * 4. Close the expired conversations
  *
  * @returns {void} Sets up the cron job for automatic conversation cleanup
  */
 export const startConversationCleanupJob = () => {
   const intervalMinutes = conversationConfig.cleanupIntervalMinutes;
-  const now = new Date();
 
   cron.schedule(`*/${intervalMinutes} * * * *`, async () => {
+    const conversations = await getExpiredConversations();
+    if (conversations.length === 0) {
+      console.warn("No hay conversaciones para cerrar por timeout.");
+      return;
+    }
+
     try {
-      const conversations = await getExpiredConversations();
-      if (conversations.length === 0) return;
-
       const payloads = await buildExportPayloads(conversations);
-      const jsonPath = exportConversationsToJson(payloads);
-      await dispatchToAnalyzer(jsonPath);
-
-      const convIds = conversations.map((c) => c._id);
-      await closeConversationsById(convIds, now);
+      await dispatchToAnalyzer(payloads);
+      await closeConversationsById(conversations.map((c) => c._id));
     } catch (error) {
-      console.error("Error en limpieza automática de conversaciones:", error);
+      console.error(
+        "Error en limpieza automática de conversaciones:",
+        error.message
+      );
     }
   });
 };
