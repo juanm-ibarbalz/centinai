@@ -77,7 +77,10 @@ export const startConversationCleanupJob = () => {
       const convIds = conversations.map((c) => c._id);
       await closeConversationsById(convIds, now);
     } catch (error) {
-      console.error("Error en limpieza automática de conversaciones:", error);
+      console.error(
+        "Error en limpieza automática de conversaciones:",
+        error.message
+      );
     }
   });
 };

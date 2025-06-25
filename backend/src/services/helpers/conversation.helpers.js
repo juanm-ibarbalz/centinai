@@ -157,6 +157,7 @@ export function buildConversationProjectStage() {
     $project: {
       _id: 1,
       userName: 1,
+      from: 1,
       status: 1,
       createdAt: 1,
       updatedAt: 1,
