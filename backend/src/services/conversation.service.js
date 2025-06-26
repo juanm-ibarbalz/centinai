@@ -1,12 +1,12 @@
 import {
   findOpenConversation,
-  closeConversation,
   updateTimestamp,
   createNewConversation,
   buildConversationMatchStage,
   buildConversationSortStage,
   buildConversationProjectStage,
   isExpired,
+  exportAndCloseConversations,
 } from "./helpers/conversation.helpers.js";
 import Conversation from "../models/Conversation.js";
 
@@ -33,12 +33,27 @@ export const createOrUpdateConversation = async (
   let conversation = await findOpenConversation(from, agentPhoneNumberId);
 
   if (isExpired(conversation, timestamp)) {
+    console.log(
+      "[SERVICE] Timeout detected for conversation",
+      conversation?._id,
+      "at",
+      timestamp
+    );
     try {
-      await closeConversation(conversation);
-    } catch {
-      const err = new Error("Error closing conversation");
-      err.status = 500;
-      throw err;
+      await exportAndCloseConversations(conversation);
+      console.log(
+        "[SERVICE] Conversation closed and exported by service:",
+        conversation?._id
+      );
+    } catch (err) {
+      console.error(
+        "[SERVICE] Error closing conversation:",
+        conversation?._id,
+        err
+      );
+      const error = new Error("Error closing conversation");
+      error.status = 500;
+      throw error;
     }
     conversation = null;
   }

@@ -1,16 +1,19 @@
 import Message from "../../models/Message.js";
 
 /**
- * Construye los payloads de exportación que contienen la conversación y sus mensajes asociados.
- * Recupera todos los mensajes para cada conversación y los estructura para el análisis.
+ * Builds export payloads containing the conversation(s) and their associated messages.
+ * Accepts either a single conversation object or an array of conversations.
  *
- * @param {Array<Object>} conversations - Objetos de conversación ya recuperados de la base de datos
- * @returns {Promise<Array<Object>>} Array de objetos con conversación y mensajes para exportar (en memoria)
+ * @param {Object|Array<Object>} conversations - Conversation object or array of conversation objects
+ * @returns {Promise<Array<Object>>} Array of objects with conversation and messages for export (in memory)
  */
 export const buildExportPayloads = async (conversations) => {
+  const convArray = Array.isArray(conversations)
+    ? conversations
+    : [conversations];
   const payloads = [];
 
-  for (const conv of conversations) {
+  for (const conv of convArray) {
     const messages = await Message.find({ conversationId: conv._id })
       .sort({ timestamp: 1 })
       .lean();

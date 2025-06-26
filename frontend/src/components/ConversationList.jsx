@@ -67,7 +67,7 @@ export default function ConversationList({ conversations }) {
             <td style={td}>{conv.userName || "-"}</td>
             <td style={td}>{conv.status || "-"}</td>
             <td style={td}>{calcularDuracion(conv.createdAt, conv.updatedAt)}</td>
-            <td style={td}>{conv.metrics.tokenUsage.cost || "-"}</td>
+            <td style={td}>{conv.metrics?.tokenUsage?.cost ?? "-"}</td>
             <td style={td}>{formatDate(conv.createdAt)}</td>
             <td style={td}>{formatDate(conv.updatedAt)}</td>
             <td style={td}>

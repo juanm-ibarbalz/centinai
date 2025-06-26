@@ -1,6 +1,8 @@
 import Conversation from "../../models/Conversation.js";
 import { conversationConfig } from "../../config/config.js";
 import { generateConversationId } from "../../utils/idGenerator.js";
+import { buildExportPayloads } from "../cleaner/exportConversations.js";
+import { dispatchToAnalyzer } from "../cleaner/analyzerDispatcher.js";
 
 const TIMEOUT = conversationConfig.timeoutMs;
 
@@ -33,19 +35,6 @@ export function isExpired(conversation, now) {
   if (!conversation) return false;
   return now.getTime() - conversation.updatedAt.getTime() > TIMEOUT;
 }
-
-/**
- * Closes an active conversation by setting status to "closed".
- * The updatedAt field is INTENTIONALLY NOT modified here.
- * It should retain the timestamp of the last actual message.
- *
- * @param {Object} conversation - Conversation object to close
- * @returns {Promise<void>} Resolves when conversation is successfully closed
- */
-export const closeConversation = async (conversation) => {
-  conversation.status = conversationConfig.closingConversationStatus;
-  await conversation.save();
-};
 
 /**
  * Updates the timestamp of an existing conversation.
@@ -170,3 +159,39 @@ export function buildConversationProjectStage() {
     },
   };
 }
+
+/**
+ * Closes conversations by their IDs in bulk.
+ * Updates multiple conversations to "closed" status.
+ *
+ * @param {string[]} convIds - Array of conversation IDs to close
+ * @returns {Promise<void>} Resolves when all conversations are closed
+ * @throws {Error} When no conversation IDs are provided or if an error occurs during update
+ */
+export const closeConversationsById = async (convIds) => {
+  if (!convIds || convIds.length === 0) {
+    throw new Error("There are no conversations to close.");
+  }
+
+  await Conversation.updateMany(
+    { _id: { $in: convIds } },
+    { $set: { status: conversationConfig.closingConversationStatus } }
+  );
+  console.log(`${convIds.length} conversation/s closed due to timeout.`);
+};
+
+/**
+ * Exports conversation(s) to the analyzer and closes them if export is successful.
+ * Accepts a single conversation or an array of conversations.
+ *
+ * @param {Object|Array<Object>} conversations - Conversation object or array of conversation objects
+ * @returns {Promise<void>} Resolves when export and close are successful
+ */
+export const exportAndCloseConversations = async (conversations) => {
+  const convArray = Array.isArray(conversations)
+    ? conversations
+    : [conversations];
+  const payloads = await buildExportPayloads(convArray);
+  await dispatchToAnalyzer(payloads);
+  await closeConversationsById(convArray.map((c) => c._id));
+};

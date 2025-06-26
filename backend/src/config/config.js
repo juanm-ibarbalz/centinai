@@ -1,6 +1,5 @@
 // Centralized configuration for CentinAI backend
 import dotenv from "dotenv";
-import { custom } from "zod";
 dotenv.config();
 
 /**
@@ -30,7 +29,7 @@ export const idConfig = {
  * Controls timeout settings, cleanup intervals, and default conversation states.
  */
 export const conversationConfig = {
-  timeoutMs: 3 * 60 * 1000, // 2 minute/s of inactivity before timeout
+  timeoutMs: 30 * 60 * 1000, // 30 minute/s of inactivity before timeout
   cleanupIntervalMinutes: 3, // Cleanup job runs every 3 minutes
   defaultConversationStatus: "open",
   closingConversationStatus: "closed",
