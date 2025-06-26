@@ -5,7 +5,6 @@ import LogoutButton from "./LogoutButton";
 
 import homeIcon from "../assets/icons/ic_house.svg";
 import dashboardIcon from "../assets/icons/ic_dashboard.svg";
-import toolIcon from "../assets/icons/ic_tool.svg";
 import configIcon from "../assets/icons/ic_settings.svg";
 import userIcon from "../assets/icons/ic_user.svg";
 import robotIcon from "../assets/icons/ic_robot.svg";

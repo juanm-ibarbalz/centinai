@@ -14,7 +14,7 @@ if (!analyzerUrl) {
  */
 export const dispatchToAnalyzer = async (payload) => {
   if (!payload) {
-    throw new Error("dispatchToAnalyzer: no se recibió payload");
+    throw new Error("dispatchToAnalyzer: payload not received");
   }
 
   await axios.post(`${analyzerUrl}/analyze`, payload, { timeout: 120000 });

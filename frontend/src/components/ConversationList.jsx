@@ -36,9 +36,9 @@ export default function ConversationList({ conversations }) {
             <p><strong>Número del remitente:</strong> {conv.from || "-"}</p>
             <p><strong>Nombre del Remitente:</strong> {conv.userName || "-"}</p>
             <p><strong>Estado:</strong> {conv.status || "-"}</p>
+            <p><strong>Duración:</strong> {calcularDuracion(conv.createdAt, conv.updatedAt)} min</p>
             <p><strong>Inicio:</strong> {formatDate(conv.createdAt)}</p>
             <p><strong>Actualizado:</strong> {formatDate(conv.updatedAt)}</p>
-            <p><strong>Duración:</strong> {calcularDuracion(conv.createdAt, conv.updatedAt)} min</p>
             <button onClick={() => handleVerMensajes(conv._id)}>Ver mensajes</button>
           </div>
         ))}
@@ -54,6 +54,7 @@ export default function ConversationList({ conversations }) {
           <th style={th}>Nombre del Remitente</th>
           <th style={th}>Estado</th>
           <th style={th}>Duración (min)</th>
+          <th style={th}>Costo (USD)</th>
           <th style={th}>Inicio</th>
           <th style={th}>Actualizado</th>
           <th style={th}>Mensajes</th>
@@ -66,6 +67,7 @@ export default function ConversationList({ conversations }) {
             <td style={td}>{conv.userName || "-"}</td>
             <td style={td}>{conv.status || "-"}</td>
             <td style={td}>{calcularDuracion(conv.createdAt, conv.updatedAt)}</td>
+            <td style={td}>{conv.metrics.tokenUsage.cost || "-"}</td>
             <td style={td}>{formatDate(conv.createdAt)}</td>
             <td style={td}>{formatDate(conv.updatedAt)}</td>
             <td style={td}>

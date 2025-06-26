@@ -27,7 +27,7 @@ const CreateAgent = () => {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    phonePrefix: "",
+    phonePrefix: "+54",
     areaCode: "",
     localNumber: "",
     mapping: "",

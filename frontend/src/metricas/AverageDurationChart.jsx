@@ -18,8 +18,8 @@ const formatSeconds = (sec) => {
   return `${m}m ${s < 10 ? "0" : ""}${s}s`;
 };
 
-export default function AverageDurationChart({ days = 30 }) {
-  const data = DATAPRUEBA.slice(-days).map((d) => ({
+export default function AverageDurationChart({ data, days = 30}) {
+  const numbers = data.slice(-days).map((d) => ({
     date: d.date.slice(5),
     avgDuration: d.avgDurationSeconds,
   }));
@@ -28,7 +28,7 @@ export default function AverageDurationChart({ days = 30 }) {
     <div className="metric-card-plain" style={{ height: 300, padding: "1rem 2rem" }}>
       <h3 style={{ marginBottom: "1rem" }}>Average Session Duration</h3>
       <ResponsiveContainer width="100%" height="80%">
-        <AreaChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+        <AreaChart data={numbers} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           {/* Dégradé */}
           <defs>
             <linearGradient id="durationGradient" x1="0" y1="0" x2="0" y2="1">

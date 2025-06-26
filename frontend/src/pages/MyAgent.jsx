@@ -92,25 +92,6 @@ const MyAgents = () => {
                   <strong>Descripción:</strong> {agent.description}
                 </p>
 
-                <p className="agent-status">
-                  <strong>Estado:</strong>{" "}
-                  <span
-                    className={`status-badge ${
-                      isActive ? "active" : "inactive"
-                    }`}
-                  >
-                    {isActive ? (
-                      <>
-                        <FaCheckCircle className="status-icon" /> Activo
-                      </>
-                    ) : (
-                      <>
-                        <FaTimesCircle className="status-icon" /> Inactivo
-                      </>
-                    )}
-                  </span>
-                </p>
-
                 <button
                   className="view-button"
                   onClick={() =>

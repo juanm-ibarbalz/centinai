@@ -8,7 +8,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 220px;
+  width: 240px;
   height: 100vh;
   background-color: #0B0E23;
   box-shadow: 2px 0 12px #29FFD8;
@@ -75,8 +75,11 @@
 
 .menu-items li span {
   display: inline-block;
-  height: 100%;
-  line-height: 48px;
+  height: auto;
+  line-height: 1.3;
+  white-space: normal;
+  word-break: break-word;
+  max-width: 150px;
 }
 
 /* Ocultar texto suavemente */
