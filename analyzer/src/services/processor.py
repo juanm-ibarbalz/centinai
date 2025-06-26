@@ -5,12 +5,13 @@ from datetime import datetime
 import os
 import json
 from storage.session_writter import save_session
-from behavior_analysis.success_evaluator import SuccessEvaluator
 from utils.util_get_messages_by_direction import get_messages_by_direction
 from db.agent_repo import AgentRepo
 from services.token_utils import tokenize_texts, calculate_cost_with_tokonomics
 from db.sessions_repo import SessionRepo
 from services.latency_calculator import LatencyCalculator
+from behavior_analysis.success_context import SuccessEvaluationContext
+from behavior_analysis.success_engine import SuccessEvaluatorEngine
 
 
 def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
@@ -43,13 +44,17 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     latency_info = LatencyCalculator(normalized_msgs).calculate_average_latency()
 
 
-    tags = ["consulta", "queja"]
+    
     metadata = {
         "language": "es",
     }   
 
-    successful = _determinate_successful(conv, msgs, message_stats)
+    successEngine = SuccessEvaluatorEngine(SuccessEvaluationContext(conv,msgs,message_stats))
 
+    successful = successEngine.run()
+    tags = successEngine.get_tags()
+
+    tags = ["consulta", "queja"]    
     session_doc = {
         "_id": conv["_id"],
         "userId": conv["userId"],
