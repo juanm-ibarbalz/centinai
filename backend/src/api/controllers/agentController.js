@@ -47,17 +47,14 @@ export const createAgentController = async (req, res) => {
   const userId = req.user.id;
   const data = { ...result.data, userId };
 
-  // validación de existencia
   const exists = await Agent.findOne({ phoneNumberId: data.phoneNumberId });
   if (exists) return sendError(res, 400, "agent_already_exists");
 
-  // validación de límite
   const count = await Agent.countDocuments({ userId });
   if (count >= limitsConfig.maxAgentsPerUser) {
     return sendError(res, 400, "max_agents_reached");
   }
 
-  // validación de lógica cruzada
   const logicError = validateAgentLogic({
     payloadFormat: data.payloadFormat,
     fieldMapping: data.fieldMapping,

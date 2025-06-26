@@ -1,3 +1,4 @@
+import { conversationConfig } from "../config/config.js";
 import mongoose from "mongoose";
 
 /**
@@ -30,8 +31,11 @@ const messageSchema = new mongoose.Schema(
     type: String,
     direction: {
       type: String,
-      enum: ["user", "agent"],
-    }, // user to agent or agent to user
+      enum: [
+        conversationConfig.directionUser,
+        conversationConfig.directionAgent,
+      ],
+    },
     userId: {
       type: String,
       required: true,

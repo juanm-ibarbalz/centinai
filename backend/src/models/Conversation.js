@@ -1,3 +1,4 @@
+import { conversationConfig } from "../config/config.js";
 import mongoose from "mongoose";
 
 /**
@@ -11,9 +12,9 @@ import mongoose from "mongoose";
  * @property {string} [userName] - Display name of the user in the conversation
  * @property {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
  * @property {string} userId - Reference to the User who owns this conversation (required)
- * @property {'open'|'closed'} status - Current status of the conversation (default: 'open')
- * @property {Date} createdAt - Timestamp when the conversation was created (auto-generated)
- * @property {Date} updatedAt - Timestamp when the conversation was last updated (auto-generated)
+ * @property {'open'|'closed'} status - Current status of the conversation
+ * @property {Date} createdAt - Timestamp when the conversation was created
+ * @property {Date} updatedAt - Timestamp when the conversation was last updated
  */
 const conversationSchema = new mongoose.Schema(
   {
@@ -27,11 +28,12 @@ const conversationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "open",
+      default: conversationConfig.defaultConversationStatus,
     },
+    createdAt: { type: Date },
+    updatedAt: { type: Date },
   },
   {
-    timestamps: true,
     versionKey: false,
   }
 );

@@ -1,14 +1,14 @@
 import request from "supertest";
 import app from "../app.js";
 
-// Credenciales del seed user
+// Seed user credentials
 export const TEST_USER = {
   email: "juanmartin@test.com",
   password: "12345678",
   name: "Juan Martín",
 };
 
-// login con token
+// login with token
 export async function getTestUserToken() {
   const res = await request(app)
     .post("/auth/login")
@@ -16,7 +16,7 @@ export async function getTestUserToken() {
   return res.body.token;
 }
 
-// agente de prueba
+// test agent
 export async function createAgent(token, overrides = {}) {
   const defaultPayload = {
     phoneNumberId: "5551234",
@@ -28,7 +28,7 @@ export async function createAgent(token, overrides = {}) {
 
   const payload = { ...defaultPayload, ...overrides };
 
-  // si es custom, asegurar fieldMapping válido
+  // if payloadFormat is "custom", ensure a valid fieldMapping is provided
   if (payload.payloadFormat === "custom" && !payload.fieldMapping) {
     payload.fieldMapping = {
       text: "body.message",

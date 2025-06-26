@@ -39,7 +39,7 @@ const closeConversationsById = async (convIds) => {
 
   await Conversation.updateMany(
     { _id: { $in: convIds } },
-    { $set: { status: "closed" } }
+    { $set: { status: conversationConfig.closingConversationStatus } }
   );
   console.log(`${convIds.length} conversations closed due to timeout.`);
 };

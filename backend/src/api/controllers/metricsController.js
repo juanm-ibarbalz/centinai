@@ -46,7 +46,7 @@ export const getMetricsByAgentController = async (req, res) => {
     );
     return sendSuccess(res, 200, metrics);
   } catch (err) {
-    console.error("Error obteniendo métricas por agente:", err);
+    console.error("Error retrieving metrics by agent:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };
@@ -80,7 +80,7 @@ export const getMetricsByUserController = async (req, res) => {
     const metrics = await findMetricsByUser(userId, limit, offset);
     return sendSuccess(res, 200, metrics);
   } catch (err) {
-    console.error("Error obteniendo métricas por usuario:", err);
+    console.error("Error retrieving metrics by user:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };

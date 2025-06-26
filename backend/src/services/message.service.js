@@ -2,6 +2,8 @@ import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
 import { createOrUpdateConversation } from "./conversation.service.js";
 import { buildMessage } from "./helpers/message.helpers.js";
+import { updateTimestamp } from "./helpers/conversation.helpers.js";
+import { conversationConfig } from "../config/config.js";
 
 /**
  * Processes and saves an incoming message from webhook.
@@ -20,7 +22,7 @@ import { buildMessage } from "./helpers/message.helpers.js";
  */
 export const saveIncomingMessage = async (parsed) => {
   console.log("saveIncomingMessage called with:", parsed);
-  if (parsed.direction === "agent") {
+  if (parsed.direction === conversationConfig.directionAgent) {
     await processAgentMessage(parsed);
   } else {
     await processUserMessage(parsed);
@@ -30,10 +32,12 @@ export const saveIncomingMessage = async (parsed) => {
 /**
  * Processes a message sent by an agent (message_echo).
  * Only saves the message if there's an active conversation for the recipient.
+ * Updates the conversation's timestamp to the message's timestamp when saving.
  *
  * @param {Object} parsed - Parsed message object with agent message data
  * @param {string} parsed.agentPhoneNumberId - WhatsApp phone number identifier of the agent
  * @param {string} parsed.to - Phone number of the message recipient
+ * @param {Date} parsed.timestamp - Timestamp of the message (used to update conversation)
  * @returns {Promise<void>} Resolves when agent message is saved
  * @throws {Error} When there's no active conversation for the agent message (status: 400)
  */
@@ -41,7 +45,7 @@ const processAgentMessage = async (parsed) => {
   const existingConversation = await Conversation.findOne({
     agentPhoneNumberId: parsed.agentPhoneNumberId,
     from: parsed.to,
-    status: "open",
+    status: conversationConfig.defaultConversationStatus,
   });
 
   if (!existingConversation) {
@@ -51,7 +55,7 @@ const processAgentMessage = async (parsed) => {
     err.status = 400;
     throw err;
   }
-
+  updateTimestamp(existingConversation, parsed.timestamp);
   const messageDoc = buildMessage(parsed, existingConversation._id);
   await messageDoc.save();
 };
@@ -65,6 +69,7 @@ const processAgentMessage = async (parsed) => {
  * @param {string} parsed.agentPhoneNumberId - WhatsApp phone number identifier of the agent
  * @param {string} parsed.userName - Display name of the user
  * @param {string} parsed.from - Phone number of the message sender
+ * @param {Date} parsed.timestamp - Timestamp of the message
  * @returns {Promise<void>} Resolves when user message is processed and saved
  */
 const processUserMessage = async (parsed) => {
@@ -72,7 +77,8 @@ const processUserMessage = async (parsed) => {
     parsed.userId,
     parsed.agentPhoneNumberId,
     parsed.userName,
-    parsed.from
+    parsed.from,
+    parsed.timestamp
   );
 
   const messageDoc = buildMessage(parsed, conversationId);

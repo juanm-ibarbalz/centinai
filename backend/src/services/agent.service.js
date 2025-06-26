@@ -3,6 +3,7 @@ import Agent from "../models/Agent.js";
 import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
 import { generateAgentId } from "../utils/idGenerator.js";
+import { conversationConfig } from "../config/config.js";
 
 /**
  * Creates a new AI agent for a given user if the phone number is not already registered
@@ -162,8 +163,7 @@ export const updateAgentService = async (agentId, data) => {
     }
   }
 
-  // si se actualiza a "structured", eliminamos el fieldMapping
-  if (data.payloadFormat === "structured") {
+  if (data.payloadFormat === conversationConfig.structuredMapping) {
     safeUpdate.fieldMapping = {};
   }
 

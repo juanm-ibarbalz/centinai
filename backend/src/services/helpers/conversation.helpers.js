@@ -16,7 +16,7 @@ export const findOpenConversation = async (from, agentPhoneNumberId) => {
   return Conversation.findOne({
     from,
     agentPhoneNumberId,
-    status: "open",
+    status: conversationConfig.defaultConversationStatus,
   }).sort({ updatedAt: -1 });
 };
 
@@ -26,22 +26,24 @@ export const findOpenConversation = async (from, agentPhoneNumberId) => {
  *
  * @param {Object} conversation - Conversation object to evaluate
  * @param {Date} conversation.updatedAt - Last update timestamp of the conversation
- * @param {Date} [now=new Date()] - Current date for comparison (defaults to now)
+ * @param {Date} now - The timestamp of the new message for comparison
  * @returns {boolean} True if conversation has expired, false otherwise
  */
-export function isExpired(conversation, now = new Date()) {
+export function isExpired(conversation, now) {
   if (!conversation) return false;
   return now.getTime() - conversation.updatedAt.getTime() > TIMEOUT;
 }
 
 /**
  * Closes an active conversation by setting status to "closed".
+ * The updatedAt field is INTENTIONALLY NOT modified here.
+ * It should retain the timestamp of the last actual message.
  *
  * @param {Object} conversation - Conversation object to close
  * @returns {Promise<void>} Resolves when conversation is successfully closed
  */
 export const closeConversation = async (conversation) => {
-  conversation.status = "closed";
+  conversation.status = conversationConfig.closingConversationStatus;
   await conversation.save();
 };
 
@@ -50,10 +52,10 @@ export const closeConversation = async (conversation) => {
  * Refreshes the updatedAt field to extend the conversation's active period.
  *
  * @param {Object} conversation - Conversation object to update
- * @param {Date} [now=new Date()] - New timestamp for the conversation (defaults to now)
+ * @param {Date} now - New timestamp for the conversation
  * @returns {Promise<void>} Resolves when timestamp is successfully updated
  */
-export const updateTimestamp = async (conversation, now = new Date()) => {
+export const updateTimestamp = async (conversation, now) => {
   conversation.updatedAt = now;
   await conversation.save();
 };
@@ -66,13 +68,15 @@ export const updateTimestamp = async (conversation, now = new Date()) => {
  * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
  * @param {string} userName - Display name of the user in the conversation
  * @param {string} from - Phone number of the customer starting the conversation
+ * @param {Date} timestamp - Timestamp of the conversation creation
  * @returns {Promise<Object>} Newly created conversation object
  */
 export const createNewConversation = async (
   userId,
   agentPhoneNumberId,
   userName,
-  from
+  from,
+  timestamp
 ) => {
   const generatedConversationId = generateConversationId(
     from,
@@ -85,7 +89,9 @@ export const createNewConversation = async (
     userId,
     userName,
     agentPhoneNumberId,
-    status: "open",
+    status: conversationConfig.defaultConversationStatus,
+    createdAt: timestamp,
+    updatedAt: timestamp,
   });
 
   await newConversation.save();

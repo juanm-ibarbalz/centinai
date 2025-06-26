@@ -28,7 +28,7 @@ describe("GET /metrics/all", () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", errorMessages.invalid_query);
     expect(res.body.description).toMatchObject({
-      limit: "El límite debe ser un número entero mayor o igual a 0",
+      limit: "Limit must be an integer greater than or equal to 0",
     });
   });
 
@@ -43,7 +43,6 @@ describe("GET /metrics/all", () => {
   });
 
   it("should return all metrics for the user (200)", async () => {
-    // crear métricas para este userId con distintos agents
     const doc1 = {
       _id: new mongoose.Types.ObjectId().toString(),
       conversationId: "conv1",
@@ -79,7 +78,6 @@ describe("GET /metrics/all", () => {
     };
     await Metric.create([doc1, doc2]);
 
-    // métrica de otro user
     await Metric.create({
       _id: new mongoose.Types.ObjectId().toString(),
       conversationId: "convX",

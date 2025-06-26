@@ -1,12 +1,10 @@
+import { conversationConfig } from "../../config/config.js";
 import get from "lodash.get";
 
-const STRUCTURED_MAPPING = {
-  text: "text",
-  from: "from",
-  to: "to",
-  timestamp: "timestamp",
-  userName: "userName",
-};
+const STRUCTURED = conversationConfig.structuredMapping;
+const CUSTOM = conversationConfig.customMapping;
+const USER = conversationConfig.directionUser;
+const AGENT = conversationConfig.directionAgent;
 
 /**
  * Maps and normalizes an incoming webhook payload to the internal message format.
@@ -17,23 +15,26 @@ const STRUCTURED_MAPPING = {
  * @param {Object} payload - Raw webhook request body.
  * @param {Object} mapping - Agent's field mapping configuration (for custom format).
  * @param {'structured'|'custom'} format - Payload format type.
- * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent.
+ * @param {string} agentPhoneNumberId - phone number identifier of the agent.
  * @returns {Object} Parsed and normalized message object.
  * @throws {Error} If format is invalid, required fields are missing, or timestamp/participants are invalid.
  */
 export const applyMapping = (payload, mapping, format, agentPhoneNumberId) => {
-  if (!["structured", "custom"].includes(format)) {
+  if (![STRUCTURED, CUSTOM].includes(format)) {
     throw new Error("invalid_format");
   }
 
-  const isStructured = format === "structured";
-  const finalMapping = isStructured ? STRUCTURED_MAPPING : mapping;
+  const isStructured = format === STRUCTURED;
+  const finalMapping = isStructured
+    ? conversationConfig.structuredMappingFields
+    : mapping;
 
   const text = get(payload, finalMapping.text);
   const rawFrom = get(payload, finalMapping.from);
   const rawTo = get(payload, finalMapping.to);
   const timestamp = get(payload, finalMapping.timestamp);
-  const userName = get(payload, finalMapping.userName) || "Usuario";
+  const userName =
+    get(payload, finalMapping.userName) || conversationConfig.defaultUserName;
 
   if (!text) throw new Error("missing_text");
   if (!timestamp) throw new Error("missing_timestamp");
@@ -52,7 +53,7 @@ export const applyMapping = (payload, mapping, format, agentPhoneNumberId) => {
     timestamp: normalizedTimestamp,
     text,
     direction,
-    status: "open",
+    status: conversationConfig.defaultConversationStatus,
     agentPhoneNumberId,
   };
 };
@@ -95,27 +96,27 @@ function mapParticipants(rawFrom, rawTo, agentPhone) {
   const hasTo = !!rawTo;
 
   if (
-    rawFrom === rawTo || // ambos son el agente o el usuario, o son undefined
-    (hasFrom && rawFrom === agentPhone && !hasTo) || // solo from = agente
-    (hasTo && rawTo === agentPhone && !hasFrom) // solo to = agente
+    rawFrom === rawTo || // both are the agent or the user, or both are undefined
+    (hasFrom && rawFrom === agentPhone && !hasTo) || // only from = agente
+    (hasTo && rawTo === agentPhone && !hasFrom) // only to = agente
   ) {
     return null;
   }
 
   if (rawFrom === agentPhone && hasTo) {
-    return { from: agentPhone, to: rawTo, direction: "agent" };
+    return { from: agentPhone, to: rawTo, direction: AGENT };
   }
 
   if (rawTo === agentPhone && hasFrom) {
-    return { from: rawFrom, to: agentPhone, direction: "user" };
+    return { from: rawFrom, to: agentPhone, direction: USER };
   }
 
   if (hasFrom && !hasTo) {
-    return { from: rawFrom, to: agentPhone, direction: "user" };
+    return { from: rawFrom, to: agentPhone, direction: USER };
   }
 
   if (!hasFrom && hasTo) {
-    return { from: agentPhone, to: rawTo, direction: "agent" };
+    return { from: agentPhone, to: rawTo, direction: AGENT };
   }
 
   // no se cumple ningún caso, se retorna null

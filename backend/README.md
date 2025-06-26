@@ -1,3 +1,97 @@
+# CentinAI Backend
+
+CentinAI Backend is the core API and business logic layer for the CentinAI platform. It manages users, agents, conversations, metrics, and integrates with external analyzers. The backend exposes a RESTful API consumed by the CentinAI frontend and other services.
+
+## Tech Stack
+
+- Node.js
+- Express.js
+- MongoDB (Mongoose ODM)
+- JWT for authentication
+- Docker support (optional)
+
+## Project Structure
+
+- `src/api/` — Route controllers and API endpoints
+- `src/models/` — Mongoose models (User, Agent, Conversation, etc.)
+- `src/services/` — Business logic and helpers
+- `src/db/` — Database connection and repositories
+- `src/config/` — Configuration files and environment settings
+- `src/tests/` — Unit and integration tests
+
+## Prerequisites
+
+- Node.js >= 18.x
+- npm >= 9.x (or yarn)
+- MongoDB >= 5.x (local or remote)
+
+## Installation
+
+Clone the repository and install dependencies:
+
+```bash
+cd backend
+npm install
+# or
+yarn install
+```
+
+## Configuration
+
+Copy `.env.example` to `.env` and set the required environment variables:
+
+- `MONGODB_URI` — MongoDB connection string
+- `JWT_SECRET` — Secret for JWT authentication
+- `JWT_EXPIRES_IN` — JWT token expiration (e.g., `1d`)
+- `ANALYZER_URL` — (Optional) URL for the analyzer service
+- `PORT` — Port where the backend will be hosted (used by Docker and start.sh)
+
+## Running the server
+
+You can start the backend using the provided script:
+
+```bash
+./start.sh
+```
+
+Alternatively, for development or production, you can use:
+
+### Development
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+### Production
+
+```bash
+npm run start
+# or
+yarn start
+```
+
+## Testing
+
+Run all tests with:
+
+```bash
+npm test
+# or
+yarn test
+```
+
+## Deployment
+
+You can use Docker for local or production deployment:
+
+```bash
+docker-compose up --build backend
+```
+
+---
+
 # CentinAI API Reference
 
 Internal API documentation for the CentinAI backend.  

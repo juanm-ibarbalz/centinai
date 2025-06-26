@@ -64,7 +64,7 @@ export const getConversationsByAgent = async (req, res) => {
     );
     return sendSuccess(res, 200, conversations);
   } catch (err) {
-    console.error("Error obteniendo conversaciones:", err);
+    console.error("Error retrieving conversations:", err);
     return sendError(res, err.status || 500, err.message || "server_error");
   }
 };

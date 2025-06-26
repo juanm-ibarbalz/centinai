@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import crypto from "crypto";
+import { conversationConfig } from "../config/config.js";
 
 /**
  * Agent model schema for AI agent configuration and management.
@@ -35,7 +36,10 @@ const agentSchema = new mongoose.Schema(
     },
     payloadFormat: {
       type: String,
-      enum: ["structured", "custom"],
+      enum: [
+        conversationConfig.structuredMapping,
+        conversationConfig.customMapping,
+      ],
       required: true,
     },
     authMode: {

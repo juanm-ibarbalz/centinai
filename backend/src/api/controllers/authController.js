@@ -37,7 +37,7 @@ export const register = async (req, res) => {
   try {
     const user = await registerUser(result.data);
     return sendSuccess(res, 201, {
-      message: "Usuario creado",
+      message: "User created",
       user: {
         _id: user._id.toString(),
         email: user.email,
@@ -79,7 +79,7 @@ export const login = async (req, res) => {
   try {
     const token = await loginUser(user, result.data.password);
     return sendSuccess(res, 200, {
-      message: "Login exitoso",
+      message: "Login successful",
       token,
       user: {
         id: user._id,

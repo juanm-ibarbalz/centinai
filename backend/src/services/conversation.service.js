@@ -19,6 +19,7 @@ import Conversation from "../models/Conversation.js";
  * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
  * @param {string} userName - Display name of the user in the conversation
  * @param {string} from - Phone number or identifier of the message sender
+ * @param {Date} timestamp - Timestamp of the incoming message
  * @returns {Promise<string>} ID of the active conversation
  * @throws {Error} When there's an error creating or updating the conversation (status: 500)
  */
@@ -26,12 +27,12 @@ export const createOrUpdateConversation = async (
   userId,
   agentPhoneNumberId,
   userName,
-  from
+  from,
+  timestamp
 ) => {
-  const now = new Date();
   let conversation = await findOpenConversation(from, agentPhoneNumberId);
 
-  if (isExpired(conversation, now)) {
+  if (isExpired(conversation, timestamp)) {
     try {
       await closeConversation(conversation);
     } catch {
@@ -48,7 +49,8 @@ export const createOrUpdateConversation = async (
         userId,
         agentPhoneNumberId,
         userName,
-        from
+        from,
+        timestamp
       );
     } catch {
       const err = new Error("Error creating new conversation");
@@ -57,7 +59,7 @@ export const createOrUpdateConversation = async (
     }
   } else {
     try {
-      await updateTimestamp(conversation, now);
+      await updateTimestamp(conversation, timestamp);
     } catch {
       const err = new Error("Error updating conversation timestamp");
       err.status = 500;
@@ -98,8 +100,8 @@ export const findConversationsByAgent = async (
   );
 
   // 2) Stage $lookup
-  // Lookup contra la colección "metrics" (modelo Metric) para traer durationSeconds y tokenUsage.cost
-  // LEFT JOIN metrics m ON m.conversation_id = c.id AND m.user_id = :userId (y seleccionar columnas m.duration_seconds, m.token_usage_cost en el SELECT)
+  // Lookup against the "metrics" collection (Metric model) to retrieve durationSeconds and tokenUsage.cost
+  // LEFT JOIN metrics m ON m.conversation_id = c.id AND m.user_id = :userId (and select columns m.duration_seconds, m.token_usage_cost in the SELECT)
   const lookupStage = {
     $lookup: {
       from: "metrics",
@@ -121,9 +123,9 @@ export const findConversationsByAgent = async (
     },
   };
 
-  // 3) Stage $unwind (fijo)
-  // Hacemos unwind para simplificar
-  // Convierte “metrics” en un objeto simple en lugar de array.
+  // 3) Stage $unwind (fixed)
+  // We use unwind for simplicity
+  // Converts "metrics" into a simple object instead of an array.
   const unwindStage = {
     $unwind: { path: "$metrics", preserveNullAndEmptyArrays: true },
   };
@@ -138,7 +140,7 @@ export const findConversationsByAgent = async (
   // 6) Stage $project
   const projectStage = buildConversationProjectStage();
 
-  // 7) Armamos el pipeline completo
+  // 7) Build the complete pipeline
   const pipeline = [
     matchStage,
     lookupStage,

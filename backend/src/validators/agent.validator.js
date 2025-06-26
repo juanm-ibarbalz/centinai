@@ -1,5 +1,9 @@
 import { z } from "zod";
-import Agent from "../models/Agent.js";
+import { conversationConfig } from "../config/config.js";
+
+const STRUCTURED = conversationConfig.structuredMapping;
+const CUSTOM = conversationConfig.customMapping;
+const STRUCTURED_FIELDS = conversationConfig.structuredMappingFields;
 
 /**
  * Base validation schema for AI agent creation and configuration.
@@ -13,7 +17,7 @@ export const agentValidationSchema = z.object({
   name: z.string().min(1, "Agent name is required"),
   description: z.string().optional(),
 
-  payloadFormat: z.enum(["structured", "custom"], {
+  payloadFormat: z.enum([STRUCTURED, CUSTOM], {
     required_error: "Payload format is required",
   }),
 
@@ -39,18 +43,21 @@ export const agentValidationSchema = z.object({
 export const validateAgentLogic = (data) => {
   const mapping = data.fieldMapping || {};
 
-  if (data.payloadFormat === "structured" && Object.keys(mapping).length > 0) {
-    return "Field mapping is not allowed with 'structured' format";
+  if (data.payloadFormat === STRUCTURED && Object.keys(mapping).length > 0) {
+    return `Field mapping is not allowed with '${STRUCTURED}' format`;
   }
 
   if (
-    data.payloadFormat === "custom" &&
+    data.payloadFormat === CUSTOM &&
     (!mapping ||
-      !["text", "from", "timestamp", "to"].every((key) =>
-        Object.keys(mapping).includes(key)
-      ))
+      ![
+        STRUCTURED_FIELDS.text,
+        STRUCTURED_FIELDS.from,
+        STRUCTURED_FIELDS.timestamp,
+        STRUCTURED_FIELDS.to,
+      ].every((key) => Object.keys(mapping).includes(key)))
   ) {
-    return "Field mapping must include at minimum: text, from, timestamp, and to";
+    return `Field mapping must include at minimum: '${STRUCTURED_FIELDS.text}', '${STRUCTURED_FIELDS.from}', '${STRUCTURED_FIELDS.timestamp}', and '${STRUCTURED_FIELDS.to}'`;
   }
 
   return null;
@@ -65,7 +72,7 @@ export const validateAgentLogic = (data) => {
 export const updateAgentSchema = z.object({
   name: z.string().min(1).optional(),
   description: z.string().optional(),
-  payloadFormat: z.enum(["structured", "custom"]).optional(),
+  payloadFormat: z.enum([STRUCTURED, CUSTOM]).optional(),
   authMode: z.enum(["query", "header", "body"]).optional(),
   fieldMapping: z.record(z.string(), z.string()).optional(),
   modelName: z.string().min(1).optional(),

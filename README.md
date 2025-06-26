@@ -40,6 +40,7 @@ These instructions will help you get a copy of the project up and running on you
    ```bash
    # API connection
    VITE_API_URL=http://your-localhost:${BACKEND_HOST_PORT}
+   PORT=${FRONTEND_CONTAINER_PORT} # Port where the frontend will be hosted (used by Docker)
    ```
 
    - backend/.env:
