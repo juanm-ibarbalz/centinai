@@ -26,7 +26,7 @@ const Dashboards = () => {
   const { token } = useSessionLoader();
 
   // Al no pasar agentPhoneNumberId, el hook busca por usuario por defecto.
-  const { data, loading } = useMetricData({ source: "mock", token });
+  const { data, loading } = useMetricData({ source: "api", token });
   console.log("Datos métricas adaptados:", data, "loading:", loading);
 
   if (!loading && (!data || data.length === 0)) {
@@ -89,7 +89,7 @@ const Dashboards = () => {
         </div>
         <div className="graph-card">
           <h3>Average Session Duration</h3>
-          <AverageDurationChart days={selectedDays} />
+          <AverageDurationChart data={data} days={selectedDays} />
         </div>
       </div>
     </div>

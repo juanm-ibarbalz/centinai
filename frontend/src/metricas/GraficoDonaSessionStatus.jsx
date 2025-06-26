@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 import "./metric.css";
 
-const COLORS = ["#00e676", "#ff5252", "#FFCA28"]; // Success, Fail, Indeterminate
+const COLORS = ["#00e676", "#ff5252"]; // Success, Fail
 
 export default function GraficoDonaSessionStatus({ data, days }) {
   const formatNumber = (n) => new Intl.NumberFormat("de-DE").format(n);
@@ -13,26 +13,23 @@ export default function GraficoDonaSessionStatus({ data, days }) {
     (acc, d) => {
       acc.success += d.status.success;
       acc.fail += d.status.fail;
-      acc.indeterminate += d.status.indeterminate;
       return acc;
     },
-    { success: 0, fail: 0, indeterminate: 0 }
+    { success: 0, fail: 0}
   );
 
   const chartData = [
     { name: "Success", value: totals.success },
     { name: "Fail", value: totals.fail },
-    { name: "Indeterminate", value: totals.indeterminate },
   ];
 
-  // asigna el orden de aparición: Success → Indeterminate → Fail
+  // asigna el orden de aparición: Success → Fail
   const delayMap = {
     Success: 0.5,
-    Indeterminate: 1.0,
-    Fail: 1.5,
+    Fail: 1.0,
   };
 
-  if (totals.success === 0 && totals.fail === 0 && totals.indeterminate === 0) {
+  if (totals.success === 0 && totals.fail === 0) {
     return (
       <div style={{ width: "100%", textAlign: "center", padding: "2rem 0" }}>
         <span style={{ color: "#888" }}>Sin datos para mostrar</span>

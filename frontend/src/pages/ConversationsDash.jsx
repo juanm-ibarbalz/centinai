@@ -7,7 +7,6 @@ import { API_URL } from "../config";
 
 export default function Dashboard() {
   const { phoneNumberId } = useParams();
-  const navigate = useNavigate();
   const [agentName, setAgentName] = useState("");
 
   useEffect(() => {
@@ -33,10 +32,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <button className="back-dashboard-btn" onClick={() => navigate(-1)}>
-        Volver
-      </button>
-
       <div className="dashboard-header">
         <h1>CentinAI - Dashboard del bot {agentName || phoneNumberId}</h1>
       </div>

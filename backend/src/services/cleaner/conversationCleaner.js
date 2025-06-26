@@ -34,14 +34,14 @@ const getExpiredConversations = async () => {
  */
 const closeConversationsById = async (convIds) => {
   if (!convIds || convIds.length === 0) {
-    throw new Error("No hay conversaciones para cerrar.");
+    throw new Error("There are no conversations to close.");
   }
 
   await Conversation.updateMany(
     { _id: { $in: convIds } },
     { $set: { status: "closed" } }
   );
-  console.log(`${convIds.length} conversaciones cerradas por timeout.`);
+  console.log(`${convIds.length} conversations closed due to timeout.`);
 };
 
 /**
