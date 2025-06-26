@@ -158,8 +158,3 @@ def _get_agent_data_from_conversation(conversation: Dict[str, Any]) -> Dict[str,
     if not agent_data:
         raise ValueError(f"No se encontró agente con userId={user_id}")
     return agent_data
-
-
-def _determinate_successful(conversation: dict, messages: list, message_stats: dict) -> bool:
-    evaluator = SuccessEvaluator(conversation, messages, message_stats)
-    return evaluator.is_successful()
