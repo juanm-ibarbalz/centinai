@@ -1,26 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../App.css";
 import { API_URL } from "../config";
+import "../App.css";
 import "./MyAgents.css";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 const MyAgents = () => {
-  const navigate = useNavigate();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  const [showToken, setShowToken] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentAgent, setCurrentAgent] = useState(null);
+  const [fieldMapping, setFieldMapping] = useState({
+    text: "",
+    from: "",
+    timestamp: "",
+    to: "",
+  });
+
   useEffect(() => {
     const fetchAgents = async () => {
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(`${API_URL}/agents`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
         setAgents(data);
@@ -30,36 +37,70 @@ const MyAgents = () => {
         setLoading(false);
       }
     };
-
     fetchAgents();
   }, []);
 
   const handleDelete = async () => {
     if (!agentToDelete) return;
-
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${API_URL}/agents/${agentToDelete._id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (res.ok) {
-        setAgents((prev) =>
-          prev.filter((a) => a._id !== agentToDelete._id)
-        );
+        setAgents((prev) => prev.filter((a) => a._id !== agentToDelete._id));
         setSuccessMessage("✅ Agente eliminado con éxito.");
         setTimeout(() => setSuccessMessage(""), 2000);
-      } else {
-        console.error("❌ Error al eliminar el agente.");
       }
     } catch (error) {
       console.error("❌ Error:", error);
     } finally {
       setAgentToDelete(null);
       setShowDeleteModal(false);
+    }
+  };
+
+  const openEditModal = (agent) => {
+    setCurrentAgent(agent);
+    setFieldMapping(
+      agent.fieldMapping || {
+        text: "",
+        from: "",
+        timestamp: "",
+        to: "",
+      }
+    );
+    setShowEditModal(true);
+  };
+
+  const handleMappingUpdate = async (e) => {
+    e.preventDefault();
+
+    if (currentAgent.payloadFormat !== "custom") {
+      console.warn("❌ Este agente no permite editar mapping.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${API_URL}/agents/${currentAgent._id}/mapping`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ fieldMapping }),
+      });
+
+      if (!res.ok) throw new Error("Error al actualizar el mapping");
+
+      setSuccessMessage("✅ Mapping actualizado correctamente.");
+      setShowEditModal(false);
+      setTimeout(() => setSuccessMessage(""), 2000);
+    } catch (err) {
+      console.error(err.message);
     }
   };
 
@@ -77,8 +118,7 @@ const MyAgents = () => {
       ) : (
         <div className="agents-grid">
           {agents.map((agent) => {
-            const isActive = agent.name === "DeltaAI" ? true : agent.active;
-
+            const isActive = agent.name === "DeltaAI" || agent.active;
             return (
               <div
                 key={agent._id}
@@ -95,20 +135,21 @@ const MyAgents = () => {
                 <button
                   className="view-button"
                   onClick={() =>
-                    navigate(`/conversationsDash/${agent.phoneNumberId}`)
+                    (window.location.href = `/conversationsDash/${agent.phoneNumberId}`)
                   }
                 >
                   Ver Conversaciones
                 </button>
 
                 <div className="card-actions">
-                  <button
-                    className="secondary-button"
-                    onClick={() => navigate(`/editAgent/${agent._id}`)}
-                  >
-                    Editar
-                  </button>
-
+                  {agent.payloadFormat === "custom" && (
+                    <button
+                      className="secondary-button"
+                      onClick={() => openEditModal(agent)}
+                    >
+                      Editar
+                    </button>
+                  )}
                   <button
                     className="secondary-button danger"
                     onClick={() => {
@@ -125,12 +166,14 @@ const MyAgents = () => {
         </div>
       )}
 
-      {/* Modal de confirmación de eliminación */}
+      {/* Modal eliminar */}
       {showDeleteModal && agentToDelete && (
         <div className="success-overlay">
           <div className="success-box">
-            <p>¿Eliminar agente <strong>{agentToDelete.name}</strong>?</p>
-            <div style={{ marginTop: "1.2rem", display: "flex", gap: "1rem", justifyContent: "center" }}>
+            <p>
+              ¿Eliminar agente <strong>{agentToDelete.name}</strong>?
+            </p>
+            <div className="modal-buttons">
               <button onClick={handleDelete} className="modal-delete-btn">
                 Sí, eliminar
               </button>
@@ -148,7 +191,108 @@ const MyAgents = () => {
         </div>
       )}
 
-      {/* Mensaje de éxito */}
+      {/* Modal editar */}
+      {showEditModal && currentAgent && (
+        <div className="overlay-modal">
+          <div className="edit-card">
+            <h3>
+              Editar Mapping de{" "}
+              <span className="agent-name">{currentAgent.name}</span>
+            </h3>
+            <p className="agent-phone">📞 {currentAgent.phoneNumberId}</p>
+
+            {/* 🔐 TOKEN DISPLAY */}
+            <div className="token-box">
+              <p className="token-label">🔐 Secret Token:</p>
+              <div className="token-wrapper">
+                <input
+                  type={showToken ? "text" : "password"}
+                  className="token-input"
+                  value={currentAgent.secretToken}
+                  readOnly
+                />
+                <button
+                  className="token-btn"
+                  onClick={() => setShowToken(!showToken)}
+                  title={showToken ? "Ocultar" : "Mostrar"}
+                >
+                  {showToken ? "🙈" : "👁"}
+                </button>
+                <button
+                  className="token-btn"
+                  onClick={() => {
+                    navigator.clipboard.writeText(currentAgent.secretToken);
+                    setCopySuccess(true);
+                    setTimeout(() => setCopySuccess(false), 1500);
+                  }}
+                  title="Copiar token"
+                >
+                  📋
+                </button>
+              </div>
+              {copySuccess && (
+                <p className="copied-msg">✅ Copiado al portapapeles</p>
+              )}
+            </div>
+
+            {/* FORMULARIO DE MAPPING */}
+            <form onSubmit={handleMappingUpdate}>
+              <label>Text:</label>
+              <input
+                type="text"
+                value={fieldMapping.text}
+                maxLength={30}
+                onChange={(e) =>
+                  setFieldMapping({ ...fieldMapping, text: e.target.value })
+                }
+              />
+
+              <label>From:</label>
+              <input
+                type="text"
+                value={fieldMapping.from}
+                maxLength={30}
+                onChange={(e) =>
+                  setFieldMapping({ ...fieldMapping, from: e.target.value })
+                }
+              />
+
+              <label>Timestamp:</label>
+              <input
+                type="text"
+                value={fieldMapping.timestamp}
+                maxLength={30}
+                onChange={(e) =>
+                  setFieldMapping({
+                    ...fieldMapping,
+                    timestamp: e.target.value,
+                  })
+                }
+              />
+
+              <label>To:</label>
+              <input
+                type="text"
+                value={fieldMapping.to}
+                maxLength={30}
+                onChange={(e) =>
+                  setFieldMapping({ ...fieldMapping, to: e.target.value })
+                }
+              />
+
+              <button type="submit">Guardar mapping</button>
+              <button
+                type="button"
+                className="secondary-button danger"
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancelar
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {successMessage && (
         <div className="success-overlay">
           <div className="success-box">

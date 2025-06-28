@@ -1,4 +1,4 @@
-// ✅ CreateAgent.jsx
+// ✅ CreateAgent.jsxlocalNumber
 import React, { useEffect, useState } from "react";
 import "./createAgent.css";
 import { API_URL } from "../config";
@@ -69,6 +69,7 @@ const CreateAgent = () => {
       form.name.trim().length >= 4 &&
       form.description.trim().length >= 15 &&
       form.modelName.trim().length >= 4 &&
+      form.localNumber.trim().length >= 6 &&
       validatePhone()
     );
   };
@@ -136,11 +137,10 @@ const CreateAgent = () => {
 
       const responseData = await res.json();
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error("❌ Error del backend:", errorData);
-        return;
-      }
+     if (!res.ok) {
+  console.error("❌ Error del backend:", responseData);
+  return;
+}
 
       console.log("✅ Respuesta del backend:");
 

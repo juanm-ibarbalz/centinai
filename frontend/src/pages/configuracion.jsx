@@ -121,6 +121,7 @@ const Configuracion = () => {
         <input
           type="text"
           value={userData.name}
+          maxLength={20}
           onChange={(e) => setUserData({ ...userData, name: e.target.value })}
         />
 
@@ -128,6 +129,7 @@ const Configuracion = () => {
         <input
           type="email"
           value={userData.email}
+          maxLength={30}
           onChange={(e) => setUserData({ ...userData, email: e.target.value })}
         />
 
@@ -141,6 +143,7 @@ const Configuracion = () => {
         <input
           type="password"
           value={currentPassword}
+          maxLength={15}
           onChange={(e) => setCurrentPassword(e.target.value)}
         />
 
@@ -148,6 +151,7 @@ const Configuracion = () => {
         <input
           type="password"
           value={newPassword}
+          maxLength={15}
           onChange={(e) => setNewPassword(e.target.value)}
         />
 

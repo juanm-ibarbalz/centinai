@@ -229,3 +229,134 @@ html, body {
   font-size: 1.2rem;
   text-align: center;
 }
+
+.overlay-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 10, 25, 0.95);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-card {
+  background-color: #0B0E23;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 0 20px #29FFD8;
+  color: #E0F7FA;
+  width: 400px;
+  font-family: "Exo 2", sans-serif;
+}
+
+.edit-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.edit-card label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.edit-card input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #29FFD8;
+  background: #11142d;
+  color: #fff;
+}
+
+.edit-card button {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.6rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(to right, #a67cff, #5b91ff);
+  color: white;
+  cursor: pointer;
+}
+
+.edit-card .danger {
+  background-color: #c62828;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+
+.agent-name {
+  color: #29FFD8;
+  font-weight: bold;
+}
+
+.agent-phone {
+  margin-top: 0.3rem;
+  color: #A5FFE5;
+  font-size: 0.95rem;
+}
+
+.token-box {
+  margin-bottom: 1.5rem;
+}
+
+.token-label {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+  color: #E0F7FA;
+}
+
+.token-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.token-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #29FFD8;
+  border-radius: 6px;
+  background: #11142d;
+  color: #29FFD8;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+  filter: blur(3px);
+  transition: filter 0.2s ease-in-out;
+}
+
+.token-input[type="text"] {
+  filter: none;
+}
+
+.token-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #A67CFF;
+  transition: transform 0.2s ease;
+}
+
+.token-btn:hover {
+  transform: scale(1.2);
+}
+
+.copied-msg {
+  margin-top: 0.3rem;
+  color: #00e676;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
