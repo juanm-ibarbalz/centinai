@@ -30,6 +30,7 @@ export const handleIncomingMessage = async (req, res) => {
     xAgentSecret: req.headers["x-agent-secret"],
     agentSecret: req.body.agentSecret,
   });
+
   if (!auth.success) {
     return sendError(res, 400, "invalid_webhook_auth", auth.error);
   }
@@ -46,7 +47,7 @@ export const handleIncomingMessage = async (req, res) => {
       agent.phoneNumberId
     );
   } catch (err) {
-    return sendError(res, 400, err.message || "invalid_mapping");
+    return sendError(res, 400, "invalid_mapping_or_payload", err.message);
   }
 
   try {

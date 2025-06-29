@@ -102,7 +102,7 @@ describe("POST /webhook", () => {
     const payload = {
       agentSecret: agentBody.secretToken, // <--- secret por body
       from: "user-321",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       userName: "Test User",
       type: "text", // Si funciona el test, no deberia mapearse
       text: "Hello, webhook!",
@@ -134,7 +134,7 @@ describe("POST /webhook", () => {
   it("should process message with a header secret (200)", async () => {
     const payload = {
       from: "user-321",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       userName: "Test User",
       type: "text",
       text: "Hello, webhook!",
@@ -169,7 +169,7 @@ describe("POST /webhook", () => {
   it("should process message with a query secret (200)", async () => {
     const payload = {
       from: "user-321",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       userName: "Test User",
       type: "text",
       text: "Hello, webhook!",

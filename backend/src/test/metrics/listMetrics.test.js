@@ -41,7 +41,7 @@ describe("GET /metrics", () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", errorMessages.invalid_query);
     expect(res.body.description).toMatchObject({
-      limit: "El límite debe ser un número entero mayor o igual a 0",
+      limit: "Limit must be an integer greater than or equal to 0",
     });
   });
 
