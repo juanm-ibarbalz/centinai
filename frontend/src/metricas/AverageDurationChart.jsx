@@ -26,7 +26,6 @@ export default function AverageDurationChart({ data, days = 30}) {
 
   return (
     <div className="metric-card-plain" style={{ height: 300, padding: "1rem 2rem" }}>
-      <h3 style={{ marginBottom: "1rem" }}>Average Session Duration</h3>
       <ResponsiveContainer width="100%" height="80%">
         <AreaChart data={numbers} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           {/* Dégradé */}
