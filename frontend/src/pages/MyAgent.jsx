@@ -223,7 +223,7 @@ const MyAgents = () => {
                   onClick={() => {
                     navigator.clipboard.writeText(currentAgent.secretToken);
                     setCopySuccess(true);
-                    setTimeout(() => setCopySuccess(false), 1500);
+                    setTimeout(() => setCopySuccess(false), 30000);
                   }}
                   title="Copiar token"
                 >
