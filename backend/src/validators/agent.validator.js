@@ -44,7 +44,7 @@ export const validateAgentLogic = (data) => {
   const mapping = data.fieldMapping || {};
 
   if (data.payloadFormat === STRUCTURED && Object.keys(mapping).length > 0) {
-    return `Field mapping is not allowed with '${STRUCTURED}' format`;
+    return `fieldMapping is not allowed with '${STRUCTURED}' format`;
   }
 
   if (
@@ -57,7 +57,7 @@ export const validateAgentLogic = (data) => {
         STRUCTURED_FIELDS.to,
       ].every((key) => Object.keys(mapping).includes(key)))
   ) {
-    return `Field mapping must include at minimum: '${STRUCTURED_FIELDS.text}', '${STRUCTURED_FIELDS.from}', '${STRUCTURED_FIELDS.timestamp}', and '${STRUCTURED_FIELDS.to}'`;
+    return `fieldMapping must include at minimum: '${STRUCTURED_FIELDS.text}', '${STRUCTURED_FIELDS.from}', '${STRUCTURED_FIELDS.timestamp}', and '${STRUCTURED_FIELDS.to}'`;
   }
 
   return null;

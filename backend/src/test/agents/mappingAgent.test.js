@@ -83,7 +83,7 @@ describe("PATCH /agents/:id/mapping", () => {
     expect(res.body).toHaveProperty("error", errorMessages.invalid_payload);
     expect(res.body).toHaveProperty(
       "description",
-      "fieldMapping must include at minimum: text, from, timestamp and to"
+      "fieldMapping must include at minimum: 'text', 'from', 'timestamp', and 'to'"
     );
   });
 

@@ -34,7 +34,7 @@ describe("POST /webhook — Structured Format", () => {
     const payload = {
       agentSecret: agent.secretToken,
       from: "user-111",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       userName: "User One",
       text: "Hello structured!",
     };
@@ -72,7 +72,7 @@ describe("POST /webhook — Structured Format", () => {
       agentSecret: agent.secretToken,
       from: agent.phoneNumberId,
       to: conversation.from,
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       text: "Echo reply",
     };
 
@@ -92,7 +92,7 @@ describe("POST /webhook — Structured Format", () => {
     const payload = {
       agentSecret: agent.secretToken,
       from: "user-222",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       userName: "NoText",
       // text falta
     };
@@ -117,7 +117,7 @@ describe("POST /webhook — Structured Format", () => {
   it("should fail if no from or to provided (400)", async () => {
     const payload = {
       agentSecret: agent.secretToken,
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       text: "Nada de from/to",
     };
     const res = await request(app).post(endpoint).send(payload);
@@ -130,7 +130,7 @@ describe("POST /webhook — Structured Format", () => {
       agentSecret: agent.secretToken,
       message: {
         sender: "user-444",
-        time: Math.floor(Date.now() / 1000),
+        time: Date.now(),
         payload: "Wrong format",
       },
     };

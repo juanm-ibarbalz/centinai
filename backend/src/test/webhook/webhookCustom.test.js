@@ -40,7 +40,7 @@ describe("POST /webhook — Custom Format", () => {
       agentSecret: agent.secretToken,
       message: {
         sender: "user-555",
-        time: Math.floor(Date.now() / 1000),
+        time: Date.now(),
         payload: "Hola custom!",
       },
     };
@@ -78,7 +78,7 @@ describe("POST /webhook — Custom Format", () => {
       message: {
         sender: agent.phoneNumberId,
         recipient: conversation.from,
-        time: Math.floor(Date.now() / 1000),
+        time: Date.now(),
         payload: "Custom reply",
       },
     };
@@ -105,7 +105,7 @@ describe("POST /webhook — Custom Format", () => {
       message: {
         sender: "user-666",
         recipient: "anyone",
-        time: Math.floor(Date.now() / 1000),
+        time: Date.now(),
         // payload falta
       },
     };
@@ -132,7 +132,7 @@ describe("POST /webhook — Custom Format", () => {
     const payload = {
       agentSecret: agent.secretToken,
       from: "user-888",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       text: "Wrong shape",
     };
     const res = await request(app).post(endpoint).send(payload);
