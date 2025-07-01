@@ -34,23 +34,14 @@ export const createOrUpdateConversation = async (
 
   if (isExpired(conversation, timestamp)) {
     console.log(
-      "[SERVICE] Timeout detected for conversation",
+      "Timeout detected for conversation",
       conversation?._id,
       "at",
       timestamp
     );
     try {
       await exportAndCloseConversations(conversation);
-      console.log(
-        "[SERVICE] Conversation closed and exported by service:",
-        conversation?._id
-      );
     } catch (err) {
-      console.error(
-        "[SERVICE] Error closing conversation:",
-        conversation?._id,
-        err
-      );
       const error = new Error("Error closing conversation");
       error.status = 500;
       throw error;
