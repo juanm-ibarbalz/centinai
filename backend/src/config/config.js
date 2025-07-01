@@ -29,8 +29,8 @@ export const idConfig = {
  * Controls timeout settings, cleanup intervals, and default conversation states.
  */
 export const conversationConfig = {
-  timeoutMs: 30 * 60 * 1000, // 30 minute/s of inactivity before timeout
-  cleanupIntervalMinutes: 3, // Cleanup job runs every 3 minutes
+  timeoutMs: (process.env.TIMEOUT_MINUTES || 30) * 60 * 1000, // 30 minute/s of inactivity before timeout
+  cleanupIntervalMinutes: process.env.CLEANUP_INTERVAL_MINUTES || 3, // Cleanup job runs every 3 minutes
   defaultConversationStatus: "open",
   closingConversationStatus: "closed",
   defaultUserName: "User", // Default user name for conversations

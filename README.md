@@ -58,6 +58,10 @@ These instructions will help you get a copy of the project up and running on you
 
    # Services
    ANALYZER_URL=http://your-localhost:${APIFLASK_HOST_PORT}
+
+   # Conversation management
+   TIMEOUT_MINUTES=30 # Minutes of inactivity before a conversation is automatically closed
+   CLEANUP_INTERVAL_MINUTES=3 # Interval in minutes for the cleanup job to run
    ```
 
    - analyzer/.env:

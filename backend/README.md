@@ -45,6 +45,8 @@ Copy `.env.example` to `.env` and set the required environment variables:
 - `JWT_EXPIRES_IN` — JWT token expiration (e.g., `1d`)
 - `ANALYZER_URL` — (Optional) URL for the analyzer service
 - `PORT` — Port where the backend will be hosted (used by Docker and start.sh)
+- `TIMEOUT_MINUTES` — Minutes of inactivity before a conversation is automatically closed (default: 30)
+- `CLEANUP_INTERVAL_MINUTES` — Interval in minutes for the cleanup job to run (default: 3)
 
 ## Running the server
 
