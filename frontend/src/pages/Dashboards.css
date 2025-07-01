@@ -59,9 +59,9 @@
 }
 
 .filtro-rango {
-  position: relative; /* Lo hacemos relativo para que fluya en móvil */
+  position: relative; 
   margin-bottom: 1.5rem;
-  text-align: center; /* Centramos el filtro en móvil */
+  text-align: center; 
 }
 
 .filtro-rango select {
@@ -80,7 +80,6 @@
   background-color: #5B91FF;
 }
 
-/* --- Custom Filter Styles --- */
 .custom-filter-trigger {
   padding: 0.6rem 1rem;
   font-size: 1rem;
@@ -92,7 +91,7 @@
   cursor: pointer;
   transition: background 0.3s ease;
   user-select: none;
-  display: inline-block; /* Para que no ocupe todo el ancho */
+  display: inline-block;
 }
 
 .custom-filter-trigger:hover {
@@ -132,23 +131,21 @@
   font-weight: bold;
 }
 
-/* --- Filas de Métricas y Gráficos (Base para móvil) --- */
 .metrics-row,
 .graphs-row {
   display: grid;
   gap: 1.5rem;
-  grid-template-columns: 1fr; /* Una sola columna para móvil */
+  grid-template-columns: 1fr;
   margin-bottom: 2rem;
 }
 
-/* Estilos para las tarjetas de gráficos */
 .graph-card {
   background-color: #0B0E23;
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 0 20px #29FFD8;
   color: #E0F7FA;
-  display: flex; /* Para alinear el título y el gráfico */
+  display: flex; 
   flex-direction: column;
 }
 
@@ -158,10 +155,6 @@
   margin-bottom: 1.5rem;
   text-align: left;
 }
-
-/* Las tarjetas de métricas y gráficos ya tienen sus estilos en metric.css, así que no necesitamos duplicarlos aquí */
-
-
 /* =================================================================== */
 /*             Mejora Progresiva para Tablets (768px+)                 */
 /* =================================================================== */
@@ -183,11 +176,11 @@
   }
 
   .metrics-row {
-    grid-template-columns: repeat(2, 1fr); /* Dos columnas para tablets */
+    grid-template-columns: repeat(2, 1fr); 
   }
 
   .graphs-row {
-    grid-template-columns: 1fr; /* Mantenemos una columna para las gráficas */
+    grid-template-columns: 1fr; 
   }
 }
 
@@ -204,28 +197,27 @@
   }
 
   .metrics-row {
-    /* La magia: se ajusta para tener hasta 5 columnas sin apretarse */
     grid-template-columns: repeat(5, 1fr);
   }
 
   .graphs-row {
-    grid-template-columns: 1fr 1fr; /* Dos columnas para las gráficas */
+    grid-template-columns: 1fr 1fr; 
   }
 }
 
 @media (max-width: 600px) {
   .graph-card {
-    min-width: 260px;      /* Ajusta según el tamaño mínimo que soporte tu gráfico */
+    min-width: 260px;      
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     box-sizing: border-box;
-    overflow-x: auto;      /* Permite hacer scroll horizontal si es necesario */
+    overflow-x: auto;     
   }
 }
 
 .donut-graph-wrapper {
   width: 100%;
-  min-width: 220px;   /* Ajusta según el tamaño mínimo del gráfico */
+  min-width: 220px;  
   display: flex;
   justify-content: center;
   align-items: center;

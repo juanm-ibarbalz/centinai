@@ -15,7 +15,7 @@ const TotalCostRate = ({ data, days }) => {
 
   return (
     <div className={`metric-card ${trendClass}`}>
-      <h3>Total Cost Rate</h3>
+      <h3>Costo Total</h3>
       <p className="value">${total.toFixed(2)}</p>
       <p className={`trend ${trendClass}`}>{formattedDiff}</p>
     </div>

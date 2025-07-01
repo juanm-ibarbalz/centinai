@@ -1,10 +1,9 @@
-// metricas/GraficoDonaSessionStatus.jsx
 import React from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 import "./metric.css";
 
-const COLORS = ["#00e676", "#ff5252"]; // Success, Fail
+const COLORS = ["#00e676", "#ff5252"];
 
 export default function GraficoDonaSessionStatus({ data, days }) {
   const formatNumber = (n) => new Intl.NumberFormat("de-DE").format(n);
@@ -23,7 +22,6 @@ export default function GraficoDonaSessionStatus({ data, days }) {
     { name: "Fail", value: totals.fail },
   ];
 
-  // asigna el orden de aparición: Success → Fail
   const delayMap = {
     Success: 0.5,
     Fail: 1.0,
@@ -121,7 +119,6 @@ export default function GraficoDonaSessionStatus({ data, days }) {
           </motion.div>
         </div>
 
-        {/* Leyenda */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -134,7 +131,7 @@ export default function GraficoDonaSessionStatus({ data, days }) {
           }}
         >
           <motion.div
-            key={days} // ← aquí forzamos remount
+            key={days} 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 2.2, duration: 1 }}

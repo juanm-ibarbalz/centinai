@@ -10,9 +10,6 @@ const MyAgents = () => {
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const [showToken, setShowToken] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
-
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentAgent, setCurrentAgent] = useState(null);
   const [fieldMapping, setFieldMapping] = useState({
@@ -104,6 +101,43 @@ const MyAgents = () => {
     }
   };
 
+const formatearTelefono = (phoneNumberId) => {
+  if (!phoneNumberId) return "";
+
+  const matchAR = phoneNumberId.match(/^\+54(\d{2})(\d{4})(\d{4})$/);
+  if (matchAR) {
+    const [, area, parte1, parte2] = matchAR;
+    return `+54 ${area} ${parte1}-${parte2}`;
+  }
+
+  const matchUS = phoneNumberId.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
+  if (matchUS) {
+    const [, area, parte1, parte2] = matchUS;
+    return `+1 ${area} ${parte1}-${parte2}`;
+  }
+
+  const matchMX = phoneNumberId.match(/^\+52(\d{2})(\d{4})(\d{4})$/);
+  if (matchMX) {
+    const [, area, parte1, parte2] = matchMX;
+    return `+52 ${area} ${parte1}-${parte2}`;
+  }
+
+  const matchBR = phoneNumberId.match(/^\+55(\d{2})(\d{5})(\d{4})$/);
+  if (matchBR) {
+    const [, area, parte1, parte2] = matchBR;
+    return `+55 ${area} ${parte1}-${parte2}`;
+  }
+
+  const matchLatAm = phoneNumberId.match(/^\+(\d{1,3})(\d{2,4})(\d{4,})$/);
+  if (matchLatAm) {
+    const [, pais, area, numero] = matchLatAm;
+    return `+${pais} ${area} ${numero}`;
+  }
+
+  return phoneNumberId;
+};
+
+
   return (
     <div className="agents-container">
       <div className="agents-header">
@@ -126,7 +160,7 @@ const MyAgents = () => {
               >
                 <h3>{agent.name}</h3>
                 <p>
-                  <strong>Teléfono:</strong> {agent.phoneNumberId}
+                  <strong>Teléfono:</strong> {formatearTelefono(agent.phoneNumberId)}
                 </p>
                 <p>
                   <strong>Descripción:</strong> {agent.description}
@@ -166,7 +200,6 @@ const MyAgents = () => {
         </div>
       )}
 
-      {/* Modal eliminar */}
       {showDeleteModal && agentToDelete && (
         <div className="success-overlay">
           <div className="success-box">
@@ -191,7 +224,6 @@ const MyAgents = () => {
         </div>
       )}
 
-      {/* Modal editar */}
       {showEditModal && currentAgent && (
         <div className="overlay-modal">
           <div className="edit-card">
@@ -199,45 +231,11 @@ const MyAgents = () => {
               Editar Mapping de{" "}
               <span className="agent-name">{currentAgent.name}</span>
             </h3>
-            <p className="agent-phone">📞 {currentAgent.phoneNumberId}</p>
+            <p className="agent-phone">📞 {formatearTelefono(currentAgent.phoneNumberId)}</p>
 
-            {/* 🔐 TOKEN DISPLAY */}
-            <div className="token-box">
-              <p className="token-label">🔐 Secret Token:</p>
-              <div className="token-wrapper">
-                <input
-                  type={showToken ? "text" : "password"}
-                  className="token-input"
-                  value={currentAgent.secretToken}
-                  readOnly
-                />
-                <button
-                  className="token-btn"
-                  onClick={() => setShowToken(!showToken)}
-                  title={showToken ? "Ocultar" : "Mostrar"}
-                >
-                  {showToken ? "🙈" : "👁"}
-                </button>
-                <button
-                  className="token-btn"
-                  onClick={() => {
-                    navigator.clipboard.writeText(currentAgent.secretToken);
-                    setCopySuccess(true);
-                    setTimeout(() => setCopySuccess(false), 30000);
-                  }}
-                  title="Copiar token"
-                >
-                  📋
-                </button>
-              </div>
-              {copySuccess && (
-                <p className="copied-msg">✅ Copiado al portapapeles</p>
-              )}
-            </div>
 
-            {/* FORMULARIO DE MAPPING */}
             <form onSubmit={handleMappingUpdate}>
-              <label>Text:</label>
+              <label>Texto:</label>
               <input
                 type="text"
                 value={fieldMapping.text}
@@ -247,7 +245,7 @@ const MyAgents = () => {
                 }
               />
 
-              <label>From:</label>
+              <label>Emisor:</label>
               <input
                 type="text"
                 value={fieldMapping.from}
@@ -257,7 +255,17 @@ const MyAgents = () => {
                 }
               />
 
-              <label>Timestamp:</label>
+              <label>Receptor:</label>
+              <input
+                type="text"
+                value={fieldMapping.to}
+                maxLength={30}
+                onChange={(e) =>
+                  setFieldMapping({ ...fieldMapping, to: e.target.value })
+                }
+              />
+
+              <label>Fecha y Hora:</label>
               <input
                 type="text"
                 value={fieldMapping.timestamp}
@@ -267,16 +275,6 @@ const MyAgents = () => {
                     ...fieldMapping,
                     timestamp: e.target.value,
                   })
-                }
-              />
-
-              <label>To:</label>
-              <input
-                type="text"
-                value={fieldMapping.to}
-                maxLength={30}
-                onChange={(e) =>
-                  setFieldMapping({ ...fieldMapping, to: e.target.value })
                 }
               />
 

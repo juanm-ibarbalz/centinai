@@ -67,30 +67,30 @@ const HamburgerMenu = ({ onLogout }) => {
       </button>
 
       <ul className="menu-items">
-        <li onClick={() => handleNavigate("/home")} title="Home">
+        <li onClick={() => handleNavigate("/home")} title="Inicio">
           <img src={homeIcon} alt="Home" className="menu-icon" />
-          {showLabels && <span>Home</span>}
+          {showLabels && <span>Inicio</span>}
         </li>
 
-        <li onClick={() => handleNavigate("/dashboards")} title="Dashboards">
+        <li onClick={() => handleNavigate("/dashboards")} title="Metricas">
           <img src={dashboardIcon} alt="Dashboards" className="menu-icon" />
-          {showLabels && <span>Dashboards</span>}
-        </li>
-
-        <li onClick={() => handleNavigate("/createAgent")} title="Add Agent">
-          <img src={robotIcon} alt="CreateAgent" className="menu-icon" />
-          {showLabels && <span>Add Agents</span>}
-        </li>
-
-        <li onClick={() => handleNavigate("/myAgents")} title="My Agents">
-          <img src={agentsIcon} alt="My Agents" className="menu-icon" />
-          {showLabels && <span>My Agents</span>}
+          {showLabels && <span>Metricas</span>}
         </li>
 
         <li
-          onClick={() => handleNavigate("/configuracion")}
-          title="Configuración"
+          onClick={() => handleNavigate("/createAgent")}
+          title="Añadir Agente"
         >
+          <img src={robotIcon} alt="CreateAgent" className="menu-icon" />
+          {showLabels && <span>Añadir Agente</span>}
+        </li>
+
+        <li onClick={() => handleNavigate("/myAgents")} title="Mis Agentes">
+          <img src={agentsIcon} alt="My Agents" className="menu-icon" />
+          {showLabels && <span>Mis Agentes</span>}
+        </li>
+
+        <li onClick={() => handleNavigate("/configuracion")} title="Configuración">
           <img src={configIcon} alt="Configuración" className="menu-icon" />
           {showLabels && <span>Configuración</span>}
         </li>

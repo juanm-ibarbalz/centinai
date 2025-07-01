@@ -1,11 +1,9 @@
-// frontend/src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../App.css"; // Asegúrate que la ruta es correcta si Login.jsx está en pages/
-import { API_URL } from "../config"; // Asumiendo que config.js está en frontend/src/
+import "../App.css";
+import { API_URL } from "../config";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
-// Renombré la prop setAuthError a setAuthErrorOuter para evitar confusión con un estado local
 export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,9 +13,9 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("Iniciando sesión..."); // Limpiar mensaje previo
-    if (setAuthErrorOuter) setAuthErrorOuter(null); // Limpiar error global previo
-    console.log("Login.jsx: handleSubmit iniciado con datos:", { email }); // LOG 1
+    setMessage("Iniciando sesión...");
+    if (setAuthErrorOuter) setAuthErrorOuter(null);
+    console.log("Login.jsx: handleSubmit iniciado con datos:", { email });
 
     try {
       const res = await fetch(`${API_URL}/auth/login`, {
@@ -25,31 +23,23 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      console.log("Login.jsx: Respuesta de API fetch:", res); // LOG 1.5
+      console.log("Login.jsx: Respuesta de API fetch:", res);
 
       const data = await res.json();
-      console.log("Login.jsx: Datos de API (después de .json()):", data); // LOG 2
+      console.log("Login.jsx: Datos de API (después de .json()):", data);
 
       if (res.ok && data.token && data.user) {
-        // Importante: Verifica también data.user
         console.log(
           "Login.jsx: Token y usuario recibidos:",
           data.token,
           data.user
-        ); // LOG 3
-
-        // data.user debería ser el objeto del usuario, no solo el ID.
-        // Si tu API solo devuelve ID en el login, necesitarás otra llamada para obtener el usuario completo,
-        // o modificar el backend. setupSession espera el objeto usuario.
-        // Por ahora, asumiré que data.user es el objeto completo.
+        );
 
         if (typeof onSuccess === "function") {
           console.log(
             "Login.jsx: Llamando a onSuccess (que es setupSession)..."
-          ); // LOG 4
-          onSuccess(data.user, data.token); // Llama a setupSession
-          // La navegación la maneja el cambio de estado de isAuthenticated en App.jsx
-          // navigate("/home"); // No es estrictamente necesario aquí si App.jsx redirige bien
+          );
+          onSuccess(data.user, data.token);
         } else {
           console.error("Login.jsx: onSuccess no es una función.");
           setMessage("❌ Error interno al procesar el login.");
@@ -57,12 +47,12 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
       } else {
         const errorMsg =
           data.message || "Error al iniciar sesión o respuesta inválida.";
-        console.error("Login.jsx: " + errorMsg, data); // LOG 5
+        console.error("Login.jsx: " + errorMsg, data);
         setMessage(`❌ ${errorMsg}`);
         if (setAuthErrorOuter) setAuthErrorOuter(errorMsg);
       }
     } catch (err) {
-      console.error("Login.jsx: Error en fetch o .json():", err); // LOG 6
+      console.error("Login.jsx: Error en fetch o .json():", err);
       const errorMsg = err.message || "Error al conectar con el servidor";
       setMessage(`❌ ${errorMsg}`);
       if (setAuthErrorOuter) setAuthErrorOuter(errorMsg);
@@ -71,10 +61,9 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
 
   return (
     <div className="auth-form">
-      {/* <h2>Iniciar Sesión</h2> // El título ya está en AuthPage/MobileAuthPage */}
       <form onSubmit={handleSubmit}>
         <input
-          name="email" // ✅ agregado
+          name="email"
           type="email"
           placeholder="Correo electrónico"
           value={email}
@@ -85,7 +74,7 @@ export default function LoginPage({ onSuccess, setAuthErrorOuter }) {
 
         <div className="password-input-wrapper">
           <input
-            name="password" // ✅ agregado
+            name="password"
             type={showPassword ? "text" : "password"}
             placeholder="Contraseña"
             value={password}

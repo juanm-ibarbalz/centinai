@@ -21,7 +21,6 @@ export default function AgentList({ agents, onViewConversations }) {
     );
   }
 
-  // Desktop view (tabla clásica)
   return (
     <table>
       <thead>

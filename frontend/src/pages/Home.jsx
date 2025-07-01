@@ -10,7 +10,6 @@ const Home = () => {
 
   return (
     <>
-      {/* 1. Contenedor solo para el fondo. Fijo y detrás de todo. */}
       <div className="home-video-background">
         <video className="home-video" autoPlay loop muted playsInline>
           <source src={circuitBG} type="video/mp4" />
@@ -19,10 +18,8 @@ const Home = () => {
         <div className="home-overlay" />
       </div>
 
-      {/* 2. Contenedor para el contenido. Este es el que fluye normalmente. */}
       <div className="home-container">
         <div className="home-content">
-          {/* 👋 Bienvenida visual */}
           <motion.div
             className="home-emoji"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -77,7 +74,6 @@ const Home = () => {
             </button>
           </motion.div>
 
-          {/* ✅ Estado del sistema */}
           <motion.div
             className="home-status"
             initial={{ opacity: 0, y: 10 }}
@@ -88,7 +84,6 @@ const Home = () => {
             hace 2 min
           </motion.div>
 
-          {/* ✅ Paneles laterales */}
           <div className="home-panels">
             <motion.div
               className="home-news"
@@ -119,7 +114,6 @@ const Home = () => {
             </motion.div>
           </div>
 
-          {/* ✅ Frase del día debajo */}
           <motion.div
             className="home-tip"
             initial={{ opacity: 0, y: 10 }}

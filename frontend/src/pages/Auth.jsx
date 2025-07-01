@@ -1,11 +1,9 @@
-// frontend/src/pages/Auth.jsx
 import { useNavigate } from 'react-router-dom';
-import LoginPage from './Login'; // Cambiado para claridad
-import RegisterPage from './Register'; // Cambiado para claridad
+import LoginPage from './Login'; 
+import RegisterPage from './Register'; 
 import './Auth.css';
 import logo from '../assets/centinai-logo.png';
 
-// Recibe onAuthSuccess, setAuthError, e isLoginMode
 export default function AuthPage({ onAuthSuccess, setAuthError, isLoginMode }) {
   const navigate = useNavigate();
 

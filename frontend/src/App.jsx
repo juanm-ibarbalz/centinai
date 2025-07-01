@@ -1,6 +1,5 @@
-// frontend/src/App.jsx
 import "./App.css";
-import "./components/MenuHamburguesa.css"; // Asumiendo que este archivo existe y es necesario
+import "./components/MenuHamburguesa.css";
 import {
   BrowserRouter as Router,
   Routes,
@@ -10,19 +9,18 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import DashboardPage from "./pages/ConversationsDash"; // Renombrado para claridad
-import AuthPage from "./pages/Auth"; // Renombrado para claridad
-import HomePage from "./pages/Home"; // Renombrado para claridad
-import HamburgerMenu from "./components/MenuHamburguesa"; // Asumiendo que existe
-import DashboardsPage from "./pages/Dashboards"; // Renombrado para claridad
-import CreateAgent from "./pages/CreateAgent"; // Mantenemos CreateAgent de main
+import DashboardPage from "./pages/ConversationsDash";
+import AuthPage from "./pages/Auth";
+import HomePage from "./pages/Home";
+import HamburgerMenu from "./components/MenuHamburguesa";
+import DashboardsPage from "./pages/Dashboards";
+import CreateAgent from "./pages/CreateAgent";
 import Mensajes from "./pages/Mensajes";
 import MyAgentsPage from "./pages/MyAgent";
 import Configuracion from "./pages/configuracion";
 import { useSessionLoader } from "./hooks/useSessionLoader";
 import { useEffect } from "react";
 
-// Componente para rutas que requieren autenticación
 function ProtectedRoute({ isAuthenticated, children }) {
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -30,7 +28,6 @@ function ProtectedRoute({ isAuthenticated, children }) {
   return children;
 }
 
-// Componente para rutas que NO deberían ser accesibles si ya está autenticado
 function PublicRouteOnly({ isAuthenticated, children }) {
   if (isAuthenticated) {
     return <Navigate to="/home" replace />;
@@ -45,38 +42,34 @@ function AppWrapper() {
     user,
     isAuthenticated,
     isLoading: isSessionLoading,
-    clearSession, // Para el logout
-    setupSession, // Para el login/registro
-    setError: setAuthError, // Para mostrar errores de autenticación
-    error: authError, // Para leer el error de autenticación si quieres mostrarlo globalmente
+    clearSession,
+    setupSession,
+    setError: setAuthError,
+    error: authError,
   } = useSessionLoader();
 
-  // Efecto para gestionar la clase del body para el fondo de la home
   useEffect(() => {
     if (location.pathname === "/home") {
       document.body.classList.add("home-background");
     } else {
       document.body.classList.remove("home-background");
     }
-    // Cleanup function para cuando el componente se desmonte
     return () => {
       document.body.classList.remove("home-background");
     };
-  }, [location.pathname]); // Se ejecuta cada vez que cambia la ruta
+  }, [location.pathname]);
 
   const hiddenMenuRoutes = ["/login", "/register"];
   const showMenu =
     !hiddenMenuRoutes.includes(location.pathname) && isAuthenticated;
 
-  // Lógica para determinar el ancho del sidebar
-  const sidebarWidth = showMenu ? "50px" : "0px"; // Ancho por defecto (colapsado) o 0
-  const sidebarWidthDesktop = showMenu ? "220px" : "0px"; // Ancho para desktop (abierto)
+  const sidebarWidth = showMenu ? "50px" : "0px";
+  const sidebarWidthDesktop = showMenu ? "220px" : "0px";
 
   const handleLogout = () => {
     console.log("App.jsx: handleLogout llamado");
     clearSession();
-    // La navegación a /login ya está implícita por el cambio de isAuthenticated
-    // y las redirecciones en las rutas, pero podemos ser explícitos.
+
     navigate("/login", { replace: true });
   };
 
@@ -111,8 +104,6 @@ function AppWrapper() {
         />
       )}
       <div className={`main-content ${showMenu ? "with-sidebar" : ""}`}>
-        {/* Puedes mostrar authError aquí si quieres un mensaje de error global */}
-        {/* {authError && <p style={{color: 'red', textAlign: 'center'}}>{authError}</p>} */}
         <Routes>
           <Route
             path="/login"

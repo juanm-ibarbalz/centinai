@@ -28,7 +28,6 @@ export default function RegisterPage({ onSuccess, setAuthErrorOuter }) {
     const isValid = validatePassword(value);
     setPasswordValid(isValid);
 
-    // Mostrar requisitos si está tocado o vuelve a fallar
     if (passwordTouched) {
       setShowRequirements(!isValid);
     }

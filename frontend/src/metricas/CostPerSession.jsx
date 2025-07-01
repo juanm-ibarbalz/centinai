@@ -16,7 +16,7 @@ const CostPerSession = ({ data, days }) => {
 
   return (
     <div className={`metric-card ${trendClass}`}>
-      <h3>Cost / Session</h3>
+      <h3>Costo / Sesion</h3>
       <p className="value">${average.toFixed(4)}</p>
       <p className={`trend ${trendClass}`}>{formattedDiff}</p>
     </div>

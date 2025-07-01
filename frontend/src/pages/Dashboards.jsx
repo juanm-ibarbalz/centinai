@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./Dashboards.css";
 
-// Importa data y componentes de métricas
 import Sesiones from "../metricas/Sesiones";
 import Conversaciones from "../metricas/Conversaciones";
 import TotalTokens from "../metricas/TotalTokens";
@@ -25,7 +24,6 @@ const Dashboards = () => {
 
   const { token } = useSessionLoader();
 
-  // Al no pasar agentPhoneNumberId, el hook busca por usuario por defecto.
   const { data, loading } = useMetricData({ source: "api", token });
   console.log("Datos métricas adaptados:", data, "loading:", loading);
 
@@ -39,7 +37,6 @@ const Dashboards = () => {
 
   return (
     <div className="dashboards-container" style={{ position: "relative" }}>
-      {/* Custom Filter Dropdown */}
       <div className="filtro-rango">
         <div
           className="custom-filter-trigger"
@@ -70,7 +67,6 @@ const Dashboards = () => {
 
       <h1 className="dashboards-title">📊 Dashboard de Métricas</h1>
 
-      {/* Métricas (superior) */}
       <div className="metrics-row">
         <Sesiones data={data} days={selectedDays} />
         <Conversaciones data={data} days={selectedDays} />
@@ -79,16 +75,15 @@ const Dashboards = () => {
         <CostPerSession data={data} days={selectedDays} />
       </div>
 
-      {/* Gráficas (inferior) */}
       <div className="graphs-row">
         <div className="graph-card">
-          <h3>Session End States</h3>
+          <h3>Estado de Sesiones Terminadas</h3>
           <div className="donut-graph-wrapper">
             <GraficoDonaSessionStatus data={data} days={selectedDays} />
           </div>
         </div>
         <div className="graph-card">
-          <h3>Average Session Duration</h3>
+          <h3>Duracion Promedio de Sesiones</h3>
           <AverageDurationChart data={data} days={selectedDays} />
         </div>
       </div>

@@ -15,7 +15,7 @@ const TotalTokens = ({ data, days }) => {
 
   return (
     <div className={`metric-card ${trendClass}`}>
-      <h3>Total Tokens</h3>
+      <h3>Tokens Totales</h3>
       <p className="value">{total.toLocaleString("es-AR")}</p>
       <p className={`trend ${trendClass}`}>{formattedDiff}</p>
     </div>

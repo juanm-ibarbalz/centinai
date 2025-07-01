@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom"; // Asegurate de tener useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ConversationTable from "../components/ConversationTable";
 import "../App.css";
@@ -7,7 +7,7 @@ import { API_URL } from "../config";
 
 export default function Dashboard() {
   const { phoneNumberId } = useParams();
-  const navigate = useNavigate(); // 👈 Agregá esta línea
+  const navigate = useNavigate();
   const [agentName, setAgentName] = useState("");
 
   useEffect(() => {
@@ -36,7 +36,10 @@ export default function Dashboard() {
         <h1>CentinAI - Dashboard del bot {agentName || phoneNumberId}</h1>
       </div>
 
-      <button className="back-dashboard-btn" onClick={() => navigate("/myAgents")}>
+      <button
+        className="back-dashboard-btn"
+        onClick={() => navigate("/myAgents")}
+      >
         Volver
       </button>
 

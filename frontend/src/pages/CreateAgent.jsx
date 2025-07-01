@@ -1,4 +1,3 @@
-// ✅ CreateAgent.jsxlocalNumber
 import React, { useEffect, useState } from "react";
 import "./createAgent.css";
 import { API_URL } from "../config";
@@ -96,7 +95,6 @@ const CreateAgent = () => {
     const isStructured = form.mapping === "estructurado";
     const isCustomizado = form.mapping === "customizado";
 
-    // Validación mínima para customizado (opcional pero recomendado)
     if (
       isCustomizado &&
       (!form.textKey || !form.fromKey || !form.toKey || !form.timestampKey)
@@ -147,11 +145,11 @@ const CreateAgent = () => {
       localStorage.removeItem("agentStep1");
       setSuccessMessage({
         token: responseData.secretToken,
-        timeLeft: 15,
+        timeLeft: 30,
       });
       setTimeout(() => {
         navigate("/myAgents");
-      }, 15000);
+      }, 30000);
     } catch (error) {
       console.error("Error al añadir el agente:", error);
     }
@@ -376,7 +374,7 @@ const CreateAgent = () => {
                   required
                 />
 
-                <label>Campo para Timestamp:</label>
+                <label>Campo para Fecha y Hora:</label>
                 <input
                   type="text"
                   name="timestampKey"
@@ -388,7 +386,7 @@ const CreateAgent = () => {
                   required
                 />
 
-                <label>Campo para userName (opcional):</label>
+                <label>Campo para Nombre de Usuario (opcional):</label>
                 <input
                   type="text"
                   name="userNameKey"

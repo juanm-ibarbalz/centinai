@@ -117,7 +117,6 @@ html, body {
   vertical-align: middle;
 }
 
-/* 🔥 Borde de tarjeta según estado */
 .glow-green {
   box-shadow: 0 0 20px #00e676;
 }
@@ -126,7 +125,6 @@ html, body {
   box-shadow: 0 0 20px #ff1744;
 }
 
-/* 🎯 Botones de acciones */
 .card-actions {
   display: flex;
   justify-content: space-between;
@@ -162,7 +160,7 @@ html, body {
 
 .modal-delete-btn {
   background-color: transparent;
-  color: #FF5252; /* 🔴 Rojo siempre visible */
+  color: #FF5252; 
   border: 1px solid #FF5252;
   padding: 0.5rem 1.2rem;
   border-radius: 8px;
@@ -176,7 +174,6 @@ html, body {
   background-color: #ff525210;
 }
 
-/* ✨ Animación de entrada */
 @keyframes fadeInUp {
   from {
     opacity: 0;

@@ -1,4 +1,3 @@
-// src/metricas/AverageDurationChart.jsx
 import React from "react";
 import {
   ResponsiveContainer,
@@ -28,7 +27,6 @@ export default function AverageDurationChart({ data, days = 30}) {
     <div className="metric-card-plain" style={{ height: 300, padding: "1rem 2rem" }}>
       <ResponsiveContainer width="100%" height="80%">
         <AreaChart data={numbers} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-          {/* Dégradé */}
           <defs>
             <linearGradient id="durationGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#7C4DFF" stopOpacity={0.4}/>
@@ -58,7 +56,6 @@ export default function AverageDurationChart({ data, days = 30}) {
             itemStyle={{ color: "#7C4DFF" }}
           />
 
-          {/* 1) Línea base + degradado + puntos */}
           <Area
             type="monotone"
             dataKey="avgDuration"
@@ -70,7 +67,6 @@ export default function AverageDurationChart({ data, days = 30}) {
             isAnimationActive={false}
           />
 
-          {/* 2) Overlay “serpiente” que recorre en bucle */}
           <Area
             type="monotone"
             dataKey="avgDuration"

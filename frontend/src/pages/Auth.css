@@ -2,7 +2,6 @@
 /*        CSS Definitivo para Auth.jsx (Mobile-First y Responsivo)       */
 /* =================================================================== */
 
-/* --- Contenedor de página completa --- */
 .auth-container {
   width: 100%;
   min-height: 100vh;
@@ -13,24 +12,22 @@
   padding: 1.5rem;
 }
 
-/* --- Contenedor principal que agrupa todo --- */
 .auth-split-container {
-  position: relative; /* ¡MUY IMPORTANTE! Para que el logo se posicione relativo a este div */
+  position: relative; 
   display: flex;
-  flex-direction: column; /* Apilado vertical para móvil por defecto */
+  flex-direction: column; 
   width: 100%;
-  max-width: 420px; /* Un ancho máximo para que no se vea mal en móviles grandes */
+  max-width: 420px; 
   height: auto;
-  background-color: transparent; /* El fondo lo darán los hijos */
+  background-color: transparent;
   border-radius: 20px;
-  margin-top: 50px; /* Dejamos espacio para que el logo no se pise con el contenido de la página */
+  margin-top: 50px;
   transition: all 0.4s ease;
 }
 
-/* --- Logo Superpuesto --- */
 .auth-logo-wrapper {
   position: absolute;
-  top: -50px; /* Empuja el logo hacia arriba, fuera de su contenedor padre */
+  top: -50px; 
   left: 50%;
   transform: translateX(-50%);
   background-color: #0B0E23;
@@ -46,7 +43,6 @@
   display: block;
 }
 
-/* --- Paneles Izquierdo y Derecho (ahora Arriba y Abajo) --- */
 .auth-left,
 .auth-right {
   flex: 1;
@@ -56,18 +52,17 @@
   justify-content: center;
   align-items: center;
   background-color: #0B0E23;
-  box-shadow: 0 0 25px #29FFD8; /* Sombra en ambos paneles para móvil */
+  box-shadow: 0 0 25px #29FFD8; 
 }
 
-/* --- Panel Superior (Bienvenida) --- */
 .auth-left {
   color: #E0F7FA;
   text-align: center;
   gap: 1.2rem;
-  padding-top: 4rem; /* Más espacio arriba para no chocar con el logo */
+  padding-top: 4rem; 
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  border-bottom: 1px solid #29FFD8; /* Línea separadora en móvil */
+  border-bottom: 1px solid #29FFD8; 
 }
 
 .auth-left h2 {
@@ -97,14 +92,12 @@
   color: #0B0E23;
 }
 
-/* --- Panel Inferior (Formulario) --- */
 .auth-right {
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 }
 
-/* --- El formulario dentro del panel derecho --- */
-.auth-form { /* Esta clase viene de tu Login.jsx y Register.jsx */
+.auth-form { 
   width: 100%;
   max-width: 300px;
   display: flex;
@@ -122,7 +115,7 @@
 }
 
 .auth-form button {
-  width: 100%; /* Ocupa todo el ancho en móvil */
+  width: 100%;
   padding: 0.7rem;
   background-color: #A67CFF;
   color: white;
@@ -138,54 +131,48 @@
   background-color: #5B91FF;
 }
 
-/* ... (resto de tus estilos como .msg, etc.) ... */
 
 /* =================================================================== */
 /*   Mejora Progresiva para Escritorio (Pantallas de 920px o más)      */
 /* =================================================================== */
 
 @media (min-width: 920px) {
-  /* Restauramos el layout de dos columnas */
   .auth-split-container {
-      flex-direction: row; /* ¡CLAVE! Vuelve a ser horizontal */
+      flex-direction: row; 
       width: 900px;
-      max-width: 900px; /* FIX: Permitimos que el contenedor crezca */
+      max-width: 900px; 
       height: 520px;
-      margin-top: 3rem; /* FIX: Dejamos espacio para que el logo "respire" */
-      background-color: #0B0E23; /* FIX: Fondo uniforme para todo el contenedor */
+      margin-top: 3rem; 
+      background-color: #0B0E23; 
       box-shadow: 0 0 25px #29FFD8;
   }
 
-  /* Hacemos los paneles transparentes y quitamos su sombra individual */
   .auth-left,
   .auth-right {
-      background-color: transparent; /* FIX: Los paneles ahora son transparentes */
+      background-color: transparent; 
       box-shadow: none;
   }
 
-  /* RE-POSITION LOGO and ADJUST PADDING FOR DESKTOP */
   .auth-logo-wrapper {
-    top: -65px; /* FIX: Ajuste final para la posición del logo */
+    top: -65px; 
   }
 
-  /* Restauramos los estilos de los paneles */
   .auth-left {
       border-bottom: none;
       border-right: 1px solid #29FFD8;
-      padding-top: 5rem; /* More padding to push content below the logo */
+      padding-top: 5rem; 
       border-top-left-radius: 20px;
       border-bottom-left-radius: 20px;
       border-top-right-radius: 0;
   }
 
   .auth-right {
-      padding-top: 5rem; /* Match padding to align content horizontally */
+      padding-top: 5rem; 
       border-bottom-left-radius: 0;
       border-top-right-radius: 20px;
       border-bottom-right-radius: 20px;
   }
 
-  /* Restauramos el botón del formulario de Login */
   .auth-form button {
       width: 80%;
       margin-left: auto;

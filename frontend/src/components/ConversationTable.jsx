@@ -29,7 +29,6 @@ const ConversationTable = ({ phoneNumberId }) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
-  // Calcula dateFrom y dateTo según el rango seleccionado
   const getDateRange = () => {
     if (selectedDays === 0) return { dateFrom: "", dateTo: "" };
     const now = new Date();
@@ -81,9 +80,7 @@ const ConversationTable = ({ phoneNumberId }) => {
   return (
     <div style={{ padding: "2rem" }}>
       <h2>📊 Conversaciones del usuario {phoneNumberId}</h2>
-      {/* Filtros pegados a la tabla/lista */}
       <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap", marginBottom: 0 }}>
-        {/* Filtro de rango de días tipo Dashboard */}
         <div style={{ position: 'relative', display: 'inline-block' }}>
           <div
             className="custom-filter-trigger"
@@ -130,13 +127,11 @@ const ConversationTable = ({ phoneNumberId }) => {
           </select>
         </div>
       </div>
-      {/* Tabla o lista */}
       {showLoading ? (
         <p style={{ color: "#B0BEC5", textAlign: "center" }}>Cargando...</p>
       ) : data.length > 0 ? (
         <>
           <ConversationList conversations={data} />
-          {/* Paginado debajo de la tabla */}
           <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 28, marginBottom: 8 }}>
             <button className="paginado-btn" onClick={handlePrev} disabled={offset === 0}>Anterior</button>
             <span style={{ minWidth: 60, textAlign: "center" }}>Página {Math.floor(offset / limit) + 1}</span>

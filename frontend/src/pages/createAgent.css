@@ -22,11 +22,10 @@
   border-radius: 16px;
   box-shadow: 0 0 25px #29FFD8;
   width: 100%;
-  max-width: 500px; /* Ancho máximo para el formulario */
+  max-width: 500px; 
   margin-top: 1rem;
 }
 
-/* Stepper y títulos (se mantienen pero con ajustes) */
 .create-agent-container h2 {
   font-family: 'Exo 2', sans-serif;
   color: #E0F7FA;
@@ -88,7 +87,6 @@
   width: 100%;
 }
 
-/* Tooltips del Stepper */
 .step::after {
   content: attr(title);
   position: absolute;
@@ -112,7 +110,6 @@
   opacity: 1;
 }
 
-/* --- Formulario --- */
 label {
   margin-bottom: 0.2rem;
   font-weight: 500;
@@ -144,7 +141,6 @@ label {
   box-shadow: 0 0 10px #A67CFF;
 }
 
-/* --- Custom Select Component --- */
 .custom-select-container {
   position: relative;
   width: 100%;
@@ -202,7 +198,7 @@ label {
 }
 
 .custom-option.selected {
-  background-color: #3e61ff; /* Un azul para el seleccionado */
+  background-color: #3e61ff; 
   color: white;
   font-weight: bold;
 }
@@ -213,14 +209,12 @@ label {
   font-style: italic;
 }
 
-/* Fila del Teléfono */
 .phone-row {
   display: flex;
   gap: 0.5rem;
   align-items: center;
 }
 
-/* Estilos para react-phone-number-input */
 .PhoneInput {
   display: flex;
   align-items: center;
@@ -253,7 +247,6 @@ label {
 .phone-input-medium { flex: 1 1 100px; }
 .phone-input-large { flex: 2 1 150px; }
 
-/* Mensajes de Validación */
 .error-text {
   color: #ff4d4d;
   font-size: 0.85rem;
@@ -262,11 +255,10 @@ label {
 }
 
 .valid-text {
-  display: none; /* Ocultamos los mensajes de éxito */
+  display: none; 
 }
 
 
-/* Botón de Siguiente */
 button[type="button"], button[type="submit"] {
   margin-top: 1rem;
   padding: 0.9rem;
@@ -285,7 +277,6 @@ button[type="button"]:hover, button[type="submit"]:hover {
   box-shadow: 0 5px 15px rgba(166, 124, 255, 0.4);
 }
 
-/* Adaptación a Escritorio */
 @media (min-width: 768px) {
   .create-agent-container h2 {
     font-size: 2rem;

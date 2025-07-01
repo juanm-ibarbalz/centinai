@@ -12,11 +12,9 @@ export default function Mensajes() {
   const [loading, setLoading] = useState(true);
   const [agentName, setAgentName] = useState(location.state?.agentName || "");
 
-  // ✅ Extraer phoneNumberId desde conversationId
 const phoneNumberId = conversationId.split("-")[2];
   console.log("📞 phoneNumberId extraído:", phoneNumberId);
 
-  // ✅ Si no vino desde location.state, buscamos el name desde /agents
   useEffect(() => {
     if (!agentName && phoneNumberId) {
       const fetchAgentName = async () => {
@@ -42,7 +40,6 @@ const phoneNumberId = conversationId.split("-")[2];
 
   console.log("🧠 agentName en render:", agentName);
 
-  // ✅ Obtener mensajes
   useEffect(() => {
     const obtenerMensajes = async () => {
       try {

@@ -1,4 +1,3 @@
-// frontend/src/pages/Configuracion.jsx
 import React, { useEffect, useState } from "react";
 import "./configuracion.css";
 import { API_URL } from "../config";
@@ -28,7 +27,6 @@ const Configuracion = () => {
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
-    // Armamos un objeto con solo los campos modificados
     const updates = {};
     if (userData.name && userData.name !== storedUser.name) {
       updates.name = userData.name;
@@ -69,7 +67,7 @@ const Configuracion = () => {
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
-    setSuccessMsg(""); // Limpiar anteriores
+    setSuccessMsg("");
     setErrorMsg("");
 
     try {
@@ -88,7 +86,6 @@ const Configuracion = () => {
       const data = await res.json();
 
       if (res.status === 401) {
-        // Contraseña actual incorrecta
         setErrorMsg("❌ La contraseña actual es incorrecta.");
         return;
       }
@@ -97,7 +94,6 @@ const Configuracion = () => {
         throw new Error(data.message || "Error al cambiar contraseña.");
       }
 
-      // Éxito
       setSuccessMsg("✅ Contraseña actualizada correctamente.");
       setCurrentPassword("");
       setNewPassword("");

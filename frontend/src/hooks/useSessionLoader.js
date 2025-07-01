@@ -1,14 +1,12 @@
-// frontend/src/hooks/useSessionLoader.js
 import { useState, useEffect, useCallback } from "react";
 import { API_URL } from "../config";
 
-// Variable global para almacenar el token inyectado por Android antes de que el hook esté listo
 let nativeTokenPromise = null;
 let resolveNativeTokenPromise = null;
-let hasNativeTokenBeenProcessed = false; // Para evitar que la promesa se procese múltiples veces si hay re-renders
+let hasNativeTokenBeenProcessed = false; 
 
 if (typeof window !== "undefined") {
-  // Asegurarse que se ejecuta solo en el cliente
+
   console.log(
     "useSessionLoader (Global): Configurando nativeTokenPromise y window.handleNativeToken."
   );
@@ -23,9 +21,8 @@ if (typeof window !== "undefined") {
     );
     if (resolveNativeTokenPromise) {
       resolveNativeTokenPromise(token);
-      resolveNativeTokenPromise = null; // Evitar múltiples resoluciones si se llama de nuevo
+      resolveNativeTokenPromise = null; 
     } else {
-      // Esto es un fallback, pero con la promesa creada globalmente, es menos probable que se necesite.
       console.warn(
         "WebView Bridge (window.handleNativeToken): resolveNativeTokenPromise era null, resolviendo directamente nativeTokenPromise."
       );
@@ -38,16 +35,16 @@ if (typeof window !== "undefined") {
     // }
   };
 
-  // Si Android no inyecta nada después de un tiempo, resolvemos la promesa con null.
+
   setTimeout(() => {
     if (resolveNativeTokenPromise) {
       console.log(
         "useSessionLoader (Global): Timeout para nativeTokenPromise, resolviendo con null."
       );
       resolveNativeTokenPromise(null);
-      resolveNativeTokenPromise = null; // Evitar múltiples resoluciones
+      resolveNativeTokenPromise = null; 
     }
-  }, 1500); // Aumenté un poco el timeout por si acaso el JS de la web es pesado
+  }, 1500); 
 }
 
 export function useSessionLoader() {
@@ -62,7 +59,7 @@ export function useSessionLoader() {
     console.log("useSessionLoader (clearSession): Limpiando sesión...");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    // localStorage.removeItem("token_from_native_debug"); // Limpiar la de debug si la usas
+    // localStorage.removeItem("token_from_native_debug"); 
     if (window.Android && typeof window.Android.clearToken === "function") {
       console.log(
         "WebView Bridge (clearSession): Llamando a Android.clearToken()"
@@ -79,7 +76,7 @@ export function useSessionLoader() {
     setUser(null);
     setToken(null);
     setIsAuthenticated(false);
-    setError(null); // Limpiar también errores
+    setError(null); 
     console.log(
       "useSessionLoader (clearSession): Sesión limpiada. isAuthenticated:",
       false
@@ -99,7 +96,7 @@ export function useSessionLoader() {
         "useSessionLoader (setupSession): userToken o userData es nulo/undefined. No se puede establecer la sesión."
       );
       setError("Datos de sesión inválidos para setupSession.");
-      setIsLoading(false); // Asegurar que no se quede cargando
+      setIsLoading(false); 
       return;
     }
 
@@ -134,7 +131,7 @@ export function useSessionLoader() {
     setToken(userToken);
     setIsAuthenticated(true);
     setError(null);
-    setIsLoading(false); // Sesión establecida, ya no está cargando
+    setIsLoading(false); 
     console.log(
       "useSessionLoader (setupSession): Estados actualizados. isAuthenticated:",
       true,
@@ -143,7 +140,7 @@ export function useSessionLoader() {
       "Token:",
       userToken
     );
-  }, []); // No hay dependencias que cambien frecuentemente aquí
+  }, []); 
 
   useEffect(() => {
     console.log(
@@ -166,7 +163,7 @@ export function useSessionLoader() {
         "useSessionLoader (checkInitialSession): Iniciando chequeo. hasNativeTokenBeenProcessed:",
         hasNativeTokenBeenProcessed
       );
-      setIsLoading(true); // Asegurar que isLoading sea true al inicio del chequeo
+      setIsLoading(true); 
       let sessionToken = null;
       let userFromStorage = null;
 
@@ -175,7 +172,7 @@ export function useSessionLoader() {
           "useSessionLoader (checkInitialSession): Esperando token de handleNativeToken..."
         );
         const tokenFromNative = await nativeTokenPromise;
-        hasNativeTokenBeenProcessed = true; // Marcar como procesada para evitar múltiples awaits si hay re-renders
+        hasNativeTokenBeenProcessed = true;
 
         if (tokenFromNative) {
           console.log(
@@ -183,7 +180,7 @@ export function useSessionLoader() {
             tokenFromNative
           );
           sessionToken = tokenFromNative;
-          localStorage.setItem("token", tokenFromNative); // Sincronizar con localStorage
+          localStorage.setItem("token", tokenFromNative); 
           console.log(
             "useSessionLoader (checkInitialSession): Token de Android guardado en localStorage."
           );
@@ -226,7 +223,7 @@ export function useSessionLoader() {
           try {
             const parsedUser = JSON.parse(userFromStorage);
             setUser(parsedUser);
-            authentic = true; // Asumir autenticado si tenemos usuario y token
+            authentic = true; 
             console.log(
               "useSessionLoader (checkInitialSession): Usuario parseado de LS. Asumiendo autenticado.",
               parsedUser
@@ -236,7 +233,6 @@ export function useSessionLoader() {
               "useSessionLoader (checkInitialSession): Error parseando user de LS, limpiando sesión.",
               e
             );
-            // No llamar a clearSession() aquí directamente para evitar bucle si useEffect se dispara por él
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             if (window.Android?.clearToken) window.Android.clearToken();
@@ -279,7 +275,6 @@ export function useSessionLoader() {
         console.log(
           "useSessionLoader (checkInitialSession): No hay sessionToken, limpiando sesión."
         );
-        // clearSession(); // Cuidado con bucles si clearSession causa re-render y re-ejecución del useEffect
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         if (window.Android?.clearToken) window.Android.clearToken();
@@ -299,13 +294,12 @@ export function useSessionLoader() {
         false,
         "isAuthenticated AHORA:",
         isAuthenticated
-      ); // isAuthenticated podría no haberse actualizado aún en este mismo ciclo de render
+      ); 
     };
 
     checkInitialSession();
-  }, []); // Ejecutar solo una vez al montar. `clearSession` es estable por useCallback.
+  }, []); 
 
-  // Log para ver cuándo cambian los estados clave
   useEffect(() => {
     console.log(
       "useSessionLoader (State Change): isAuthenticated:",
