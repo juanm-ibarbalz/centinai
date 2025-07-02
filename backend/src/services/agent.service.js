@@ -2,6 +2,7 @@ import crypto from "crypto";
 import Agent from "../models/Agent.js";
 import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
+import Metric from "../models/Metric.js";
 import { generateAgentId } from "../utils/idGenerator.js";
 import { conversationConfig } from "../config/config.js";
 
@@ -54,7 +55,7 @@ export const createAgentService = async ({
 
 /**
  * Deletes an agent by phone number ID and all related data (cascade deletion).
- * Removes all conversations and messages associated with the agent.
+ * Removes all conversations, messages and metrics associated with the agent.
  *
  * @param {string} phoneNumberId - WhatsApp phone number identifier of the agent to delete
  * @returns {Promise<void>} Resolves when agent and all related data are deleted
@@ -66,6 +67,12 @@ export const deleteAgentWithCascade = async (phoneNumberId) => {
   });
   const conversationIds = conversations.map((c) => c._id);
 
+  const agent = await Agent.findOne({ phoneNumberId });
+  if (!agent) {
+    return;
+  }
+
+  await Metric.deleteMany({ "agentData.agentId": agent._id });
   await Message.deleteMany({ conversationId: { $in: conversationIds } });
   await Conversation.deleteMany({ agentPhoneNumberId: phoneNumberId });
   await Agent.deleteOne({ phoneNumberId });
