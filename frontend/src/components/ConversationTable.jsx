@@ -32,10 +32,12 @@ const ConversationTable = ({ phoneNumberId }) => {
   const getDateRange = () => {
     if (selectedDays === 0) return { dateFrom: "", dateTo: "" };
     const now = new Date();
-    const to = now.toISOString().slice(0, 10);
+    const toDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999));
+    const to = toDate.toISOString();
     const fromDate = new Date(now);
     fromDate.setDate(now.getDate() - selectedDays + 1);
-    const from = fromDate.toISOString().slice(0, 10);
+    const fromDateUTC = new Date(Date.UTC(fromDate.getUTCFullYear(), fromDate.getUTCMonth(), fromDate.getUTCDate(), 0, 0, 0, 0));
+    const from = fromDateUTC.toISOString();
     return { dateFrom: from, dateTo: to };
   };
   const { dateFrom, dateTo } = getDateRange();
