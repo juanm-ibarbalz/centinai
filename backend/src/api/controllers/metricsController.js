@@ -14,17 +14,18 @@ import {
  * Controller for retrieving metrics with optional agent filtering.
  * If `agentPhoneNumberId` is provided, returns metrics for that specific agent.
  * If not provided, returns all metrics for the authenticated user.
+ * Supports date range filtering with dateFrom and dateTo parameters.
  *
- * @route GET /metrics?agentPhoneNumberId=xxx
+ * @route GET /metrics?agentPhoneNumberId=xxx&dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD
  * @param {Object} req - Express request object
  * @param {Object} req.query - Query parameters
  * @param {string} [req.query.agentPhoneNumberId] - Phone number identifier for filtering
- * @param {number} [req.query.limit=20] - Maximum number of metrics to return
- * @param {number} [req.query.offset=0] - Number of metrics to skip for pagination
+ * @param {string} [req.query.dateFrom] - Start date for filtering (ISO string)
+ * @param {string} [req.query.dateTo] - End date for filtering (ISO string)
  * @param {Object} req.user - Authenticated user object from middleware
  * @param {string} req.user.id - User's ID
  * @param {Object} res - Express response object
- * @returns {Object} JSON response with paginated metrics data
+ * @returns {Object} JSON response with metrics data
  * @throws {400} When query parameters validation fails
  * @throws {500} When server error occurs during metrics retrieval
  */
@@ -34,15 +35,15 @@ export const getMetricsByAgentController = async (req, res) => {
     return sendError(res, 400, "invalid_query", parsed.error);
   }
 
-  const { agentPhoneNumberId, limit, offset } = parsed.data;
+  const { agentPhoneNumberId, dateFrom, dateTo } = parsed.data;
   const userId = req.user.id;
 
   try {
     const metrics = await findMetricsByAgent(
       userId,
       agentPhoneNumberId,
-      limit,
-      offset
+      dateFrom,
+      dateTo
     );
     return sendSuccess(res, 200, metrics);
   } catch (err) {
@@ -53,17 +54,17 @@ export const getMetricsByAgentController = async (req, res) => {
 
 /**
  * Controller for retrieving all metrics for the authenticated user.
- * Returns metrics across all agents belonging to the user with pagination support.
+ * Returns metrics across all agents belonging to the user with optional date filtering.
  *
- * @route GET /metrics/all
+ * @route GET /metrics/all?dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD
  * @param {Object} req - Express request object
  * @param {Object} req.query - Query parameters
- * @param {number} [req.query.limit=20] - Maximum number of metrics to return
- * @param {number} [req.query.offset=0] - Number of metrics to skip for pagination
+ * @param {string} [req.query.dateFrom] - Start date for filtering (ISO string)
+ * @param {string} [req.query.dateTo] - End date for filtering (ISO string)
  * @param {Object} req.user - Authenticated user object from middleware
  * @param {string} req.user.id - User's ID
  * @param {Object} res - Express response object
- * @returns {Object} JSON response with paginated metrics data for all user's agents
+ * @returns {Object} JSON response with metrics data for all user's agents
  * @throws {400} When query parameters validation fails
  * @throws {500} When server error occurs during metrics retrieval
  */
@@ -73,11 +74,11 @@ export const getMetricsByUserController = async (req, res) => {
     return sendError(res, 400, "invalid_query", parsed.error);
   }
 
-  const { limit, offset } = parsed.data;
+  const { dateFrom, dateTo } = parsed.data;
   const userId = req.user.id;
 
   try {
-    const metrics = await findMetricsByUser(userId, limit, offset);
+    const metrics = await findMetricsByUser(userId, dateFrom, dateTo);
     return sendSuccess(res, 200, metrics);
   } catch (err) {
     console.error("Error retrieving metrics by user:", err);
