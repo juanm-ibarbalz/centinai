@@ -7,19 +7,36 @@ const COLORS = ["#00e676", "#ff5252"];
 
 export default function GraficoDonaSessionStatus({ data, days }) {
   const formatNumber = (n) => new Intl.NumberFormat("de-DE").format(n);
-  const recent = data.slice(-days);
+
+  const hoy = new Date();
+  const limite = new Date(hoy);
+  limite.setDate(hoy.getDate() - days);
+
+  const recent = data.filter((d) => {
+    const fecha = new Date(d.date);
+    return fecha >= limite && fecha <= hoy;
+  });
+
   const totals = recent.reduce(
     (acc, d) => {
-      acc.success += d.status.success;
-      acc.fail += d.status.fail;
+      acc.success += d.status?.success ?? 0;
+      acc.fail += d.status?.fail ?? 0;
       return acc;
     },
-    { success: 0, fail: 0}
+    { success: 0, fail: 0 }
   );
 
+  const totalConversaciones = totals.success + totals.fail;
+  const successPct = totalConversaciones
+    ? ((totals.success / totalConversaciones) * 100).toFixed(1)
+    : 0;
+  const failPct = totalConversaciones
+    ? ((totals.fail / totalConversaciones) * 100).toFixed(1)
+    : 0;
+
   const chartData = [
-    { name: "Success", value: totals.success },
-    { name: "Fail", value: totals.fail },
+    { name: "Exitosas", value: totals.success },
+    { name: "Fallidas", value: totals.fail },
   ];
 
   const delayMap = {
@@ -45,7 +62,7 @@ export default function GraficoDonaSessionStatus({ data, days }) {
         display: "flex",
         flexDirection: window.innerWidth < 600 ? "column" : "row",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
     >
       <div className="donut-graph-flex">
@@ -113,6 +130,28 @@ export default function GraficoDonaSessionStatus({ data, days }) {
                     <Cell key={i} fill={COLORS[i]} className="pie-slice" />
                   ))}
                 </Pie>
+                <text
+                  x="50%"
+                  y="45%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fill="#E0F7FA"
+                  style={{ fontSize: "1.4rem", fontWeight: "600" }}
+                >
+                  {totals.success >= totals.fail
+                    ? `${successPct}%`
+                    : `${failPct}%`}
+                </text>
+                <text
+                  x="50%"
+                  y="57%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fill={totals.success >= totals.fail ? "#00e676" : "#ff5252"}
+                  style={{ fontSize: "1rem", fontWeight: "500" }}
+                >
+                  {totals.success >= totals.fail ? "Exitosas" : "Fallidas"}
+                </text>
                 <Tooltip animationDuration={200} />
               </PieChart>
             </ResponsiveContainer>
@@ -131,7 +170,7 @@ export default function GraficoDonaSessionStatus({ data, days }) {
           }}
         >
           <motion.div
-            key={days} 
+            key={days}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 2.2, duration: 1 }}
