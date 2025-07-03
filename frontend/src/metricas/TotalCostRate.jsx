@@ -2,15 +2,13 @@ import React from "react";
 import "./metric.css";
 
 const TotalCostRate = ({ data, days }) => {
-  // Paso 1: agrupar costos por fecha usando item.date
   const costosPorFecha = {};
   data.forEach((item) => {
-    const key = item.date; // ya viene como "YYYY-MM-DD"
+    const key = item.date; 
     const costo = item.totalCostRate || 0;
     costosPorFecha[key] = (costosPorFecha[key] || 0) + costo;
   });
 
-  // Paso 2: generar lista de fechas desde hoy hacia atrás
   const fechas = [];
   const hoy = new Date();
   for (let i = days - 1; i >= 0; i--) {
@@ -20,10 +18,8 @@ const TotalCostRate = ({ data, days }) => {
     fechas.push(key);
   }
 
-  // Paso 3: obtener los costos por día
   const costosPorDia = fechas.map((fecha) => costosPorFecha[fecha] || 0);
 
-  // Paso 4: calcular variaciones porcentuales entre días consecutivos
   const variaciones = [];
   for (let i = 0; i < costosPorDia.length - 1; i++) {
     const anterior = costosPorDia[i];
@@ -39,7 +35,6 @@ const TotalCostRate = ({ data, days }) => {
     }
   }
 
-  // Paso 5: promedio de las variaciones
   const promedio =
     variaciones.reduce((acc, val) => acc + val, 0) / variaciones.length;
 
@@ -58,4 +53,3 @@ const TotalCostRate = ({ data, days }) => {
 };
 
 export default TotalCostRate;
-  
