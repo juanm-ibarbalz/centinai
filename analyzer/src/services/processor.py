@@ -6,6 +6,7 @@ import os
 import json
 from storage.session_writter import save_session
 from utils.util_get_messages_by_direction import get_messages_by_direction
+
 from db.agent_repo import AgentRepo
 from services.token_utils import tokenize_texts, calculate_cost_with_tokonomics
 from db.sessions_repo import SessionRepo
@@ -54,7 +55,6 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     successful = successEngine.run()
     tags = successEngine.get_tags()
 
-    tags = ["consulta", "queja"]    
     session_doc = {
         "_id": conv["_id"],
         "userId": conv["userId"],
@@ -158,3 +158,6 @@ def _get_agent_data_from_conversation(conversation: Dict[str, Any]) -> Dict[str,
     if not agent_data:
         raise ValueError(f"No se encontró agente con userId={user_id}")
     return agent_data
+
+
+

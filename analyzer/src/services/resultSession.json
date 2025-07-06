@@ -1,11 +1,11 @@
 {
-  "_id": "test 24-6 21-17",
+  "_id": "test 29-6 11-20",
   "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c",
   "userCellphone": "5491111000000",
   "agentData": {
-    "agentId": "agt-usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c-b10751ea-c319-4678-96c8-6e478a80a639",
-    "modelLLM": "gpt-3.5-turbo",
-    "agentName": "Agente Structured",
+    "agentId": "agt-usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c-79d98596-dbd3-4e11-be44-213e5961d6cc",
+    "modelLLM": "gpt-4",
+    "agentName": "Test Hilos",
     "userId": "usr-0ce94eea-3356-419f-a6f9-ae8a68f3a74c"
   },
   "createdAt": "2025-05-09T17:07:10.650+00:00",
@@ -15,12 +15,14 @@
     "promptTokens": 30,
     "completionTokens": 0,
     "totalTokens": 30,
-    "cost": 4.5e-05
+    "cost": 0.0009
   },
   "successful": false,
   "tags": [
-    "consulta",
-    "queja"
+    "frustration",
+    "positive_closing",
+    "long_duration",
+    "Unsuccessful"
   ],
   "messageCount": {
     "user": 2,
@@ -34,5 +36,5 @@
   "metadata": {
     "language": "es"
   },
-  "conversationId": "test 24-6 21-17"
+  "conversationId": "test 29-6 11-20"
 }
