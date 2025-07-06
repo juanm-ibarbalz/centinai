@@ -8,7 +8,6 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import DATAPRUEBA from "../data/DATAPRUEBA";
 import "./metric.css";
 
 const formatSeconds = (sec) => {
@@ -17,24 +16,61 @@ const formatSeconds = (sec) => {
   return `${m}m ${s < 10 ? "0" : ""}${s}s`;
 };
 
-export default function AverageDurationChart({ data, days = 30}) {
-  const numbers = data.slice(-days).map((d) => ({
-    date: d.date.slice(5),
-    avgDuration: d.avgDurationSeconds,
-  }));
+export default function AverageDurationChart({ data, days = 30 }) {
+  if (!Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="metric-card-plain" style={{ padding: "2rem", textAlign: "center" }}>
+        <p style={{ color: "#aaa" }}>Sin datos suficientes para calcular duración promedio</p>
+      </div>
+    );
+  }
+
+  // Crear lista de fechas desde hoy hacia atrás
+  const today = new Date();
+  const dateList = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toISOString().slice(0, 10); // "YYYY-MM-DD"
+    dateList.push(key);
+  }
+
+  // Agrupar todas las duraciones por fecha
+  const agrupado = {};
+  data.forEach((item) => {
+    const fecha = item.date;
+    const duracion = item.avgDurationSeconds;
+    if (fecha && typeof duracion === "number") {
+      if (!agrupado[fecha]) agrupado[fecha] = [];
+      agrupado[fecha].push(duracion);
+    }
+  });
+
+  // Construir array con duración promedio por día (o 0 si no hubo)
+  const final = dateList.map((fecha) => {
+    const valores = agrupado[fecha] || [];
+    const promedio =
+      valores.length > 0
+        ? valores.reduce((sum, val) => sum + val, 0) / valores.length
+        : 0;
+    return {
+      date: fecha.slice(5), // MM-DD
+      avgDuration: promedio,
+    };
+  });
 
   return (
     <div className="metric-card-plain" style={{ height: 300, padding: "1rem 2rem" }}>
       <ResponsiveContainer width="100%" height="80%">
-        <AreaChart data={numbers} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+        <AreaChart data={final} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="durationGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#7C4DFF" stopOpacity={0.4}/>
-              <stop offset="100%" stopColor="#7C4DFF" stopOpacity={0}/>
+              <stop offset="0%" stopColor="#7C4DFF" stopOpacity={0.4} />
+              <stop offset="100%" stopColor="#7C4DFF" stopOpacity={0} />
             </linearGradient>
           </defs>
 
-          <CartesianGrid stroke="#333" strokeDasharray="3 3"/>
+          <CartesianGrid stroke="#333" strokeDasharray="3 3" />
           <XAxis
             dataKey="date"
             tick={{ fill: "#E0F7FA", fontSize: 12 }}
@@ -51,7 +87,7 @@ export default function AverageDurationChart({ data, days = 30}) {
           />
           <Tooltip
             formatter={(value) => formatSeconds(value)}
-            labelFormatter={(label) => `Date: ${label}`}
+            labelFormatter={(label) => `Fecha: ${label}`}
             contentStyle={{ backgroundColor: "#0B0E23", border: "none" }}
             itemStyle={{ color: "#7C4DFF" }}
           />

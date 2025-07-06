@@ -106,12 +106,16 @@ export const createNewConversation = async (
  */
 export function buildConversationMatchStage(userId, agentPN, dateFrom, dateTo) {
   const match = { userId, agentPhoneNumberId: agentPN };
-  if (dateFrom && dateTo) {
-    match.createdAt = { $gte: dateFrom, $lte: dateTo };
+  let dateToAdjusted = dateTo;
+  if (typeof dateTo === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateTo)) {
+    dateToAdjusted = new Date(dateTo + "T23:59:59.999Z");
+  }
+  if (dateFrom && dateToAdjusted) {
+    match.createdAt = { $gte: dateFrom, $lte: dateToAdjusted };
   } else if (dateFrom) {
     match.createdAt = { $gte: dateFrom };
-  } else if (dateTo) {
-    match.createdAt = { $lte: dateTo };
+  } else if (dateToAdjusted) {
+    match.createdAt = { $lte: dateToAdjusted };
   }
   return { $match: match };
 }
@@ -126,7 +130,7 @@ export function buildConversationMatchStage(userId, agentPN, dateFrom, dateTo) {
  */
 export function buildConversationSortStage(sortBy, sortOrder = "desc") {
   const dir = sortOrder === "asc" ? 1 : -1;
-  // Orden prioritario: duration → cost → date
+  // Order: duration → cost → date
   if (sortBy === "duration") {
     return { $sort: { "metrics.durationSeconds": dir } };
   } else if (sortBy === "cost") {

@@ -1,35 +1,35 @@
 import { z } from "zod";
 
 /**
- * Base pagination schema for metrics queries.
- * Provides common pagination parameters with default values and validation.
+ * Base schema for date range filtering.
+ * Provides common date filtering parameters with validation and transformation.
  *
  * @type {import('zod').ZodObject}
  */
-const paginationSchema = z.object({
-  limit: z
+const dateFilterSchema = z.object({
+  dateFrom: z
     .string()
     .optional()
-    .transform((v) => (v !== undefined ? parseInt(v, 10) : 20))
-    .refine((v) => !isNaN(v) && v >= 0, {
-      message: "Limit must be an integer greater than or equal to 0",
-    }),
-  offset: z
+    .refine((v) => !v || !isNaN(Date.parse(v)), {
+      message: "dateFrom must be a valid ISO date",
+    })
+    .transform((v) => (v ? new Date(v) : undefined)),
+  dateTo: z
     .string()
     .optional()
-    .transform((v) => (v !== undefined ? parseInt(v, 10) : 0))
-    .refine((v) => !isNaN(v) && v >= 0, {
-      message: "Offset must be an integer greater than or equal to 0",
-    }),
+    .refine((v) => !v || !isNaN(Date.parse(v)), {
+      message: "dateTo must be a valid ISO date",
+    })
+    .transform((v) => (v ? new Date(v) : undefined)),
 });
 
 /**
  * Schema for validating metrics queries with agent filtering.
- * Extends pagination schema with required agent phone number identifier.
+ * Includes date range filtering without pagination.
  *
  * @type {import('zod').ZodObject}
  */
-export const listMetricsQuerySchema = paginationSchema.extend({
+export const listMetricsQuerySchema = dateFilterSchema.extend({
   agentPhoneNumberId: z.string().min(1, {
     message: "Agent phone number is required",
   }),
@@ -37,11 +37,11 @@ export const listMetricsQuerySchema = paginationSchema.extend({
 
 /**
  * Schema for validating metrics queries without agent filtering.
- * Returns all metrics for the authenticated user across all agents.
+ * Returns all metrics for the authenticated user across all agents with date filtering.
  *
  * @type {import('zod').ZodObject}
  */
-export const listAllMetricsQuerySchema = paginationSchema;
+export const listAllMetricsQuerySchema = dateFilterSchema;
 
 /**
  * Schema for validating metric retrieval by conversation ID.

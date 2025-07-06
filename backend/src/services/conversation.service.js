@@ -34,23 +34,14 @@ export const createOrUpdateConversation = async (
 
   if (isExpired(conversation, timestamp)) {
     console.log(
-      "[SERVICE] Timeout detected for conversation",
+      "Timeout detected for conversation",
       conversation?._id,
       "at",
       timestamp
     );
     try {
       await exportAndCloseConversations(conversation);
-      console.log(
-        "[SERVICE] Conversation closed and exported by service:",
-        conversation?._id
-      );
     } catch (err) {
-      console.error(
-        "[SERVICE] Error closing conversation:",
-        conversation?._id,
-        err
-      );
       const error = new Error("Error closing conversation");
       error.status = 500;
       throw error;
@@ -106,7 +97,7 @@ export const findConversationsByAgent = async (
   agentPhoneNumberId,
   { limit, offset, sortBy, sortOrder, dateFrom, dateTo }
 ) => {
-  // 1) Stage $match
+  // Stage $match
   const matchStage = buildConversationMatchStage(
     userId,
     agentPhoneNumberId,
@@ -114,7 +105,6 @@ export const findConversationsByAgent = async (
     dateTo
   );
 
-  // 2) Stage $lookup
   // Lookup against the "metrics" collection (Metric model) to retrieve durationSeconds and tokenUsage.cost
   // LEFT JOIN metrics m ON m.conversation_id = c.id AND m.user_id = :userId (and select columns m.duration_seconds, m.token_usage_cost in the SELECT)
   const lookupStage = {
@@ -138,24 +128,21 @@ export const findConversationsByAgent = async (
     },
   };
 
-  // 3) Stage $unwind (fixed)
-  // We use unwind for simplicity
   // Converts "metrics" into a simple object instead of an array.
   const unwindStage = {
     $unwind: { path: "$metrics", preserveNullAndEmptyArrays: true },
   };
 
-  // 4) Stage $sort
+  // $sort
   const sortStage = buildConversationSortStage(sortBy, sortOrder);
 
-  // 5) Stages $skip y $limit
+  // $skip y $limit
   const skipStage = { $skip: offset };
   const limitStage = { $limit: limit };
 
-  // 6) Stage $project
+  // $project
   const projectStage = buildConversationProjectStage();
 
-  // 7) Build the complete pipeline
   const pipeline = [
     matchStage,
     lookupStage,

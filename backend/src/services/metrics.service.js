@@ -1,44 +1,73 @@
 import Metric from "./../models/Metric.js";
 
 /**
+ * Builds the date filter for metrics queries.
+ * Creates a date range filter based on dateFrom and dateTo parameters.
+ *
+ * @param {Date} [dateFrom] - Minimum date (inclusive) for filtering
+ * @param {Date} [dateTo] - Maximum date (inclusive) for filtering
+ * @returns {Object} Date filter object for MongoDB query
+ */
+function buildDateFilter(dateFrom, dateTo) {
+  if (!dateFrom && !dateTo) return {};
+
+  let dateToAdjusted = dateTo;
+  if (typeof dateTo === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateTo)) {
+    dateToAdjusted = new Date(dateTo + "T23:59:59.999Z");
+  }
+
+  if (dateFrom && dateToAdjusted) {
+    return { endTime: { $gte: dateFrom, $lte: dateToAdjusted } };
+  } else if (dateFrom) {
+    return { endTime: { $gte: dateFrom } };
+  } else if (dateToAdjusted) {
+    return { endTime: { $lte: dateToAdjusted } };
+  }
+
+  return {};
+}
+
+/**
  * Retrieves metrics for a specific agent belonging to the authenticated user.
- * Returns paginated results sorted by conversation end time (most recent first).
+ * Returns results sorted by conversation end time (most recent first) with optional date filtering.
  *
  * @param {string} userId - ID of the user whose metrics to retrieve
  * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
- * @param {number} limit - Maximum number of metrics to return
- * @param {number} offset - Number of metrics to skip for pagination
+ * @param {Date} [dateFrom] - Start date for filtering (inclusive)
+ * @param {Date} [dateTo] - End date for filtering (inclusive)
  * @returns {Promise<Array>} Array of metric objects for the specified agent
  */
 export const findMetricsByAgent = async (
   userId,
   agentPhoneNumberId,
-  limit,
-  offset
+  dateFrom,
+  dateTo
 ) => {
+  const dateFilter = buildDateFilter(dateFrom, dateTo);
+
   return await Metric.find({
     userId,
     "agentData.agentId": agentPhoneNumberId,
-  })
-    .sort({ endTime: -1 })
-    .skip(offset)
-    .limit(limit);
+    ...dateFilter,
+  }).sort({ endTime: -1 });
 };
 
 /**
  * Retrieves all metrics for the authenticated user across all agents.
- * Returns paginated results sorted by conversation end time (most recent first).
+ * Returns results sorted by conversation end time (most recent first) with optional date filtering.
  *
  * @param {string} userId - ID of the user whose metrics to retrieve
- * @param {number} limit - Maximum number of metrics to return
- * @param {number} offset - Number of metrics to skip for pagination
+ * @param {Date} [dateFrom] - Start date for filtering (inclusive)
+ * @param {Date} [dateTo] - End date for filtering (inclusive)
  * @returns {Promise<Array>} Array of metric objects for all user's agents
  */
-export const findMetricsByUser = async (userId, limit, offset) => {
-  return await Metric.find({ userId })
-    .sort({ endTime: -1 })
-    .skip(offset)
-    .limit(limit);
+export const findMetricsByUser = async (userId, dateFrom, dateTo) => {
+  const dateFilter = buildDateFilter(dateFrom, dateTo);
+
+  return await Metric.find({
+    userId,
+    ...dateFilter,
+  }).sort({ endTime: -1 });
 };
 
 /**

@@ -62,6 +62,7 @@ export default function ConversationList({ conversations }) {
       </thead>
       <tbody>
         {conversations.map((conv) => (
+          console.log(conv),
           <tr key={conv._id} style={{ background: "#f0f0f0" }}>
             <td style={td}>{conv.from || "-"}</td>
             <td style={td}>{conv.userName || "-"}</td>

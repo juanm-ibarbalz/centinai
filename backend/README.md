@@ -45,6 +45,8 @@ Copy `.env.example` to `.env` and set the required environment variables:
 - `JWT_EXPIRES_IN` — JWT token expiration (e.g., `1d`)
 - `ANALYZER_URL` — (Optional) URL for the analyzer service
 - `PORT` — Port where the backend will be hosted (used by Docker and start.sh)
+- `TIMEOUT_MINUTES` — Minutes of inactivity before a conversation is automatically closed (default: 30)
+- `CLEANUP_INTERVAL_MINUTES` — Interval in minutes for the cleanup job to run (default: 3)
 
 ## Running the server
 
@@ -615,14 +617,14 @@ Can be done via `secretToken` in:
 
 ### GET /metrics
 
-Returns all metrics for conversations associated with a specific agent belonging to the authenticated user. Supports pagination.
+Returns all metrics for conversations associated with a specific agent belonging to the authenticated user. Supports date range filtering.
 
 **Query parameters:**
 
 - `agentPhoneNumberId` (required): the agent's identifier.  
   **See [Phone Number Query Parameter Normalization](#phone-number-query-parameter-normalization) for accepted formats.**
-- `limit` (optional): maximum number of results to return. Default: 20.
-- `offset` (optional): number of results to skip. Default: 0.
+- `dateFrom` (optional): Start date for filtering (ISO string). Includes metrics with endTime on or after this date.
+- `dateTo` (optional): End date for filtering (ISO string). Includes metrics with endTime on or before this date.
 
 **Required header:**
 
@@ -669,12 +671,12 @@ Authorization: Bearer <token>
 
 ### GET /metrics/all
 
-Returns all metrics for the authenticated user, regardless of the agent. Supports pagination.
+Returns all metrics for the authenticated user, regardless of the agent. Supports date range filtering.
 
 **Query parameters:**
 
-- `limit` (optional): maximum number of results to return. Default: 20.
-- `offset` (optional): number of results to skip. Default: 0.
+- `dateFrom` (optional): Start date for filtering (ISO string). Includes metrics with endTime on or after this date.
+- `dateTo` (optional): End date for filtering (ISO string). Includes metrics with endTime on or before this date.
 
 **Required header:**
 
