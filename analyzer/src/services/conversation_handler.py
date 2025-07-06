@@ -13,14 +13,14 @@ from db.sessions_repo import SessionRepo
 from services.latency_calculator import LatencyCalculator
 from behavior_analysis.success_context import SuccessEvaluationContext
 from behavior_analysis.success_engine import SuccessEvaluatorEngine
-
+from services.language_detector import ConversationLanguageDetector
 
 def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     conv = raw_json["conversation"]
     msgs = raw_json["messages"]
 
-    normalized_msgs = _normalize_messages(msgs)
-    normalized_msgs.sort(key=lambda m: m["timestamp_dt"] or datetime.min)
+    normalized_msgs = _normalize_messages(msgs)#Normaliza el timestampt
+    normalized_msgs.sort(key=lambda m: m["timestamp_dt"] or datetime.min)#Ordena los mensajes por timestamp
 
     user_count = _calc_messages_by_direction(normalized_msgs, direction="user")
     agent_count = _calc_messages_by_direction(normalized_msgs, direction="agent")
@@ -46,9 +46,13 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
 
 
     
+    lang_detector = ConversationLanguageDetector(normalized_msgs)
+    language = lang_detector.get_predominant_language() or "unknown"
+
     metadata = {
-        "language": "es",
-    }   
+        "language": language,
+    }
+  
 
     successEngine = SuccessEvaluatorEngine(SuccessEvaluationContext(conv,msgs,message_stats))
 
