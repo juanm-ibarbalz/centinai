@@ -1,6 +1,6 @@
 import json
 from typing import Any, Dict, List, Union
-from services.processor import process_conversation
+from analyzer.src.services.conversation_handler import process_conversation
 
 
 def initiate_analyzer(raw_json: Union[Dict[str, Any], List[Dict[str, Any]]]) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
@@ -26,33 +26,4 @@ def initiate_analyzer(raw_json: Union[Dict[str, Any], List[Dict[str, Any]]]) -> 
         raise RuntimeError(f"Error processing conversation: {e}") from e
 
 
-if __name__ == "__main__":
-    import os
-    import sys
 
-    if len(sys.argv) != 2:
-        print("Uso: python initi_analyzer.py <ruta_json_conversacion>")
-        sys.exit(1)
-
-    input_path = sys.argv[1]
-
-    if not os.path.isfile(input_path):
-        print(f"Error: archivo '{input_path}' no encontrado.")
-        sys.exit(1)
-
-    try:
-        with open(input_path, "r", encoding="utf-8") as f:
-            raw_json = json.load(f)
-    except json.JSONDecodeError as e:
-        print(f"Error parseando JSON: {e}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"Error leyendo archivo: {e}")
-        sys.exit(1)
-
-    try:
-        result = initiate_analyzer(raw_json)
-        print(json.dumps(result, indent=2, ensure_ascii=False))
-    except Exception as e:
-        print(f"Error durante el análisis: {e}")
-        sys.exit(1)
