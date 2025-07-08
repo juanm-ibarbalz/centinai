@@ -47,6 +47,7 @@ Copy `.env.example` to `.env` and set the required environment variables:
 - `PORT` — Port where the backend will be hosted (used by Docker and start.sh)
 - `TIMEOUT_MINUTES` — Minutes of inactivity before a conversation is automatically closed (default: 30)
 - `CLEANUP_INTERVAL_MINUTES` — Interval in minutes for the cleanup job to run (default: 3)
+- `CORS_ALLOWED_ORIGINS` — Comma-separated list of allowed origins for CORS (required for browser/API access)
 
 ## Running the server
 
@@ -610,6 +611,44 @@ Can be done via `secretToken` in:
 - 200 OK – Message processed.
 - 400 Bad Request – Invalid message structure or mapping.
 - 404 Not Found – Agent not found.
+
+---
+
+## Webhook: Sending individual messages
+
+The `/webhook` endpoint accepts **one message per request** (not an array). The expected format for agents with `payloadFormat: "structured"` and `authMode: "body"` is:
+
+```json
+{
+  "agentSecret": "your-agent-secret",
+  "from": "sender-number",
+  "to": "receiver-number",
+  "timestamp": "2025-07-01T10:00:00Z",
+  "text": "Message content",
+  "userName": "User name" // optional
+}
+```
+
+**Sample conversation (send each message in a separate request):**
+
+```json
+{
+  "agentSecret": "fb0e1b08-4038-4a97-8149-b87d8bb33ce6",
+  "from": "+5491111223344",
+  "to": "+54111122334455",
+  "timestamp": "2025-07-01T10:00:00Z",
+  "text": "Hello, can I get information about my account?",
+  "userName": "John"
+}
+```
+
+_(Repeat with the following messages, changing `from`, `to`, `timestamp`, and `text`)_
+
+- The backend validates the agent and forwards the message to the analyzer.
+- If the request origin is not allowed by CORS, the request will be rejected (this only affects browsers).
+
+**Note:**
+For testing, use Postman Desktop or cURL to avoid CORS issues.
 
 ---
 

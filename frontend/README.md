@@ -47,6 +47,9 @@ VITE_API_URL=http://localhost:3000/
 PORT=5173 # Port where the frontend will be hosted (used by Docker and Dockerfile)
 ```
 
+**Note:**
+Make sure the backend allows the frontend’s origin in its `CORS_ALLOWED_ORIGINS` variable, or browser requests will be blocked by CORS.
+
 ## Project structure
 
 - `src/components/` — UI components such as agent lists, conversation tables, and navigation menus.
