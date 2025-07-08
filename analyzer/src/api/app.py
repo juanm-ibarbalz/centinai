@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os, sys
+from .cors_config import cors_config
 
 # Añadir el directorio raíz del analyzer al path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -11,7 +12,7 @@ os.chdir(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from init_analyzer import initiate_analyzer
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, **cors_config)
 
 @app.route('/')
 def ping():

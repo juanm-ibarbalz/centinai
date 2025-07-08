@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors";
+import corsMiddleware from "./middlewares/corsOptions.js";
 import webhookRoutes from "./api/routes/webhookRoutes.js";
 import authRoutes from "./api/routes/authRoutes.js";
 import conversationsRoutes from "./api/routes/conversationsRoutes.js";
@@ -10,7 +10,7 @@ import userRoutes from "./api/routes/userRoutes.js";
 import { authenticate } from "./middlewares/authMiddleware.js";
 
 const app = express();
-app.use(cors());
+app.use(corsMiddleware);
 app.use(express.json());
 app.use("/webhook", webhookRoutes);
 app.use("/auth", authRoutes);
