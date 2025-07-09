@@ -40,6 +40,8 @@ These instructions will help you get a copy of the project up and running on you
    ```bash
    # API connection
    VITE_API_URL=http://your-localhost:${BACKEND_HOST_PORT}
+
+   # Server configuration
    PORT=${FRONTEND_CONTAINER_PORT} # Port where the frontend will be hosted (used by Docker)
    ```
 
@@ -62,6 +64,9 @@ These instructions will help you get a copy of the project up and running on you
    # Conversation management
    TIMEOUT_MINUTES=30 # Minutes of inactivity before a conversation is automatically closed
    CLEANUP_INTERVAL_MINUTES=3 # Interval in minutes for the cleanup job to run
+
+   # CORS configuration
+   CORS_ALLOWED_ORIGINS=https://the-frontend-url # Comma-separated list of allowed origins
    ```
 
    - analyzer/.env:
@@ -73,6 +78,9 @@ These instructions will help you get a copy of the project up and running on you
 
    # Server configuration
    PORT=${APIFLASK_CONTAINER_PORT}
+
+   # CORS configuration
+   CORS_ALLOWED_ORIGINS=https://the-backend-url # Comma-separated list of allowed origins
    ```
 
    **Important Notes:**
@@ -115,6 +123,20 @@ To deploy on a live system using Docker Compose:
    ```
 
 5. Open ports or configure a reverse proxy to serve multiple services under one domain.
+
+## Messaging and CORS
+
+### Message flow
+
+1. The backend receives individual messages via the `/webhook` endpoint.
+2. The backend validates, stores, and forwards each message to the analyzer.
+3. The analyzer processes and responds as needed.
+4. CORS must be properly configured in both backend and analyzer to allow communication between services and the frontend.
+
+### CORS notes
+
+- If you make requests from the browser, ensure the origin is included in the `CORS_ALLOWED_ORIGINS` environment variable for each service.
+- For API testing, it is recommended to use Postman Desktop or cURL to avoid CORS issues.
 
 ## Built With
 
