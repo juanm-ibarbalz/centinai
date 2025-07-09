@@ -2,15 +2,13 @@ import React from "react";
 import "./metric.css";
 
 const TotalTokens = ({ data, days }) => {
-  // Paso 1: agrupar tokens por fecha usando item.date
   const tokensPorFecha = {};
   data.forEach((item) => {
-    const key = item.date; // ya viene como "YYYY-MM-DD"
+    const key = item.date; 
     const tokens = item.totalTokens || 0;
     tokensPorFecha[key] = (tokensPorFecha[key] || 0) + tokens;
   });
 
-  // Paso 2: generar lista de fechas desde hoy hacia atrás
   const fechas = [];
   const hoy = new Date();
   for (let i = days - 1; i >= 0; i--) {
@@ -20,10 +18,8 @@ const TotalTokens = ({ data, days }) => {
     fechas.push(key);
   }
 
-  // Paso 3: obtener los tokens por día
   const tokensPorDia = fechas.map((fecha) => tokensPorFecha[fecha] || 0);
 
-  // Paso 4: calcular variaciones porcentuales entre días consecutivos
   const variaciones = [];
   for (let i = 0; i < tokensPorDia.length - 1; i++) {
     const anterior = tokensPorDia[i];
@@ -39,7 +35,6 @@ const TotalTokens = ({ data, days }) => {
     }
   }
 
-  // Paso 5: promedio de las variaciones
   const promedio =
     variaciones.reduce((acc, val) => acc + val, 0) / variaciones.length;
 
