@@ -55,13 +55,20 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     tags = successEngine.get_tags()
 
     tags = ["consulta", "queja"]    
+    end_time = conv.get("updatedAt")
+    created_at = conv.get("createdAt")
+    if isinstance(end_time, str):
+        end_time = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
+    if isinstance(created_at, str):
+        created_at = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+
     session_doc = {
         "_id": conv["_id"],
         "userId": conv["userId"],
         "userCellphone": conv["from"],
         "agentData": agent_data,
-        "createdAt": conv["createdAt"],
-        "endTime": conv.get("updatedAt"),
+        "createdAt": created_at,
+        "endTime": end_time,
         "durationSeconds": duration,
         "tokenUsage": token_usage,
         "successful": successful,
