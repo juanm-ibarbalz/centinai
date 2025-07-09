@@ -145,11 +145,11 @@ const CreateAgent = () => {
       localStorage.removeItem("agentStep1");
       setSuccessMessage({
         token: responseData.secretToken,
-        timeLeft: 30,
+        timeLeft: 15,
       });
       setTimeout(() => {
         navigate("/myAgents");
-      }, 30000);
+      }, 15000);
     } catch (error) {
       console.error("Error al añadir el agente:", error);
     }

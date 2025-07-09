@@ -25,17 +25,15 @@ export default function AverageDurationChart({ data, days = 30 }) {
     );
   }
 
-  // Crear lista de fechas desde hoy hacia atrás
   const today = new Date();
   const dateList = [];
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(today.getDate() - i);
-    const key = d.toISOString().slice(0, 10); // "YYYY-MM-DD"
+    const key = d.toISOString().slice(0, 10); 
     dateList.push(key);
   }
 
-  // Agrupar todas las duraciones por fecha
   const agrupado = {};
   data.forEach((item) => {
     const fecha = item.date;
@@ -46,7 +44,6 @@ export default function AverageDurationChart({ data, days = 30 }) {
     }
   });
 
-  // Construir array con duración promedio por día (o 0 si no hubo)
   const final = dateList.map((fecha) => {
     const valores = agrupado[fecha] || [];
     const promedio =
@@ -54,7 +51,7 @@ export default function AverageDurationChart({ data, days = 30 }) {
         ? valores.reduce((sum, val) => sum + val, 0) / valores.length
         : 0;
     return {
-      date: fecha.slice(5), // MM-DD
+      date: fecha.slice(5), 
       avgDuration: promedio,
     };
   });

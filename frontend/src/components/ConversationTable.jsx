@@ -25,7 +25,7 @@ const ConversationTable = ({ phoneNumberId }) => {
   const [offset, setOffset] = useState(0);
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
-  const [selectedDays, setSelectedDays] = useState(7);
+  const [selectedDays, setSelectedDays] = useState(0);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
