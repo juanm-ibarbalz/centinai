@@ -26,4 +26,10 @@ def initiate_analyzer(raw_json: Union[Dict[str, Any], List[Dict[str, Any]]]) -> 
         raise RuntimeError(f"Error processing conversation: {e}") from e
 
 
-
+    try:
+        result = initiate_analyzer(raw_json)
+        # Print to console (can be redirected to a file if desired)
+        print(json.dumps(result, indent=2, ensure_ascii=False, default=str))
+    except Exception as e:
+        print(f"An error occurred during analysis: {e}")
+        sys.exit(1)

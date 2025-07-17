@@ -9,6 +9,7 @@ import {
   getMetricParamsSchema,
   listAllMetricsQuerySchema,
 } from "../../validators/metrics.validator.js";
+import Agent from "../../models/Agent.js";
 
 /**
  * Controller for retrieving metrics with optional agent filtering.
@@ -38,10 +39,18 @@ export const getMetricsByAgentController = async (req, res) => {
   const { agentPhoneNumberId, dateFrom, dateTo } = parsed.data;
   const userId = req.user.id;
 
+  const agent = await Agent.findOne({
+    phoneNumberId: agentPhoneNumberId,
+    userId,
+  });
+  if (!agent) {
+    return sendError(res, 404, "agent_not_found");
+  }
+
   try {
     const metrics = await findMetricsByAgent(
       userId,
-      agentPhoneNumberId,
+      agent._id,
       dateFrom,
       dateTo
     );

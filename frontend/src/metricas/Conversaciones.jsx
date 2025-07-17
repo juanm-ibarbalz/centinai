@@ -2,14 +2,12 @@ import React from "react";
 import "./metric.css";
 
 const Conversaciones = ({ data, days }) => {
-  // Paso 1: contar conversaciones por fecha (YYYY-MM-DD)
   const cantidadPorFecha = {};
   data.forEach((item) => {
     const fecha = item.date;
     cantidadPorFecha[fecha] = (cantidadPorFecha[fecha] || 0) + 1;
   });
 
-  // Paso 2: generar fechas desde hoy hacia atrás
   const fechas = [];
   const hoy = new Date();
   for (let i = days - 1; i >= 0; i--) {
@@ -19,12 +17,10 @@ const Conversaciones = ({ data, days }) => {
     fechas.push(key);
   }
 
-  // Paso 3: conversaciones por día
   const conversacionesPorDia = fechas.map(
     (fecha) => cantidadPorFecha[fecha] || 0
   );
 
-  // Paso 4: calcular variaciones
   const variaciones = [];
   for (let i = 0; i < conversacionesPorDia.length - 1; i++) {
     const anterior = conversacionesPorDia[i];
@@ -40,11 +36,9 @@ const Conversaciones = ({ data, days }) => {
     }
   }
 
-  // Paso 5: promedio de variaciones
   const promedio =
     variaciones.reduce((acc, val) => acc + val, 0) / variaciones.length;
 
-  // Total de conversaciones
   const total = conversacionesPorDia.reduce((acc, val) => acc + val, 0);
   const trendClass = promedio > 0 ? "green" : promedio < 0 ? "red" : "gray";
   const arrow = promedio > 0 ? "↑" : promedio < 0 ? "↓" : "→";

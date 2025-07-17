@@ -2,15 +2,13 @@ import React from "react";
 import "./metric.css";
 
 const Sesiones = ({ data, days }) => {
-  // Paso 1: agrupar sesiones (mensajes) por fecha usando item.date
   const sesionesPorFecha = {};
   data.forEach((item) => {
-    const key = item.date; // formato "YYYY-MM-DD"
+    const key = item.date; 
     const sesiones = item.sesiones || 0;
     sesionesPorFecha[key] = (sesionesPorFecha[key] || 0) + sesiones;
   });
 
-  // Paso 2: generar lista de fechas exactas desde hoy hacia atrás
   const fechas = [];
   const hoy = new Date();
   for (let i = days - 1; i >= 0; i--) {
@@ -20,10 +18,8 @@ const Sesiones = ({ data, days }) => {
     fechas.push(key);
   }
 
-  // Paso 3: construir array con cantidad de sesiones por cada día
   const sesionesPorDia = fechas.map((fecha) => sesionesPorFecha[fecha] || 0);
 
-  // Paso 4: calcular variaciones porcentuales entre días consecutivos
   const variaciones = [];
   for (let i = 0; i < sesionesPorDia.length - 1; i++) {
     const anterior = sesionesPorDia[i];
@@ -39,7 +35,6 @@ const Sesiones = ({ data, days }) => {
     }
   }
 
-  // Paso 5: calcular el promedio de variaciones
   const promedio =
     variaciones.reduce((acc, val) => acc + val, 0) / variaciones.length;
 

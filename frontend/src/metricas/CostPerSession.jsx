@@ -2,7 +2,6 @@ import React from "react";
 import "./metric.css";
 
 const CostPerSession = ({ data, days }) => {
-  // Paso 1: agrupar total y sesiones por fecha
   const acumuladoPorFecha = {};
   data.forEach((item) => {
     const fecha = item.date;
@@ -17,7 +16,6 @@ const CostPerSession = ({ data, days }) => {
     acumuladoPorFecha[fecha].sesiones += sesiones;
   });
 
-  // Paso 2: generar fechas exactas
   const fechas = [];
   const hoy = new Date();
   for (let i = days - 1; i >= 0; i--) {
@@ -27,13 +25,11 @@ const CostPerSession = ({ data, days }) => {
     fechas.push(key);
   }
 
-  // Paso 3: calcular costPerSession por día
   const costPorDia = fechas.map((fecha) => {
     const { total = 0, sesiones = 0 } = acumuladoPorFecha[fecha] || {};
     return sesiones > 0 ? total / sesiones : 0;
   });
 
-  // Paso 4: calcular variaciones
   const variaciones = [];
   for (let i = 0; i < costPorDia.length - 1; i++) {
     const anterior = costPorDia[i];
@@ -49,11 +45,9 @@ const CostPerSession = ({ data, days }) => {
     }
   }
 
-  // Paso 5: promedio de variaciones
   const promedio =
     variaciones.reduce((acc, val) => acc + val, 0) / variaciones.length;
 
-  // Paso 6: promedio general
   const total = costPorDia.reduce((acc, val) => acc + val, 0);
   const average = costPorDia.length ? total / costPorDia.length : 0;
 

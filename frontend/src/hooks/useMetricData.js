@@ -3,20 +3,23 @@ import DATAPRUEBA from "../data/DATAPRUEBA";
 import { API_URL } from "../config";
 
 /**
- * Hook to fetch metrics data, either from mock data or from the backend API.
- * Fetches by user, agent, or conversation based on provided IDs.
+ * Hook para obtener métricas desde la API o desde mock.
  * @param {Object} params
- * @param {string} [params.agentPhoneNumberId] - The agent's phone number ID.
- * @param {string} [params.conversationId] - The conversation ID.
- * @param {string} params.source - "mock" (default) or "api".
- * @param {string} params.token - JWT token for API fetch.
+ * @param {string} [params.agentPhoneNumberId] - ID del agente (teléfono).
+ * @param {string} [params.conversationId] - ID de la conversación.
+ * @param {string} [params.dateFrom] - Fecha ISO de inicio (opcional).
+ * @param {string} [params.dateTo] - Fecha ISO de fin (opcional).
+ * @param {string} params.token - JWT para autenticación.
+ * @param {string} [params.source="mock"] - "mock" o "api"
  * @returns {{ data: Array, loading: boolean }}
  */
 export function useMetricData({
   agentPhoneNumberId,
   conversationId,
-  source = "mock",
+  dateFrom,
+  dateTo,
   token,
+  source = "mock",
 }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,16 +34,21 @@ export function useMetricData({
     if (source === "api" && token) {
       setLoading(true);
 
-      let url;
+      let url = `${API_URL}/metrics`;
+
       if (conversationId) {
         url = `${API_URL}/metrics/${encodeURIComponent(conversationId)}`;
       } else if (agentPhoneNumberId) {
-        url = `${API_URL}/metrics?agentPhoneNumberId=${encodeURIComponent(
-          agentPhoneNumberId
-        )}`;
+        const params = new URLSearchParams();
+        params.append("agentPhoneNumberId", agentPhoneNumberId);
+        if (dateFrom) params.append("dateFrom", dateFrom);
+        if (dateTo) params.append("dateTo", dateTo);
+        url = `${API_URL}/metrics?${params.toString()}`;
       } else {
         url = `${API_URL}/metrics/all`;
       }
+
+      console.log("📡 Fetching from:", url);
 
       fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -50,13 +58,13 @@ export function useMetricData({
           return res.json();
         })
         .then((apiData) => {
-          // Ensure apiData is always an array for consistent processing
+          console.log("📦 Respuesta cruda del backend:", apiData);
           const metricsArray = Array.isArray(apiData) ? apiData : [apiData];
 
           const adapted = metricsArray.map((metric) => ({
             date: metric.createdAt?.slice(0, 10) ?? "",
-            sesiones: 1, // Each metric is a session
-            conversaciones: 1, // Or sum if you group
+            sesiones: 1,
+            conversaciones: 1,
             totalTokens: metric.tokenUsage?.totalTokens ?? 0,
             totalCostRate: metric.tokenUsage?.cost ?? 0,
             costPerSession: metric.tokenUsage?.cost ?? 0,
@@ -69,17 +77,16 @@ export function useMetricData({
           }));
 
           setData(adapted);
-          setLoading(false);
         })
         .catch((err) => {
-          console.error("Error fetching metrics:", err);
-          setData([]); // Clear data on error
-          setLoading(false);
-        });
+          console.error("❌ Error fetching metrics:", err);
+          setData([]);
+        })
+        .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
-  }, [agentPhoneNumberId, conversationId, source, token]);
+  }, [agentPhoneNumberId, conversationId, dateFrom, dateTo, token, source]);
 
   return { data, loading };
 }

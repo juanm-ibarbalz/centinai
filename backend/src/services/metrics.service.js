@@ -9,19 +9,17 @@ import Metric from "./../models/Metric.js";
  * @returns {Object} Date filter object for MongoDB query
  */
 function buildDateFilter(dateFrom, dateTo) {
-  if (!dateFrom && !dateTo) return {};
+  let dateFromObj = dateFrom ? new Date(dateFrom) : undefined;
+  let dateToObj = dateTo ? new Date(dateTo) : undefined;
 
-  let dateToAdjusted = dateTo;
-  if (typeof dateTo === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateTo)) {
-    dateToAdjusted = new Date(dateTo + "T23:59:59.999Z");
-  }
+  if (!dateFromObj && !dateToObj) return {};
 
-  if (dateFrom && dateToAdjusted) {
-    return { endTime: { $gte: dateFrom, $lte: dateToAdjusted } };
-  } else if (dateFrom) {
-    return { endTime: { $gte: dateFrom } };
-  } else if (dateToAdjusted) {
-    return { endTime: { $lte: dateToAdjusted } };
+  if (dateFromObj && dateToObj) {
+    return { endTime: { $gte: dateFromObj, $lte: dateToObj } };
+  } else if (dateFromObj) {
+    return { endTime: { $gte: dateFromObj } };
+  } else if (dateToObj) {
+    return { endTime: { $lte: dateToObj } };
   }
 
   return {};
@@ -32,22 +30,19 @@ function buildDateFilter(dateFrom, dateTo) {
  * Returns results sorted by conversation end time (most recent first) with optional date filtering.
  *
  * @param {string} userId - ID of the user whose metrics to retrieve
- * @param {string} agentPhoneNumberId - WhatsApp phone number identifier of the agent
+ * @param {string} agentId - Internal ID of the agent
  * @param {Date} [dateFrom] - Start date for filtering (inclusive)
  * @param {Date} [dateTo] - End date for filtering (inclusive)
  * @returns {Promise<Array>} Array of metric objects for the specified agent
  */
-export const findMetricsByAgent = async (
-  userId,
-  agentPhoneNumberId,
-  dateFrom,
-  dateTo
-) => {
+export const findMetricsByAgent = async (userId, agentId, dateFrom, dateTo) => {
   const dateFilter = buildDateFilter(dateFrom, dateTo);
+
+  console.log(dateFilter);
 
   return await Metric.find({
     userId,
-    "agentData.agentId": agentPhoneNumberId,
+    "agentData.agentId": agentId,
     ...dateFilter,
   }).sort({ endTime: -1 });
 };
