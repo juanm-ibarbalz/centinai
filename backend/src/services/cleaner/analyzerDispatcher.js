@@ -17,5 +17,12 @@ export const dispatchToAnalyzer = async (payload) => {
     throw new Error("dispatchToAnalyzer: payload not received");
   }
 
-  await axios.post(`${analyzerUrl}/analyze`, payload, { timeout: 120000 });
+  try {
+    await axios.post(`${analyzerUrl}/analyze`, payload, { timeout: 120000 });
+  } catch (error) {
+    console.error(
+      "dispatchToAnalyzer error:",
+      error.response?.data || error.message
+    );
+  }
 };

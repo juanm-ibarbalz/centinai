@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 import os, sys
 from .cors_config import cors_config
@@ -30,7 +30,7 @@ def analyze():
     raw = request.get_json()
     try:
         result = initiate_analyzer(raw)
-        return jsonify(result), 200
+        return jsonify({"status": "ok"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
