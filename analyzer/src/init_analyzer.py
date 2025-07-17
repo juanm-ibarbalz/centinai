@@ -1,6 +1,6 @@
 import json
 from typing import Any, Dict, List, Union
-from .services.conversation_handler import process_conversation
+from services.conversation_handler import process_conversation
 
 
 def initiate_analyzer(raw_json: Union[Dict[str, Any], List[Dict[str, Any]]]) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
