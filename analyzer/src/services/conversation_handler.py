@@ -73,7 +73,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
         "messageCount": {
             "user": user_count,
             "agent": agent_count,
-            "total": total_count
+            "total": total_count 
         },
         "latency": latency_info,
         "metadata": metadata,
@@ -87,10 +87,8 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
     save_session(session_doc)
     # Guardar también en la colección 'metrics'
     repo = SessionRepo()
-    try:
-        repo.save_session(session_doc)
-    finally:
-        repo.close()
+    repo.save_session(session_doc)
+
     return session_doc
 
 
@@ -155,10 +153,8 @@ def _get_agent_data_from_conversation(conversation: Dict[str, Any]) -> Dict[str,
     if not user_id:
         raise ValueError("Conversation sin clave 'userId'.")
     repo = AgentRepo()
-    try:
-        agent_data = repo.get_agent_by_user_id(user_id)
-    finally:
-        repo.close()
+    agent_data = repo.get_agent_by_user_id(user_id)
+
     if not agent_data:
         raise ValueError(f"No se encontró agente con userId={user_id}")
     return agent_data
