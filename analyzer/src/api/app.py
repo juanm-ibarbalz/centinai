@@ -29,7 +29,7 @@ def analyze():
     """
     raw = request.get_json()
     try:
-        result = initiate_analyzer(raw)
+        initiate_analyzer(raw)
         return jsonify({"status": "ok"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

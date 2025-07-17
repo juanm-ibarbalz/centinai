@@ -85,7 +85,7 @@ def process_conversation(raw_json: Dict[str, Any]) -> Dict[str, Any]:
 
     output_path = os.path.join(os.path.dirname(__file__), "resultSession.json")
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(session_doc, f, ensure_ascii=False, indent=2)
+        json.dump(session_doc, f, ensure_ascii=False, indent=2, default=str)
 
     save_session(session_doc)
     # Guardar también en la colección 'metrics'

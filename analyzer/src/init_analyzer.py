@@ -59,7 +59,7 @@ if __name__ == "__main__":
     try:
         result = initiate_analyzer(raw_json)
         # Lo imprimimos por pantalla (puede redirigirse a un archivo si se desea)
-        print(json.dumps(result, indent=2, ensure_ascii=False))
+        print(json.dumps(result, indent=2, ensure_ascii=False, default=str))
     except Exception as e:
         print(f"Ocurrió un error durante el análisis: {e}")
         sys.exit(1)
